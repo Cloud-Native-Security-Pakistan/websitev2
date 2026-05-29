@@ -40,17 +40,28 @@ function parseCSV(text) {
   return rows.filter(r => r.length && r.some(c => c.trim() !== ''));
 }
 
-/** Normalise a city string and look up coordinates from city-coords.json. */
-function geocodeCity(rawCity, cityCoords) {
-  if (!rawCity) return cityCoords['pakistan'];
-  const key = String(rawCity)
-    .toLowerCase()
-    .replace(/,?\s*pakistan\s*$/i, '')
-    .trim();
-  return cityCoords[key]
-    || cityCoords[key.split(/[,/(]/)[0].trim()]
-    || cityCoords['other']
-    || cityCoords['pakistan'];
+/** Normalise a city string and look up coordinates. Accepts either the
+ *  pakistan-cities.json shape ({cities:[...], fallbacks:{...}}) or the legacy
+ *  flat city-coords.json map. Free-typed cities fall back to the national centroid. */
+function geocodeCity(rawCity, cityData) {
+  // Build a flat lowercase lookup once.
+  const map = cityData.__flat || (cityData.__flat = (() => {
+    const m = {};
+    if (Array.isArray(cityData.cities)) {
+      cityData.cities.forEach(c => { if (c && c.name) m[c.name.toLowerCase()] = { lat: c.lat, lng: c.lng }; });
+      Object.entries(cityData.fallbacks || {}).forEach(([k, v]) => { m[k.toLowerCase()] = v; });
+    } else {
+      Object.entries(cityData).forEach(([k, v]) => { if (k[0] !== '_') m[k.toLowerCase()] = v; });
+    }
+    return m;
+  })());
+
+  if (!rawCity) return map['pakistan'];
+  const key = String(rawCity).toLowerCase().replace(/,?\s*pakistan\s*$/i, '').trim();
+  return map[key]
+    || map[key.split(/[,/(]/)[0].trim()]
+    || map['other']
+    || map['pakistan'];
 }
 
 /** Add a tiny deterministic jitter so members in the same city don't stack exactly. */
@@ -140,12 +151,12 @@ async function loadLiveMembers(cityCoords) {
  */
 export async function getAllMembers() {
   let seed = [];
-  let cityCoords = {};
+  let cityData = {};
 
   try {
-    [seed, cityCoords] = await Promise.all([
+    [seed, cityData] = await Promise.all([
       loadJSON('../data/members.json'),
-      loadJSON('../data/city-coords.json')
+      loadJSON('../data/pakistan-cities.json').catch(() => loadJSON('../data/city-coords.json'))
     ]);
   } catch (err) {
     console.error('[members] failed to load seed data:', err.message);
@@ -155,7 +166,7 @@ export async function getAllMembers() {
 
   let live = [];
   try {
-    live = await loadLiveMembers(cityCoords);
+    live = await loadLiveMembers(cityData);
   } catch (err) {
     console.warn('[members] live load failed, seed only:', err.message);
   }

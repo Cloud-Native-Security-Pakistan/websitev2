@@ -91,11 +91,9 @@ function setupCnspkMembership() {
     );
   } catch (e) {}
 
-  var qCity = form.addMultipleChoiceItem()
+  var qCity = form.addTextItem()
     .setTitle('City')
-    .setHelpText('Pick the nearest provincial capital, or choose "Other" to type your city.')
-    .setChoiceValues(CNSPK.CITIES)
-    .showOtherOption(true)   // native write-in for cities not listed
+    .setHelpText('Your city in Pakistan (or "Outside Pakistan" if abroad). The website form gives you a searchable list.')
     .setRequired(true);
 
   var qRole = form.addListItem()
