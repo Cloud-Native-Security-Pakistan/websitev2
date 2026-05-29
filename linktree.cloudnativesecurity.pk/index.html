@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--
+      Standalone linktree for linktree.cloudnativesecurity.pk
+      ----------------------------------------------------------
+      Fully self-contained: no dependency on the main-site /css or /js
+      paths. Brand tokens (Electric register) are inlined below, fonts
+      come from the Google CDN, and the shield/favicons live in ./assets.
+      Every outbound link is an absolute URL so it resolves from any host.
+    -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; base-uri 'self'; form-action 'none';">
+
+    <title>CNSPK · Links · Cloud Native Security Pakistan</title>
+    <meta name="description"
+        content="All the official Cloud Native Security Pakistan links in one place — WhatsApp, CNCF chapter events, GitHub, LinkedIn, X, Instagram, and membership.">
+    <meta name="keywords"
+        content="CNSPK, Cloud Native Security Pakistan, linktree, links, WhatsApp, CNCF chapter, Kubernetes security Pakistan">
+    <meta name="author" content="Cloud Native Security Pakistan">
+    <meta name="theme-color" content="#0F1115">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="CNSPK · Links">
+    <meta property="og:description"
+        content="Every official CNSPK door in one place. 280+ practitioners. CNCF-affiliated. Built. Tested. Pakistani.">
+    <meta property="og:url" content="https://linktree.cloudnativesecurity.pk/">
+    <meta property="og:site_name" content="Cloud Native Security Pakistan">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="CNSPK · Links">
+    <meta name="twitter:description" content="Every official CNSPK door in one place. Built. Tested. Pakistani.">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png">
+    <link rel="canonical" href="https://linktree.cloudnativesecurity.pk/">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!--
+      Perf: only the weights this page actually paints are requested
+      (Bricolage 800, Inter 400/600, JetBrains Mono 400/700). The Urdu face is
+      loaded on a SEPARATE request subset with &text= to just the glyphs in the
+      one ceremonial line below — turning a ~hundreds-of-KB font into a few KB.
+    -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400&text=کلاؤڈ نیٹو سیکیورٹی پاکستان&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* ==========================================================
+           CNSPK · Electric register · tokens (inlined subset)
+           Mirrors /css/tokens.css — colour, type, motion, radius.
+        ========================================================== */
+        :root {
+            --lime: #C7FF3E;
+            --lime-600: #9BD11A;
+            --lime-glow: #E8FF8A;
+            --pak-green: #01411C;
+            --gold: #C9A227;
+
+            --carbon: #0F1115;
+            --charcoal: #1A1D24;
+            --slate: #2A2E37;
+            --steel: #6B7280;
+            --bone: #F4F1EA;
+            --bone-2: #E8E3D6;
+
+            --font-display: 'Bricolage Grotesque', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Courier New', monospace;
+            --font-urdu: 'Noto Nastaliq Urdu', serif;
+
+            --dur-hover: 150ms;
+            --dur-elevate: 200ms;
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+            --r-sm: 4px;
+            --r-md: 8px;
+            --r-lg: 12px;
+            --r-pill: 9999px;
+
+            --grad-stamp-glow: linear-gradient(135deg, #C7FF3E 0%, #9BD11A 100%);
+        }
+
+        *,
+        *::before,
+        *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--carbon);
+            color: var(--bone);
+            font-family: var(--font-body);
+            font-size: 16px;
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        img, svg { max-width: 100%; display: block; }
+
+        a { color: var(--lime); text-decoration: none; transition: color var(--dur-hover) var(--ease); }
+        a:hover { color: var(--lime-glow); }
+
+        ::selection { background: var(--lime); color: var(--carbon); }
+
+        a:focus-visible,
+        button:focus-visible {
+            outline: 2px solid var(--lime);
+            outline-offset: 3px;
+            border-radius: var(--r-sm);
+        }
+
+        /* ==========================================================
+           Ambient background — lime/green glow + faint grid
+        ========================================================== */
+        .bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse 70% 55% at 18% 12%, rgba(199, 255, 62, 0.10) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 70% at 88% 92%, rgba(1, 65, 28, 0.45) 0%, transparent 60%),
+                var(--carbon);
+        }
+        .bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(199, 255, 62, 0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(199, 255, 62, 0.035) 1px, transparent 1px);
+            background-size: 64px 64px;
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 78%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 78%);
+        }
+
+        /* ==========================================================
+           Shell
+        ========================================================== */
+        .shell {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 56px 20px 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ==========================================================
+           Profile header
+        ========================================================== */
+        .profile { text-align: center; margin-bottom: 36px; }
+
+        .profile__shield {
+            width: 92px;
+            height: 92px;
+            margin: 0 auto 22px;
+            display: grid;
+            place-items: center;
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-lg);
+            box-shadow: 0 0 48px rgba(199, 255, 62, 0.12);
+        }
+        .profile__shield img { width: 60px; height: 60px; object-fit: contain; }
+
+        .profile__pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: var(--r-pill);
+            background: rgba(199, 255, 62, 0.10);
+            border: 1px solid rgba(199, 255, 62, 0.25);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--lime);
+            letter-spacing: 0.04em;
+            margin-bottom: 18px;
+        }
+        .profile__dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--lime);
+            box-shadow: 0 0 12px var(--lime);
+            animation: pulse 2s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; transform: scale(0.85); }
+            50%      { opacity: 1;   transform: scale(1.1); }
+        }
+
+        .profile__name {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(40px, 12vw, 64px);
+            line-height: 0.9;
+            letter-spacing: -0.04em;
+            color: var(--bone);
+        }
+        .profile__name .lime { color: var(--lime); }
+
+        .profile__handle {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--steel);
+            letter-spacing: 0.04em;
+            margin-top: 12px;
+        }
+
+        .profile__bio {
+            font-size: 15px;
+            color: var(--bone-2);
+            line-height: 1.55;
+            max-width: 420px;
+            margin: 14px auto 0;
+        }
+        .profile__bio strong { color: var(--lime); font-weight: 600; }
+
+        .profile__urdu {
+            font-family: var(--font-urdu);
+            font-size: 20px;
+            color: var(--gold);
+            direction: rtl;
+            line-height: 2.4;
+            opacity: 0.75;
+            margin-top: 10px;
+        }
+
+        /* ==========================================================
+           Link list
+        ========================================================== */
+        .links {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .link {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+            padding: 18px 20px;
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-lg);
+            color: var(--bone);
+            text-decoration: none;
+            overflow: hidden;
+            transition: transform var(--dur-elevate) var(--ease),
+                        border-color var(--dur-hover) var(--ease),
+                        box-shadow var(--dur-elevate) var(--ease);
+        }
+        .link:hover,
+        .link:focus-visible {
+            color: var(--bone);
+            transform: translateY(-3px);
+            border-color: var(--lime);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+        }
+
+        .link__icon {
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            border-radius: var(--r-md);
+            background: var(--carbon);
+            border: 1px solid var(--slate);
+            color: var(--lime);
+            transition: border-color var(--dur-hover) var(--ease),
+                        background var(--dur-hover) var(--ease);
+        }
+        .link:hover .link__icon { border-color: rgba(199, 255, 62, 0.4); }
+        .link__icon svg { width: 21px; height: 21px; }
+
+        .link__text { flex: 1; min-width: 0; }
+        .link__title {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 17px;
+            letter-spacing: -0.01em;
+            line-height: 1.1;
+        }
+        .link__sub {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--steel);
+            letter-spacing: 0.03em;
+            margin-top: 3px;
+        }
+
+        .link__arrow {
+            flex-shrink: 0;
+            color: var(--steel);
+            font-family: var(--font-mono);
+            transition: transform var(--dur-hover) var(--ease), color var(--dur-hover) var(--ease);
+        }
+        .link:hover .link__arrow { color: var(--lime); transform: translateX(4px); }
+
+        /* Featured (primary) link — WhatsApp */
+        .link--featured {
+            border-color: var(--lime);
+        }
+        .link--featured::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
+            background: var(--grad-stamp-glow);
+        }
+        .link--featured .link__icon { color: var(--lime); border-color: rgba(199, 255, 62, 0.4); }
+
+        .link__badge {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--carbon);
+            background: var(--lime);
+            padding: 3px 8px;
+            border-radius: var(--r-pill);
+            flex-shrink: 0;
+        }
+
+        /* ==========================================================
+           Section divider label
+        ========================================================== */
+        .section-label {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--steel);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin: 30px 0 16px;
+        }
+        .section-label::before,
+        .section-label::after { content: ''; flex: 1; height: 1px; background: var(--slate); }
+
+        /* ==========================================================
+           Social row
+        ========================================================== */
+        .socials {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            width: 100%;
+        }
+        .social {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-md);
+            color: var(--bone-2);
+            transition: transform var(--dur-elevate) var(--ease),
+                        border-color var(--dur-hover) var(--ease),
+                        color var(--dur-hover) var(--ease);
+        }
+        .social:hover,
+        .social:focus-visible {
+            color: var(--lime);
+            border-color: var(--lime);
+            transform: translateY(-3px);
+        }
+        .social svg { width: 20px; height: 20px; }
+
+        /* ==========================================================
+           Footer
+        ========================================================== */
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+        }
+        .footer__cmd {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--lime);
+            opacity: 0.85;
+            letter-spacing: 0.02em;
+            margin-bottom: 12px;
+        }
+        .footer__cmd .dim { color: var(--steel); }
+        .footer__copy {
+            font-size: 12px;
+            color: var(--steel);
+            line-height: 1.6;
+        }
+        .footer__copy a { color: var(--steel); border-bottom: 1px dotted var(--steel); }
+        .footer__copy a:hover { color: var(--lime); border-bottom-color: var(--lime); }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+            .profile__dot { animation: none; opacity: 1; }
+        }
+
+        @media (max-width: 480px) {
+            .shell { padding: 40px 16px 36px; }
+            .link { padding: 16px 16px; gap: 13px; }
+            .link__icon { width: 38px; height: 38px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg" aria-hidden="true"></div>
+
+    <main class="shell">
+
+        <!-- ===== Profile ===== -->
+        <header class="profile">
+            <div class="profile__shield">
+                <img src="./assets/cnspk-shield.png" alt="Cloud Native Security Pakistan shield logo"
+                    width="60" height="60" fetchpriority="high" decoding="async">
+            </div>
+
+            <span class="profile__pill">
+                <span class="profile__dot" aria-hidden="true"></span>
+                <span>chapter / live / lhe-khi-isb</span>
+            </span>
+
+            <h1 class="profile__name">CNS<span class="lime">PK</span></h1>
+            <p class="profile__handle">// cloud native security pakistan</p>
+
+            <p class="profile__bio">
+                <strong>280+ practitioners.</strong> CNCF-affiliated, run by engineers.
+                Pick a door below — no gatekeeping.
+            </p>
+            <p class="profile__urdu" lang="ur" dir="rtl">کلاؤڈ نیٹو سیکیورٹی پاکستان</p>
+        </header>
+
+        <!-- ===== Primary links ===== -->
+        <nav class="links" aria-label="CNSPK links">
+
+            <!-- WhatsApp — featured, lowest friction -->
+            <a class="link link--featured" href="https://chat.whatsapp.com/F5Hf1ZwI22TK6EcV6zz4wo"
+                target="_blank" rel="noopener noreferrer">
+                <span class="link__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.207zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/>
+                    </svg>
+                </span>
+                <span class="link__text">
+                    <span class="link__title">Join the WhatsApp</span>
+                    <span class="link__sub">~280 members · daily chatter</span>
+                </span>
+                <span class="link__badge">Start here</span>
+            </a>
+
+            <!-- CNCF chapter events -->
+            <a class="link" href="https://community.cncf.io/cloud-native-security-pakistan/"
+                target="_blank" rel="noopener noreferrer">
+                <span class="link__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                </span>
+                <span class="link__text">
+                    <span class="link__title">RSVP a Session</span>
+                    <span class="link__sub">// official CNCF chapter · free</span>
+                </span>
+                <span class="link__arrow" aria-hidden="true">→</span>
+            </a>
+
+            <!-- Website -->
+            <a class="link" href="https://cloudnativesecurity.pk/" target="_blank" rel="noopener noreferrer">
+                <span class="link__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                </span>
+                <span class="link__text">
+                    <span class="link__title">The Website</span>
+                    <span class="link__sub">// cloudnativesecurity.pk</span>
+                </span>
+                <span class="link__arrow" aria-hidden="true">→</span>
+            </a>
+
+            <!-- Become a member -->
+            <a class="link" href="https://github.com/Cloud-Native-Security-Pakistan/becoming-a-member"
+                target="_blank" rel="noopener noreferrer">
+                <span class="link__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                </span>
+                <span class="link__text">
+                    <span class="link__title">Become a Member</span>
+                    <span class="link__sub">// get on the map · earn the badge</span>
+                </span>
+                <span class="link__arrow" aria-hidden="true">→</span>
+            </a>
+
+            <!-- All the doors / join -->
+            <a class="link" href="https://cloudnativesecurity.pk/join/" target="_blank" rel="noopener noreferrer">
+                <span class="link__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                </span>
+                <span class="link__text">
+                    <span class="link__title">All the Doors</span>
+                    <span class="link__sub">// five ways in · pick your friction</span>
+                </span>
+                <span class="link__arrow" aria-hidden="true">→</span>
+            </a>
+
+        </nav>
+
+        <!-- ===== Socials ===== -->
+        <div class="section-label">// follow the signal</div>
+
+        <div class="socials">
+            <a class="social" href="https://github.com/Cloud-Native-Security-Pakistan"
+                target="_blank" rel="noopener noreferrer" aria-label="CNSPK on GitHub">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                </svg>
+            </a>
+            <a class="social" href="https://www.linkedin.com/company/cloud-native-security-pakistan"
+                target="_blank" rel="noopener noreferrer" aria-label="CNSPK on LinkedIn">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+            </a>
+            <a class="social" href="https://x.com/CloudSecPK"
+                target="_blank" rel="noopener noreferrer" aria-label="CNSPK on X (Twitter)">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
+                </svg>
+            </a>
+            <a class="social" href="https://www.instagram.com/cloudnativesecuritypk"
+                target="_blank" rel="noopener noreferrer" aria-label="CNSPK on Instagram">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+            </a>
+        </div>
+
+        <!-- ===== Footer ===== -->
+        <footer class="footer">
+            <p class="footer__cmd"><span class="dim">$</span> kubectl apply <span>-f pakistan.yaml</span></p>
+            <p class="footer__copy">
+                &copy; <span id="year">2026</span> Cloud Native Security Pakistan &middot; Independent &middot; CNCF-affiliated<br>
+                <a href="https://cloudnativesecurity.pk/code-of-conduct/" target="_blank" rel="noopener noreferrer">Code of Conduct</a>
+            </p>
+        </footer>
+
+    </main>
+
+    <script src="./app.js" defer></script>
+</body>
+
+</html>

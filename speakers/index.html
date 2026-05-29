@@ -90,85 +90,58 @@
         }
         .section .muted { font-size: 17px; color: var(--bone-2); max-width: 660px; line-height: 1.6; margin-bottom: 40px; }
 
-        /* Empty-state grid of ghost speaker cards */
+        /* Speakers index grid */
         .speakers-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
             gap: 16px;
-            margin-top: 16px;
+            margin-top: 24px;
         }
-        .speaker-ghost {
-            border: 1px dashed var(--slate);
+        .speaker-card {
+            border: 1px solid var(--slate);
             border-radius: var(--r-md);
             padding: 24px;
-            background: rgba(26, 29, 36, 0.4);
+            background: var(--charcoal);
+            transition: border-color var(--dur-hover) var(--ease);
         }
-        .speaker-ghost .row { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
-        .speaker-ghost .avatar {
+        .speaker-card:hover { border-color: var(--steel); }
+        .speaker-card .row { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+        .speaker-card .avatar {
+            position: relative;
             width: 48px; height: 48px;
             border-radius: 50%;
             background: var(--slate);
-            opacity: 0.6;
             display: grid;
             place-items: center;
             font-family: var(--font-mono);
-            color: var(--steel);
-            font-size: 18px;
+            color: var(--bone-2);
+            font-size: 15px;
             flex-shrink: 0;
+            overflow: hidden;
         }
-        .speaker-ghost .line {
-            height: 10px;
-            border-radius: var(--r-pill);
-            background: var(--slate);
-            opacity: 0.5;
-            margin-bottom: 10px;
-        }
-        .speaker-ghost .line.short { width: 50%; }
-        .speaker-ghost .line.mid { width: 72%; }
-        .speaker-ghost .chip {
-            display: inline-block;
-            font-family: var(--font-mono);
-            font-size: 10px;
-            color: var(--steel);
-            border: 1px solid var(--slate);
-            border-radius: var(--r-sm);
-            padding: 4px 8px;
-            margin-top: 6px;
-            letter-spacing: 0.06em;
-        }
-
-        .empty-banner {
-            border: 1px dashed var(--slate);
-            border-radius: var(--r-lg);
-            padding: 48px 32px;
-            text-align: center;
-            background: rgba(199, 255, 62, 0.04);
-            margin-bottom: 24px;
-        }
-        .empty-banner .badge {
+        .speaker-card .avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+        .speaker-card .name { font-weight: 700; color: var(--bone); font-size: 16px; line-height: 1.2; overflow-wrap: anywhere; }
+        .speaker-card .meta { font-size: 13px; color: var(--bone-2); margin-top: 4px; line-height: 1.4; }
+        .speaker-card .count {
             display: inline-block;
             font-family: var(--font-mono);
             font-size: 11px;
             color: var(--lime);
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
             border: 1px solid rgba(199, 255, 62, 0.25);
             background: rgba(199, 255, 62, 0.08);
-            padding: 6px 12px;
             border-radius: var(--r-pill);
-            margin-bottom: 18px;
+            padding: 4px 10px;
+            letter-spacing: 0.04em;
         }
-        .empty-banner h3 {
-            font-family: var(--font-display);
-            font-style: italic;
-            font-weight: 800;
-            text-transform: uppercase;
-            font-size: clamp(24px, 3.4vw, 36px);
-            letter-spacing: -0.02em;
-            color: var(--bone);
-            margin-bottom: 12px;
+        .speaker-card .socials { display: flex; gap: 14px; margin-top: 14px; }
+        .speaker-card .socials a {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--steel);
+            letter-spacing: 0.02em;
+            transition: color var(--dur-hover) var(--ease);
         }
-        .empty-banner p { color: var(--bone-2); max-width: 540px; margin: 0 auto; font-size: 15px; line-height: 1.6; }
+        .speaker-card .socials a:hover { color: var(--lime); }
 
         /* Want to speak CTA */
         .speak-cta {
@@ -259,82 +232,15 @@
             </div>
         </section>
 
-        <!-- ===== Speakers index (empty state) ===== -->
+        <!-- ===== Speakers index ===== -->
         <section class="section">
             <div class="wrap">
                 <div class="section-eyebrow">// the-index</div>
                 <h2>Every CNSPK speaker.</h2>
                 <p class="muted">Grouped by speaker. Each card shows talk count and links to their sessions.</p>
 
-                <!--
-                    TODO: render this index from data/sessions.json — read the `speaker` object on each session
-                    ({ name, role, company, image, linkedin, twitter }), GROUP BY speaker (key on name, or a
-                    future stable speaker id), and render one card per unique speaker with:
-                      - avatar (speaker.image, with alt="<name> — speaker portrait"; fall back to initials)
-                      - name, role @ company
-                      - a talk count ("3 talks") derived from how many sessions reference that speaker
-                      - linkedin / twitter links when present (rel="noopener noreferrer")
-                      - a link to that speaker's sessions (filter the sessions page by speaker)
-                    Sort by talk count desc, then name. The ghost cards below are inert placeholders, NOT real
-                    speakers. DO NOT fabricate speakers, talk counts, roles, companies, or portraits — render
-                    only what exists in data/sessions.json. A future /speakers/{username}/ detail route can
-                    reuse the same data (features audit item #28).
-                -->
-                <div class="empty-banner" role="status">
-                    <span class="badge">index · not yet wired</span>
-                    <h3>Speakers load from the sessions data</h3>
-                    <p>
-                        This index is built to read from <code>data/sessions.json</code> and group every talk
-                        by its speaker. Until that wiring lands, it stays empty on purpose — no placeholder
-                        names, no invented bios. Real speakers only.
-                    </p>
-                </div>
-
-                <div class="speakers-grid" aria-hidden="true">
-                    <div class="speaker-ghost">
-                        <div class="row">
-                            <div class="avatar">?</div>
-                            <div style="flex:1;">
-                                <div class="line short"></div>
-                                <div class="line mid"></div>
-                            </div>
-                        </div>
-                        <div class="line"></div>
-                        <span class="chip">// from sessions.json</span>
-                    </div>
-                    <div class="speaker-ghost">
-                        <div class="row">
-                            <div class="avatar">?</div>
-                            <div style="flex:1;">
-                                <div class="line short"></div>
-                                <div class="line mid"></div>
-                            </div>
-                        </div>
-                        <div class="line"></div>
-                        <span class="chip">// from sessions.json</span>
-                    </div>
-                    <div class="speaker-ghost">
-                        <div class="row">
-                            <div class="avatar">?</div>
-                            <div style="flex:1;">
-                                <div class="line short"></div>
-                                <div class="line mid"></div>
-                            </div>
-                        </div>
-                        <div class="line"></div>
-                        <span class="chip">// from sessions.json</span>
-                    </div>
-                    <div class="speaker-ghost">
-                        <div class="row">
-                            <div class="avatar">?</div>
-                            <div style="flex:1;">
-                                <div class="line short"></div>
-                                <div class="line mid"></div>
-                            </div>
-                        </div>
-                        <div class="line"></div>
-                        <span class="chip">// from sessions.json</span>
-                    </div>
+                <div class="speakers-grid" id="speakers-grid" role="list" aria-busy="true">
+                    <p class="muted" id="speakers-status">$ loading speakers from sessions.json …</p>
                 </div>
             </div>
         </section>
@@ -365,8 +271,71 @@
     <script type="module">
         import { Navbar } from '/js/Navbar.js';
         import { Footer } from '/js/Footer.js';
+        import { fetchData, sanitize, domReady } from '/js/utils.js';
         new Navbar().init();
         new Footer().init();
+
+        const initials = (name) =>
+            name.trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+
+        function speakerCard(s) {
+            const name = sanitize(s.name);
+            const meta = sanitize([s.role, s.company].filter(Boolean).join(' @ '));
+            const ini = sanitize(initials(s.name));
+            const count = `${s.talks} talk${s.talks === 1 ? '' : 's'}`;
+            const avatar = s.image
+                ? `<span class="avatar">${ini}<img src="${sanitize(s.image)}" alt="${name} — speaker portrait" loading="lazy"></span>`
+                : `<span class="avatar">${ini}</span>`;
+            const socials = [
+                s.linkedin && `<a href="${sanitize(s.linkedin)}" target="_blank" rel="noopener noreferrer">// linkedin</a>`,
+                s.twitter && `<a href="${sanitize(s.twitter)}" target="_blank" rel="noopener noreferrer">// twitter</a>`
+            ].filter(Boolean).join('');
+            return `
+                <article class="speaker-card" role="listitem">
+                    <div class="row">
+                        ${avatar}
+                        <div style="flex:1;min-width:0;">
+                            <div class="name">${name}</div>
+                            ${meta ? `<div class="meta">${meta}</div>` : ''}
+                        </div>
+                    </div>
+                    <span class="count">${count}</span>
+                    ${socials ? `<div class="socials">${socials}</div>` : ''}
+                </article>`;
+        }
+
+        async function loadSpeakers() {
+            const grid = document.getElementById('speakers-grid');
+            const status = document.getElementById('speakers-status');
+            const sessions = await fetchData('/data/sessions.json');
+
+            // Dedupe by speaker name; count talks per speaker.
+            const byName = new Map();
+            for (const session of (sessions || [])) {
+                const sp = session.speaker;
+                if (!sp || !sp.name) continue;
+                const existing = byName.get(sp.name);
+                if (existing) existing.talks++;
+                else byName.set(sp.name, { ...sp, talks: 1 });
+            }
+
+            grid.setAttribute('aria-busy', 'false');
+
+            if (byName.size === 0) {
+                if (status) status.textContent = sessions
+                    ? '// no speakers to show yet'
+                    : '// error · unable to load speakers';
+                return;
+            }
+
+            // Sort by talk-count desc, then name.
+            const speakers = [...byName.values()].sort(
+                (a, b) => b.talks - a.talks || a.name.localeCompare(b.name)
+            );
+            grid.innerHTML = speakers.map(speakerCard).join('');
+        }
+
+        domReady(loadSpeakers);
     </script>
 </body>
 

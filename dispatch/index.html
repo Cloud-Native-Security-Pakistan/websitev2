@@ -119,6 +119,17 @@
             margin-top: 16px;
             letter-spacing: 0.04em;
         }
+        .signup__heads-up {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--bone-2);
+            line-height: 1.55;
+            margin-top: 14px;
+            padding-left: 12px;
+            border-left: 2px solid var(--lime);
+            max-width: 560px;
+        }
+        .signup__heads-up em { color: var(--lime); font-style: normal; }
 
         /* ---- Sections ---- */
         .section { padding: 88px 0; }
@@ -253,13 +264,17 @@
                         <label class="signup__label" for="dispatch-email">Your email</label>
                         <input class="signup__input" type="email" id="dispatch-email" name="email"
                             placeholder="you@yourdomain.dev" required autocomplete="email"
-                            aria-describedby="dispatch-note" style="width:100%;">
+                            aria-describedby="dispatch-note dispatch-status" style="width:100%;">
                     </div>
                     <button type="submit" class="btn-primary btn-primary--sm" style="align-self:flex-end;">
                         Subscribe →
                     </button>
                 </form>
                 <p class="signup__note" id="dispatch-note">free · open archive · no tracking · unsubscribe in one click</p>
+                <p class="signup__heads-up" id="dispatch-status">
+                    Heads up — no signup backend yet. <em>Subscribe</em> opens your mail client with a
+                    pre-filled note; we add you by hand until the newsletter provider is wired.
+                </p>
             </div>
         </section>
 

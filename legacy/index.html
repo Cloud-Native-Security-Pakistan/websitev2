@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+
+    <!-- SEO Meta Tags -->
+    <title>Cloud Native Security Pakistan | CNSPK - Pakistan's Premier Cloud Security Community</title>
+    <meta name="description"
+        content="Join Cloud Native Security Pakistan - the country's leading community for cloud security professionals, developers, and enthusiasts. Learn Kubernetes security, DevSecOps, and cloud-native best practices. Connect with 250+ members across Lahore, Islamabad, and Karachi.">
+    <meta name="keywords"
+        content="cloud native security pakistan, CNCF Pakistan, CNSPK, Kubernetes security, cloud security, DevSecOps, container security, cloud native community Pakistan, Lahore tech, Islamabad developers, Karachi security">
+    <meta name="author" content="Cloud Native Security Pakistan">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Cloud Native Security Pakistan - Secure the Cloud Native Future">
+    <meta property="og:description"
+        content="Pakistan's premier CNCF Security Chapter. Join 250+ cloud security professionals, developers, and enthusiasts learning cloud-native security and building secure infrastructure across Pakistan.">
+    <meta property="og:url" content="https://cloudnativesecurity.pk/">
+    <meta property="og:site_name" content="Cloud Native Security Pakistan">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Cloud Native Security Pakistan - CNSPK">
+    <meta name="twitter:description"
+        content="Join Pakistan's premier cloud-native security community. 250+ members, 12+ events across Lahore, Islamabad, and Karachi. Learn, connect, and grow together.">
+
+    <!-- Favicon -->
+
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/legacy/logo.png">
+
+
+    <link rel="icon" type="image/png" sizes="16x16" href="/legacy/logo.png">
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/legacy/logo.png">
+
+
+    <link rel="shortcut icon" href="/legacy/favicon.ico">
+    <link rel="canonical" href="https://cloudnativesecurity.pk/legacy/">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            500: '#10b981', // Emerald 500
+                            600: '#059669',
+                            900: '#064e3b',
+                        },
+                        dark: {
+                            900: '#0a0a0a',
+                            800: '#171717',
+                            glass: 'rgba(23, 23, 23, 0.7)',
+                        }
+                    },
+                    backgroundImage: {
+                        'hero-glow': 'conic-gradient(from 180deg at 50% 50%, #10b981 0deg, #064e3b 160deg, #0a0a0a 360deg)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #050505;
+            color: #e5e5e5;
+        }
+
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .glass-nav {
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 40px rgba(16, 185, 129, 0.3);
+        }
+
+        .hero-orb {
+            position: absolute;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col antialiased selection:bg-brand-500/30 selection:text-brand-500">
+
+    <!-- Navbar Placeholder -->
+    <div id="navbar"></div>
+
+    <main class="flex-grow">
+        <!-- Hero Section -->
+        <section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+            <!-- Background Elements -->
+            <div class="hero-orb w-[800px] h-[800px] top-[-20%] left-[-10%] animate-pulse"
+                style="animation-duration: 4s;"></div>
+            <div class="hero-orb w-[600px] h-[600px] bottom-[-10%] right-[-5%] animate-pulse"
+                style="animation-duration: 6s; animation-delay: 1s;"></div>
+
+            <div class="container mx-auto px-6 relative z-10 text-center">
+                <div
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel mb-8 hover:border-brand-500/50 transition-colors">
+                    <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                    <span class="text-sm font-mono text-gray-300">The 1st CNCF Security Chapter in Pakistan</span>
+                </div>
+
+                <h1 class="text-6xl md:text-8xl font-bold mb-6 tracking-tight leading-none text-white text-glow">
+                    Secure the <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-cyan-500">Cloud
+                        Native</span> Future
+                </h1>
+
+                <p class="text-xl md:text-2xl text-gray-400 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
+                    Join Pakistan's premier community for cloud security professionals, developers, and enthusiasts
+                    building secure cloud-native systems.
+                </p>
+
+                <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
+                    <a href="/legacy/join/index.html"
+                        class="px-8 py-4 bg-brand-600 hover:bg-brand-500 text-white rounded-lg font-semibold transition-all hover:scale-105 shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)]">
+                        Become a Member
+                    </a>
+                    <a href="/legacy/events/index.html"
+                        class="px-8 py-4 glass-panel hover:bg-white/5 text-gray-200 rounded-lg font-semibold transition-all hover:border-brand-500/50">
+                        Explore Events
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hire Experts CTA -->
+        <section class="py-20 border-t border-white/5">
+            <div class="container mx-auto px-6">
+                <div class="glass-panel rounded-2xl p-10 md:p-14 flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div class="max-w-lg">
+                        <h2 class="text-3xl md:text-4xl font-bold text-white mb-3">Need Cloud Security Expertise?</h2>
+                        <p class="text-gray-400 text-lg leading-relaxed">Our community is packed with talented consultants across Kubernetes, DevSecOps, and cloud architecture. Let us connect you with the right people.</p>
+                    </div>
+                    <a href="/legacy/consultants/"
+                        class="shrink-0 px-8 py-4 bg-brand-600 hover:bg-brand-500 text-white rounded-lg font-semibold transition-all hover:scale-105 shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)]">
+                        Hire Experts →
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section (Glass Strip) -->
+        <section class="border-y border-white/5 bg-white/[0.02]">
+            <div class="container mx-auto px-6 py-16">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                    <div>
+                        <div class="text-4xl font-bold text-white mb-2 font-mono">250+</div>
+                        <div class="text-gray-500 text-sm uppercase tracking-wider">Members</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold text-white mb-2 font-mono">12+</div>
+                        <div class="text-gray-500 text-sm uppercase tracking-wider">Events Hosted</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold text-white mb-2 font-mono">3</div>
+                        <div class="text-gray-500 text-sm uppercase tracking-wider">Major Cities</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold text-white mb-2 font-mono">100%</div>
+                        <div class="text-gray-500 text-sm uppercase tracking-wider">Community Driven</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer"></div>
+
+    <script type="module">
+        import { Navbar } from './js/Navbar.js';
+        import { Footer } from './js/Footer.js';
+
+        new Navbar().init();
+        new Footer().init();
+    </script>
+</body>
+
+</html>

@@ -269,6 +269,7 @@ export class Footer {
                             &copy; ${year} Cloud Native Security Pakistan
                             &middot; Independent community
                             &middot; CNCF-affiliated
+                            &middot; <a class="cnspk-footer__link" href="/legacy/" style="font-size:12px;">Site archive</a>
                         </p>
                         <code class="cnspk-footer__cmd" aria-label="signature">
                             $ ./made-with-bharosa --in=Lahore --by=community

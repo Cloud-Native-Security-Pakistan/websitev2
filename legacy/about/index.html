@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://cdn.jsdelivr.net; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+    <title>About - Cloud Native Security Pakistan</title>
+    <!-- Favicon -->
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/legacy/logo.png">
+
+    <link rel="icon" type="image/png" sizes="16x16" href="/legacy/logo.png">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/legacy/logo.png">
+
+    <link rel="shortcut icon" href="/legacy/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff00;
+        }
+
+        .grid-bg {
+            background-image:
+                linear-gradient(rgba(0, 255, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 0, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col grid-bg">
+    <div id="navbar"></div>
+
+    <main class="flex-grow container mx-auto px-4 py-12">
+        <header class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-green-500 mb-4 font-mono">About Us</h1>
+            <p class="text-gray-400 text-lg">Cloud Native Security Pakistan</p>
+        </header>
+
+        <div class="max-w-4xl mx-auto space-y-8">
+            <section class="bg-gray-900 border border-green-500/20 p-8 rounded-lg">
+                <h2 class="text-3xl font-bold text-green-500 mb-4 font-mono">Our Mission</h2>
+                <p class="text-gray-300 leading-relaxed">
+                    Cloud Native Security Pakistan is a community-driven organization focused on advancing
+                    cloud-native security practices, open source adoption, and security innovations aligned with
+                    CNCF (Cloud Native Computing Foundation) principles.
+                </p>
+            </section>
+
+            <section class="bg-gray-900 border border-green-500/20 p-8 rounded-lg">
+                <h2 class="text-3xl font-bold text-green-500 mb-4 font-mono">What We Do</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-green-500 mb-2 font-mono">Cloud-Native Security</h3>
+                        <p class="text-gray-300 text-sm">Building secure, scalable, and resilient cloud-native
+                            applications using CNCF technologies</p>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-green-500 mb-2 font-mono">Open Source Adoption</h3>
+                        <p class="text-gray-300 text-sm">Promoting and contributing to open source security tools and
+                            projects</p>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-green-500 mb-2 font-mono">CNCF Alignment</h3>
+                        <p class="text-gray-300 text-sm">Following CNCF best practices and working with CNCF projects
+                            (Kubernetes, Prometheus, Falco, OPA, and more)</p>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-green-500 mb-2 font-mono">Community Building</h3>
+                        <p class="text-gray-300 text-sm">Fostering collaboration and knowledge sharing among security
+                            professionals</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-gray-900 border border-green-500/20 p-8 rounded-lg">
+                <h2 class="text-3xl font-bold text-green-500 mb-4 font-mono">CNCF Alignment</h2>
+                <p class="text-gray-300 leading-relaxed mb-4">
+                    We are an official CNCF Bevy Chapter with 257+ members. Our community aligns with CNCF principles
+                    and actively contributes to CNCF projects including:
+                </p>
+                <ul class="list-disc list-inside text-gray-300 space-y-2">
+                    <li>Kubernetes - Container orchestration</li>
+                    <li>Prometheus - Monitoring and alerting</li>
+                    <li>Falco - Runtime security</li>
+                    <li>OPA (Open Policy Agent) - Policy enforcement</li>
+                    <li>And many more CNCF projects</li>
+                </ul>
+            </section>
+
+            <section class="bg-gray-900 border border-green-500/20 p-8 rounded-lg">
+                <h2 class="text-3xl font-bold text-green-500 mb-4 font-mono">Join Our Community</h2>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="https://community.cncf.io/cloud-native-security-pakistan/" target="_blank"
+                        rel="noopener noreferrer"
+                        class="px-6 py-3 bg-green-500/20 hover:bg-green-500 text-green-500 hover:text-black font-mono rounded border border-green-500 transition-all duration-300 text-center">
+                        CNCF Bevy Chapter
+                    </a>
+                    <a href="https://chat.whatsapp.com/F5Hf1ZwI22TK6EcV6zz4wo" target="_blank" rel="noopener noreferrer"
+                        class="px-6 py-3 bg-transparent hover:bg-green-500/20 text-green-500 font-mono rounded border border-green-500 transition-all duration-300 text-center">
+                        WhatsApp Community
+                    </a>
+                    <a href="join.html"
+                        class="px-6 py-3 bg-transparent hover:bg-green-500/20 text-green-500 font-mono rounded border border-green-500 transition-all duration-300 text-center">
+                        Become a Member
+                    </a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+
+    <script type="module">
+        import { Navbar } from '../js/Navbar.js';
+        import { Footer } from '../js/Footer.js';
+        new Navbar().init();
+        new Footer().init();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com https://avatars.githubusercontent.com https://ui-avatars.com https://www.youtube.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; frame-src https://www.youtube.com;">
+
+    <!-- Dynamic SEO -->
+    <title>Session View - Cloud Native Security Pakistan</title>
+    <meta name="description" content="Watch cloud-native security sessions.">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" id="og-title" content="Session View - CNSPK">
+    <meta property="og:description" id="og-description" content="Watch cloud-native security sessions.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/legacy/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/legacy/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/legacy/logo.png">
+    <link rel="shortcut icon" href="/legacy/favicon.ico">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            500: '#10b981',
+                            600: '#059669',
+                            900: '#064e3b',
+                        },
+                        dark: {
+                            900: '#0a0a0a',
+                            800: '#171717',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #050505;
+            color: #e5e5e5;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-nav {
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col antialiased selection:bg-brand-500/30 selection:text-brand-500">
+    <div id="navbar"></div>
+
+    <main class="flex-grow pt-24">
+        <div id="session-container" class="container mx-auto px-6">
+            <!-- Loading State -->
+            <div id="loading" class="min-h-[50vh] flex items-center justify-center">
+                <div class="flex flex-col items-center gap-4">
+                    <div class="w-12 h-12 border-2 border-brand-500 border-t-transparent rounded-full animate-spin">
+                    </div>
+                    <span class="text-gray-500 font-mono text-sm">Loading session details...</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="error" class="hidden min-h-[50vh] flex items-center justify-center container mx-auto px-6">
+            <div class="text-center p-8 border border-white/5 bg-white/[0.02] rounded-xl w-full max-w-lg">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-500/10 mb-4">
+                    <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                <h2 class="text-xl font-bold text-white mb-2">Session Not Found</h2>
+                <p class="text-gray-400 mb-6">The session you are looking for might have been removed or does not exist.
+                </p>
+                <a href="/legacy/sessions/"
+                    class="px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-lg transition-all">
+                    Browse All Sessions
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+
+    <script type="module">
+        import { SessionDetail } from '../../js/SessionDetail.js';
+        import { Navbar } from '../../js/Navbar.js';
+        import { Footer } from '../../js/Footer.js';
+        import { fetchData, domReady } from '../../js/utils.js';
+
+        new Navbar().init();
+        new Footer().init();
+
+        async function loadSession() {
+            const container = document.getElementById('session-container');
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const sessionId = parseInt(urlParams.get('id'));
+
+            if (!sessionId) {
+                loading.classList.add('hidden');
+                error.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                const sessions = await fetchData('../../data/sessions.json');
+                const session = sessions.find(s => s.id === sessionId);
+
+                if (!session) {
+                    loading.classList.add('hidden');
+                    error.classList.remove('hidden');
+                    return;
+                }
+
+                // Update Meta
+                document.title = `${session.title} - CNSPK Session`;
+                document.getElementById('og-title').content = session.title;
+                document.getElementById('og-description').content = session.summary || session.description;
+
+                // Render
+                const detail = new SessionDetail(session);
+                loading.classList.add('hidden');
+                container.innerHTML = detail.render();
+
+            } catch (err) {
+                console.error('Session Details Error:', err);
+                loading.classList.add('hidden');
+                error.classList.remove('hidden');
+            }
+        }
+
+        domReady(loadSession);
+    </script>
+</body>
+
+</html>

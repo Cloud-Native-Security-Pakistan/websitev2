@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://github.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+
+    <!-- SEO Meta Tags -->
+    <title>Projects - Cloud Native Security Pakistan | Open Source Initiatives</title>
+    <meta name="description"
+        content="Explore open-source projects by Cloud Native Security Pakistan. Contribute to our community-driven initiatives including membership systems, security tools, and CNCF project contributions.">
+    <meta name="keywords"
+        content="CNSPK projects, open source Pakistan, cloud security projects, CNCF contributions, GitHub Pakistan, cloud native tools">
+
+    <!-- Favicon -->
+
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/legacy/logo.png">
+
+
+    <link rel="icon" type="image/png" sizes="16x16" href="/legacy/logo.png">
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/legacy/logo.png">
+
+
+    <link rel="shortcut icon" href="/legacy/favicon.ico">
+    <link rel="canonical" href="https://cloudnativesecurity.pk/legacy/projects">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            500: '#10b981',
+                            600: '#059669',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            background: #050505;
+            color: #e5e7eb;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-panel:hover {
+            background: rgba(16, 185, 129, 0.05);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col antialiased">
+    <div id="navbar"></div>
+
+    <main class="flex-grow pt-24 pb-20 px-4">
+        <div class="max-w-6xl mx-auto">
+            <!-- Header -->
+            <header class="text-center mb-16">
+                <h1 class="text-5xl md:text-6xl font-bold text-white mb-4">
+                    Our <span
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-green-600">Projects</span>
+                </h1>
+                <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+                    Open-source initiatives and community-driven projects advancing cloud-native security in Pakistan
+                </p>
+            </header>
+
+            <!-- Projects Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                <article class="glass-panel rounded-2xl p-6 transition-all duration-300">
+                    <h3 class="text-xl font-bold text-white mb-3">CNSPK Website</h3>
+                    <p class="text-gray-400 text-sm mb-4">
+                        Official website for Cloud Native Security Pakistan community built with modern web technologies
+                    </p>
+                    <a href="https://github.com/Cloud-Native-Security-Pakistan/cloudnativesecurity.pk-website"
+                        target="_blank" rel="noopener noreferrer"
+                        class="inline-flex items-center text-emerald-500 hover:text-emerald-400 text-sm font-medium">
+                        View on GitHub →
+                    </a>
+                </article>
+
+                <article class="glass-panel rounded-2xl p-6 transition-all duration-300">
+                    <h3 class="text-xl font-bold text-white mb-3">Become a Member</h3>
+                    <p class="text-gray-400 text-sm mb-4">
+                        Automated membership onboarding system powered by GitHub Actions for seamless community growth
+                    </p>
+                    <a href="https://github.com/Cloud-Native-Security-Pakistan/become-a-member" target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center text-emerald-500 hover:text-emerald-400 text-sm font-medium">
+                        View on GitHub →
+                    </a>
+                </article>
+
+                <article class="glass-panel rounded-2xl p-6 transition-all duration-300">
+                    <h3 class="text-xl font-bold text-white mb-3">CNCF Contributions</h3>
+                    <p class="text-gray-400 text-sm mb-4">
+                        Community contributions to Kubernetes, Falco, OPA, and other Cloud Native Computing Foundation
+                        projects
+                    </p>
+                    <a href="https://github.com/Cloud-Native-Security-Pakistan" target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center text-emerald-500 hover:text-emerald-400 text-sm font-medium">
+                        Explore Organization →
+                    </a>
+                </article>
+            </div>
+
+            <!-- CTA Section -->
+            <section class="glass-panel rounded-2xl p-12 text-center">
+                <h2 class="text-3xl font-bold text-white mb-4">Start Contributing</h2>
+                <p class="text-gray-400 mb-8 max-w-2xl mx-auto">
+                    We welcome contributions to our open-source projects! Whether it's improving documentation,
+                    adding features, or reporting issues, your contributions help build a stronger community.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="https://github.com/Cloud-Native-Security-Pakistan" target="_blank"
+                        rel="noopener noreferrer"
+                        class="px-8 py-4 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-semibold rounded-lg hover:from-emerald-600 hover:to-green-700 transition-all">
+                        View All Projects
+                    </a>
+                    <a href="/legacy/join/index.html"
+                        class="px-8 py-4 glass-panel text-gray-200 font-semibold rounded-lg hover:bg-white/5 transition-all">
+                        Join to Contribute
+                    </a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+
+    <script type="module">
+        import { Navbar } from '../js/Navbar.js';
+        import { Footer } from '../js/Footer.js';
+        new Navbar().init();
+        new Footer().init();
+    </script>
+</body>
+
+</html>

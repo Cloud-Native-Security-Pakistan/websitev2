@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+    <title>Hire Experts - Cloud Native Security Pakistan</title>
+    <meta name="description"
+        content="Connect with top cloud-native security consultants from Pakistan's premier CNCF community. Kubernetes, DevSecOps, cloud architecture, and more.">
+    <link rel="icon" type="image/png" sizes="32x32" href="/legacy/logo.png">
+    <link rel="shortcut icon" href="/legacy/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: { 50: '#ecfdf5', 100: '#d1fae5', 500: '#10b981', 600: '#059669', 900: '#064e3b' },
+                        dark: { 900: '#0a0a0a', 800: '#171717', glass: 'rgba(23, 23, 23, 0.7)' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #050505; color: #e5e5e5; }
+        .glass-nav { background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .glass-panel { background: rgba(255,255,255,0.03); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
+        .expertise-card:hover { border-color: rgba(16,185,129,0.4); transform: translateY(-2px); }
+        .hero-orb { position: absolute; background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, rgba(0,0,0,0) 70%); border-radius: 50%; pointer-events: none; }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col antialiased font-sans">
+    <div id="navbar"></div>
+
+    <main class="flex-grow">
+        <!-- Hero -->
+        <section class="relative pt-32 pb-20 overflow-hidden">
+            <div class="hero-orb w-[600px] h-[600px] -top-[20%] -right-[10%] absolute animate-pulse" style="animation-duration:5s;"></div>
+            <div class="container mx-auto px-6 relative z-10">
+                <div class="max-w-3xl">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel mb-6">
+                        <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                        <span class="text-sm font-mono text-gray-400">Community-Powered Talent</span>
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-bold tracking-tight text-white mb-6 leading-tight">
+                        Hire Cloud Native
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-cyan-500">Security Experts</span>
+                    </h1>
+                    <p class="text-xl text-gray-400 mb-10 leading-relaxed max-w-2xl">
+                        Our community is home to some of Pakistan's sharpest cloud security minds. 
+                        Tell us what you need — we'll connect you with the right people.
+                    </p>
+                    <a href="mailto:hire@cloudnativesecurity.pk?subject=Consulting%20Inquiry"
+                        class="inline-flex items-center gap-3 px-8 py-4 bg-brand-600 hover:bg-brand-500 text-white rounded-lg font-semibold transition-all hover:scale-105 shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)]">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        Get in Touch
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Expertise Areas -->
+        <section class="py-20 border-t border-white/5">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-14">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">What Our Experts Cover</h2>
+                    <p class="text-gray-400 max-w-xl mx-auto">Deep expertise across the cloud-native security stack, battle-tested in production environments.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                    <div class="glass-panel rounded-xl p-6 expertise-card transition-all duration-300">
+                        <div class="w-12 h-12 rounded-lg bg-brand-500/10 flex items-center justify-center mb-4 border border-brand-500/20">
+                            <span class="text-2xl">☸️</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Kubernetes Security</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">RBAC, network policies, pod security, runtime protection, and cluster hardening.</p>
+                    </div>
+                    <div class="glass-panel rounded-xl p-6 expertise-card transition-all duration-300">
+                        <div class="w-12 h-12 rounded-lg bg-brand-500/10 flex items-center justify-center mb-4 border border-brand-500/20">
+                            <span class="text-2xl">🔄</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">DevSecOps</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Secure CI/CD pipelines, SAST/DAST integration, shift-left security practices.</p>
+                    </div>
+                    <div class="glass-panel rounded-xl p-6 expertise-card transition-all duration-300">
+                        <div class="w-12 h-12 rounded-lg bg-brand-500/10 flex items-center justify-center mb-4 border border-brand-500/20">
+                            <span class="text-2xl">☁️</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Cloud Architecture</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">AWS, GCP, Azure security architecture, IAM, and infrastructure-as-code.</p>
+                    </div>
+                    <div class="glass-panel rounded-xl p-6 expertise-card transition-all duration-300">
+                        <div class="w-12 h-12 rounded-lg bg-brand-500/10 flex items-center justify-center mb-4 border border-brand-500/20">
+                            <span class="text-2xl">📦</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Container Security</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Image scanning, supply chain security, Sigstore, SBOM, and secure registries.</p>
+                    </div>
+                    <div class="glass-panel rounded-xl p-6 expertise-card transition-all duration-300">
+                        <div class="w-12 h-12 rounded-lg bg-brand-500/10 flex items-center justify-center mb-4 border border-brand-500/20">
+                            <span class="text-2xl">🛡️</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Compliance & Governance</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">OPA/Gatekeeper, policy-as-code, audit readiness, and regulatory compliance.</p>
+                    </div>
+                    <div class="glass-panel rounded-xl p-6 expertise-card transition-all duration-300">
+                        <div class="w-12 h-12 rounded-lg bg-brand-500/10 flex items-center justify-center mb-4 border border-brand-500/20">
+                            <span class="text-2xl">🔍</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Security Assessments</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Penetration testing, vulnerability assessments, threat modeling for cloud-native apps.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section class="py-20 border-t border-white/5 bg-white/[0.01]">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-14">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">How It Works</h2>
+                    <p class="text-gray-400">Simple, no-hassle process to find the right expert.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                    <div class="text-center">
+                        <div class="w-16 h-16 rounded-full bg-brand-500/10 border border-brand-500/30 flex items-center justify-center mx-auto mb-5">
+                            <span class="text-brand-500 font-mono font-bold text-2xl">1</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Tell Us What You Need</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Drop us an email with your project requirements, timeline, and the kind of expertise you're looking for.</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 rounded-full bg-brand-500/10 border border-brand-500/30 flex items-center justify-center mx-auto mb-5">
+                            <span class="text-brand-500 font-mono font-bold text-2xl">2</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">We Match You</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">We review your needs and connect you with the best-fit consultants from our community.</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 rounded-full bg-brand-500/10 border border-brand-500/30 flex items-center justify-center mx-auto mb-5">
+                            <span class="text-brand-500 font-mono font-bold text-2xl">3</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Get Connected</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">We introduce you directly. You work out the details together — we stay available if you need us.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="py-20 border-t border-white/5">
+            <div class="container mx-auto px-6 text-center">
+                <div class="max-w-2xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Ready to Find Your Expert?</h2>
+                    <p class="text-gray-400 mb-8 text-lg">Reach out and we'll get back to you within 24 hours with the right match for your project.</p>
+                    <a href="mailto:hire@cloudnativesecurity.pk?subject=Consulting%20Inquiry"
+                        class="inline-flex items-center gap-3 px-8 py-4 bg-brand-600 hover:bg-brand-500 text-white rounded-lg font-semibold transition-all hover:scale-105 shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)] text-lg">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        hire@cloudnativesecurity.pk
+                    </a>
+                    <p class="text-gray-500 text-sm mt-4">No commitment. No middleman fees. Just community.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer"></div>
+
+    <script type="module">
+        import { Navbar } from '../js/Navbar.js';
+        import { Footer } from '../js/Footer.js';
+        new Navbar().init();
+        new Footer().init();
+    </script>
+</body>
+
+</html>

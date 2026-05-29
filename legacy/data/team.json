@@ -1,0 +1,113 @@
+[
+    {
+        "id": 1,
+        "name": "Muhammad Farhan Ashraf",
+        "role": "DevSecOps Engineer",
+        "company": "SystemsLTD",
+        "location": "Lahore, Pakistan",
+        "bio": "DevSecOps Engineer passionate about cloud-native security and open source contributions.",
+        "image": "https://community.cncf.io/wp-content/uploads/2024/01/farhan-profile.jpg",
+        "social": {
+            "website": "https://farhanashraf.dev/",
+            "twitter": "https://twitter.com/mriceflame",
+            "linkedin": "https://www.linkedin.com/in/farhanashrafdev/",
+            "cncf": "https://community.cncf.io/u/mjq5k4/"
+        }
+    },
+    {
+        "id": 2,
+        "name": "Syed Naqvi",
+        "role": "Security Project Manager",
+        "company": "Securiti.ai",
+        "location": "Islamabad, Pakistan",
+        "bio": "Security Project Manager specializing in cloud security and compliance frameworks.",
+        "image": "https://community.cncf.io/wp-content/uploads/2024/01/syed-profile.jpg",
+        "social": {
+            "twitter": "https://twitter.com/Syedalizain033",
+            "linkedin": "https://LinkedIn.com/in/syedalizain033",
+            "cncf": "https://community.cncf.io/u/mgvg8e/"
+        }
+    },
+    {
+        "id": 3,
+        "name": "Taskeen Fatima",
+        "role": "Operations Lead",
+        "company": "CNSPK",
+        "location": "Lahore, Pakistan",
+        "bio": "Operations Lead ensuring smooth community events and member engagement.",
+        "image": "https://community.cncf.io/wp-content/uploads/2024/01/taskeen-profile.jpg",
+        "social": {
+            "twitter": "https://twitter.com/Taskeen7_9",
+            "facebook": "https://www.facebook.com/syedataskeenfatima.22/",
+            "linkedin": "https://www.linkedin.com/in/taskeen-fatima-6590861b0",
+            "cncf": "https://community.cncf.io/u/m5j7w9/"
+        }
+    },
+    {
+        "id": 4,
+        "name": "Sharjeel Yunus",
+        "role": "Web and Graphics Lead",
+        "company": "Ensemble Technologies",
+        "location": "Bahawalpur, Pakistan",
+        "bio": "Senior Software Engineer and creative designer building beautiful web experiences.",
+        "image": "https://community.cncf.io/wp-content/uploads/2024/01/sharjeel-profile.jpg",
+        "social": {
+            "website": "https://www.sharjeelyunus.dev/",
+            "twitter": "https://twitter.com/sharjeelyunus",
+            "linkedin": "https://www.linkedin.com/in/sharjeel-yunus/",
+            "cncf": "https://community.cncf.io/u/mjm63e/"
+        }
+    },
+    {
+        "id": 5,
+        "name": "Hasnaat Iftikhar",
+        "role": "FullStack Developer & Designer",
+        "company": "Webling",
+        "location": "Lahore, Pakistan",
+        "bio": "Senior Front-End Developer crafting intuitive and performant user interfaces.",
+        "image": "https://community.cncf.io/wp-content/uploads/2024/01/hasnaat-profile.jpg",
+        "social": {
+            "website": "https://hasnaat.work",
+            "twitter": "https://twitter.com/HasnaatIftikha1",
+            "facebook": "https://www.facebook.com/hasnaat.iftikhar.94",
+            "linkedin": "https://www.linkedin.com/in/hasnaat-iftikhar/",
+            "cncf": "https://community.cncf.io/u/mm785x/"
+        }
+    },
+    {
+        "id": 6,
+        "name": "Alishba Arshad",
+        "role": "Community Contributor",
+        "company": "CNSPK",
+        "location": "Pakistan",
+        "bio": "Passionate about cloud-native technologies and community building.",
+        "image": "https://community.cncf.io/wp-content/uploads/2024/01/alishba-profile.jpg",
+        "social": {
+            "linkedin": "https://www.linkedin.com/in/alishbaarshadd/"
+        }
+    },
+    {
+        "id": 7,
+        "name": "Muhammad Abdullah",
+        "role": "Software Engineer & Community Leader",
+        "company": "Manafa | Founder & Chapter Lead, GDSC LGU",
+        "location": "Pakistan",
+        "bio": "Software Engineer at Manafa building scalable fintech platforms with Nuxt 3, Vue 3, and React. Former GDSC LGU Chapter Lead who organized 15+ technical events and partnered with GitHub, Unity, and Google Play. Passionate about clean code, product thinking, and bridging academia with industry.",
+        "image": "https://community.cncf.io/wp-content/uploads/2024/01/abdullah-profile.jpg",
+        "social": {
+            "linkedin": "https://www.linkedin.com/in/muhammad-abdullah-software-engineer-pk/"
+        }
+    },
+    {
+        "id": 8,
+        "name": "Haroon Sohail",
+        "role": "Software Engineer & Mentor",
+        "company": "Manafa | Mentor @ GDGoC LGU",
+        "location": "Pakistan",
+        "bio": "Empowering SMEs at Manafa with scalable solutions. Former Arbisoft engineer and active mentor at Google Developer Groups on Campus Lahore Garrison University.",
+        "image": "https://community.cncf.io/wp-content/uploads/2024/01/haroon-profile.jpg",
+        "social": {
+            "linkedin": "https://www.linkedin.com/in/h4roons/"
+        }
+    }
+]
