@@ -87,36 +87,37 @@
                     <div class="section-eyebrow">// the-mark</div>
                     <h2>The <em>Shield</em>.</h2>
                     <p>
-                        Our mark is a hexagonal shield with a mono <strong>CN</strong> set inside it. It's drawn in
-                        pure CSS — a <code>clip-path</code> hexagon filled with Electric Lime, the wordmark cut out
-                        in Carbon. It reads at 24px in a nav and at 120px on a poster without losing its edges.
+                        Our mark is a shield split down the middle: a cloud over a circuit on one side, a cloud over
+                        a security lock on the other. Cloud-native on the left, security on the right — the whole
+                        chapter in one symbol. White on dark, clean at every size.
                     </p>
                 </div>
 
                 <div class="shield-grid">
                     <div class="shield-stage">
-                        <span class="brand-shield" role="img" aria-label="CNSPK shield mark — lime hexagon with CN">CN</span>
-                        <span class="shield-caption">placeholder mark · ships as a vector in phase 2</span>
+                        <span class="brand-shield" role="img" aria-label="CNSPK shield — cloud, circuit, and security lock">CN</span>
+                        <span class="shield-caption">the official CNSPK shield</span>
                     </div>
 
                     <div class="shield-copy">
-                        <h3>Why a hexagon</h3>
+                        <h3>What it means</h3>
                         <p>
-                            The hex is the shape of the cloud-native world — Kubernetes, the CNCF landscape, the
-                            container. We took it, sharpened it into a shield, and put our initials inside. Defense
-                            in depth, drawn in one mark.
+                            Two halves of one shield. The left carries a cloud feeding into a circuit — cloud-native
+                            infrastructure. The right carries a cloud over a lock-and-gear — security, hardened. The
+                            seam down the centre is where the two meet: defense in depth.
                         </p>
-                        <h3>How it's built</h3>
+                        <h3>How to use it</h3>
                         <p>
-                            <code>clip-path: polygon(50% 0%, 100% 22%, 100% 60%, 50% 100%, 0% 60%, 0% 22%)</code> on a
-                            lime fill, with <code>CN</code> in JetBrains Mono. Three sizes ship in tokens:
-                            <code>.brand-shield--sm</code>, the default, and <code>.brand-shield--lg</code>.
+                            White shield on a dark surface is the default. It ships as
+                            <code>brand/assets/cnspk-shield.png</code> (mark only) and
+                            <code>cnspk-logo-transparent.png</code> (full lockup with the wordmark). The shared
+                            <code>.brand-shield</code> class renders it everywhere — nav, footer, here.
                         </p>
                         <h3>Clear space &amp; surface</h3>
                         <p>
-                            Always lime on a dark surface. Keep clear space equal to the height of the
-                            <code>CN</code> on every side. Never recolour the fill, never add a stroke, never set the
-                            lime mark on a light background.
+                            Keep clear space around the shield equal to a quarter of its height on every side. Don't
+                            recolour it, don't stretch it, and keep it on a dark or photographic background where the
+                            white reads cleanly.
                         </p>
                     </div>
                 </div>

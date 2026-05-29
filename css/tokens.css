@@ -181,37 +181,35 @@ summary:focus-visible,
 }
 
 /* ==========================================================
-   4. Brand mark — the lime hex CN shield
+   4. Brand mark — the official CNSPK shield
    ----------------------------------------------------------
    <span class="brand-shield">CN</span>
-   Pattern from AGENT_BRIEF and sample-site.
-   Real vector ships in Phase 2.
+   Renders the official shield logo (brand/assets/cnspk-shield.png,
+   white shield on transparent). The "CN" text inside is hidden —
+   kept in markup only as alt/fallback text.
    ========================================================== */
 .brand-shield {
   width: 32px;
-  height: 36px;
-  background: var(--lime);
-  clip-path: polygon(50% 0%, 100% 22%, 100% 60%, 50% 100%, 0% 60%, 0% 22%);
-  display: grid;
-  place-items: center;
-  color: var(--carbon);
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 12px;
-  letter-spacing: 0.02em;
+  height: 32px;
+  background-image: url('/brand/assets/cnspk-shield.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: inline-block;
+  text-indent: -9999px;          /* hide the "CN" fallback text */
+  overflow: hidden;
+  white-space: nowrap;
   flex-shrink: 0;
 }
 
 .brand-shield--sm {
   width: 24px;
-  height: 28px;
-  font-size: 10px;
+  height: 24px;
 }
 
 .brand-shield--lg {
   width: 48px;
-  height: 54px;
-  font-size: 16px;
+  height: 48px;
 }
 
 /* ==========================================================

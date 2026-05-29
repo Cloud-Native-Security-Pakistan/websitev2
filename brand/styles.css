@@ -160,11 +160,9 @@ main { display: block; }
 }
 .shield-stage .brand-shield {
     /* upscale the shared shield primitive for display */
-    width: 120px;
-    height: 136px;
-    font-size: 40px;
-    letter-spacing: 0.04em;
-    box-shadow: 0 0 60px rgba(199, 255, 62, 0.25);
+    width: 160px;
+    height: 160px;
+    filter: drop-shadow(0 0 48px rgba(255, 255, 255, 0.12));
 }
 .shield-caption {
     font-family: var(--font-mono);
