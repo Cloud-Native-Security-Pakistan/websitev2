@@ -189,8 +189,8 @@ summary:focus-visible,
    kept in markup only as alt/fallback text.
    ========================================================== */
 .brand-shield {
-  width: 32px;
-  height: 32px;
+  width: 38px;
+  height: 38px;
   background-image: url('/brand/assets/cnspk-shield.png');
   background-size: contain;
   background-position: center;

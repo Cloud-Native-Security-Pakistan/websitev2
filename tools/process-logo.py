@@ -1,9 +1,18 @@
 """
-Process the official CNSPK logo (Frame 11 -> brand/assets/cnspk-logo.png):
-  1. Make the near-black background transparent.
-  2. Auto-crop the shield mark (top portion) -> cnspk-shield.png  (square, transparent)
-  3. Keep the full lockup (shield + wordmark) on transparent -> cnspk-logo-transparent.png
-  4. Generate favicons: logo.png (512), apple-touch (180), 32, 16, favicon.ico
+Process the official CNSPK logo (brand/assets/cnspk-logo.png) into clean,
+anti-aliased transparent assets.
+
+Technique: the logo is a WHITE mark on a near-black background. We use the
+pixel BRIGHTNESS as the alpha channel and paint everything white:
+  - white shield      -> fully opaque white
+  - black background  -> fully transparent
+  - anti-aliased edges-> partial alpha (smooth, no jaggies)
+This is the correct way to lift a white-on-black mark onto transparency.
+
+Outputs:
+  brand/assets/cnspk-shield.png            shield mark only, square, transparent
+  brand/assets/cnspk-logo-transparent.png  full lockup (shield + wordmark), transparent
+  logo.png (512), apple-touch-icon (180), favicon-32/16, favicon.ico
 
 Run:  python tools/process-logo.py
 """
@@ -14,61 +23,70 @@ SRC = "brand/assets/cnspk-logo.png"
 ASSETS = "brand/assets"
 ROOT = "."
 
-def make_bg_transparent(img, thresh=28):
-    """Black (and near-black) background -> transparent alpha."""
-    img = img.convert("RGBA")
-    px = img.load()
-    w, h = img.size
-    for y in range(h):
-        for x in range(w):
-            r, g, b, a = px[x, y]
-            if r <= thresh and g <= thresh and b <= thresh:
-                px[x, y] = (r, g, b, 0)
-    return img
+
+def white_on_alpha(img):
+    """Return an RGBA image: pure white, alpha = source brightness (anti-aliased)."""
+    gray = img.convert("L")            # luminance 0..255
+    w, h = gray.size
+    out = Image.new("RGBA", (w, h), (255, 255, 255, 0))
+    out.putalpha(gray)                 # bright pixels opaque, dark transparent
+    # Force the colour channels to white so nothing tints grey on dark bg.
+    white = Image.new("RGBA", (w, h), (255, 255, 255, 255))
+    white.putalpha(gray)
+    return white
+
 
 def autocrop(img):
-    """Crop to the non-transparent bounding box."""
     bbox = img.getbbox()
     return img.crop(bbox) if bbox else img
 
-def square_pad(img, pad_ratio=0.12):
-    """Center the image on a transparent square canvas with padding."""
+
+def square_pad(img, pad_ratio=0.14):
     w, h = img.size
     side = int(max(w, h) * (1 + pad_ratio))
     canvas = Image.new("RGBA", (side, side), (0, 0, 0, 0))
     canvas.paste(img, ((side - w) // 2, (side - h) // 2), img)
     return canvas
 
+
 def main():
     base = Image.open(SRC).convert("RGBA")
     w, h = base.size
-    print(f"source: {w}x{h}")
+    print("source: {}x{}".format(w, h))
 
-    # 1. Full lockup on transparent bg
-    transparent = make_bg_transparent(base)
-    full = autocrop(transparent)
+    # White-on-transparent version of the whole image (anti-aliased).
+    full_alpha = white_on_alpha(base)
+
+    # 1. Full lockup (shield + wordmark), trimmed.
+    full = autocrop(full_alpha)
     full.save(os.path.join(ASSETS, "cnspk-logo-transparent.png"))
     print("wrote cnspk-logo-transparent.png", full.size)
 
-    # 2. Shield only: the mark sits in roughly the top 58% of the 1020 canvas,
-    #    text below. Crop the top region, then autocrop + square-pad.
-    shield_region = transparent.crop((0, 0, w, int(h * 0.58)))
+    # 2. Shield only: the mark occupies roughly the top 56% of the square canvas.
+    shield_region = full_alpha.crop((0, 0, w, int(h * 0.56)))
     shield = square_pad(autocrop(shield_region))
+    # Keep a high-res master so CSS downscaling stays crisp.
+    if shield.size[0] < 512:
+        s = 512
+        shield = shield.resize((s, s), Image.LANCZOS)
     shield.save(os.path.join(ASSETS, "cnspk-shield.png"))
     print("wrote cnspk-shield.png", shield.size)
 
-    # 3. Favicons from the shield (square, recognizable at small sizes)
-    fav_src = shield
-    fav_src.resize((512, 512), Image.LANCZOS).save(os.path.join(ROOT, "logo.png"))
-    fav_src.resize((180, 180), Image.LANCZOS).save(os.path.join(ASSETS, "apple-touch-icon.png"))
-    fav_src.resize((32, 32), Image.LANCZOS).save(os.path.join(ASSETS, "favicon-32.png"))
-    fav_src.resize((16, 16), Image.LANCZOS).save(os.path.join(ASSETS, "favicon-16.png"))
-    # ICO with multiple sizes
-    fav_src.resize((64, 64), Image.LANCZOS).save(
+    # 3. Favicons from the shield.
+    def out(name, size, root=False):
+        d = ROOT if root else ASSETS
+        shield.resize((size, size), Image.LANCZOS).save(os.path.join(d, name))
+
+    out("logo.png", 512, root=True)
+    out("apple-touch-icon.png", 180)
+    out("favicon-32.png", 32)
+    out("favicon-16.png", 16)
+    shield.resize((64, 64), Image.LANCZOS).save(
         os.path.join(ROOT, "favicon.ico"),
         sizes=[(16, 16), (32, 32), (48, 48), (64, 64)]
     )
-    print("wrote logo.png (512), apple-touch (180), favicon-32, favicon-16, favicon.ico")
+    print("wrote logo.png (512), apple-touch (180), favicon-32/16, favicon.ico")
+
 
 if __name__ == "__main__":
     main()
