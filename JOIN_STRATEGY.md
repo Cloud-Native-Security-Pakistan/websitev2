@@ -1,6 +1,6 @@
 # CNSPK Join Strategy
 
-> CNSPK has ~250+ members, a CNCF affiliation, a working WhatsApp room, and a GitHub org that gates membership behind an issue template. That last part is the bottleneck. This document replaces the one-size-fits-all funnel with five honest doorways, ordered by friction.
+> CNSPK has ~280+ members, a CNCF affiliation, a working WhatsApp room, and a GitHub org that gates membership behind an issue template. That last part is the bottleneck. This document replaces the one-size-fits-all funnel with five honest doorways, ordered by friction.
 
 Voice: confident, technical, warm, anti-friction. *Defense in depth. Hospitality on top.*
 
@@ -99,7 +99,7 @@ Homepage `Join →`, navbar `Join`, about page CTA, footer CTA, event-page chips
 ### Hero (first 5 seconds)
 - Eyebrow (mono lime): `// JOIN.SH`
 - Display headline (italic caps): **PICK YOUR DOOR. NO GATEKEEPING.**
-- Subhead: 250+ practitioners. CNCF-affiliated. Built and run from Lahore, Karachi, Islamabad — and wherever your `kubectl` points.
+- Subhead: 280+ practitioners. CNCF-affiliated. Built and run from Lahore, Karachi, Islamabad — and wherever your `kubectl` points.
 - Roman Urdu accent: *bharosa* — earned, not asked for.
 - Two CTAs above the fold: `Tap into WhatsApp →` (primary) and `Browse upcoming sessions →` (secondary).
 
@@ -156,7 +156,7 @@ Three options, the answer is delay:
 
 - **(a) Launch with the new website** spreads attention thin. The rebrand needs the spotlight.
 - **(c) Skip Discord** contradicts the brand strategy and caps our ceiling. WhatsApp can't host the searchable, threaded, role-gated home Ahmed and future open-source contributors will need.
-- **(b) 90-day delay** is the responsible path. Site ships first, the new identity lands with the existing 250+, and we use the 90 days to recruit moderators, define structure, stand up bots.
+- **(b) 90-day delay** is the responsible path. Site ships first, the new identity lands with the existing 280+, and we use the 90 days to recruit moderators, define structure, stand up bots.
 
 ### Five preconditions before opening
 1. **Five named moderators**, recruited from existing Members or Contributors, each in a different time-of-day. Volunteer, written charter.
@@ -208,7 +208,7 @@ No automation. The cadence is the system.
 
 ## 8. The anti-list — what we don't do
 
-We're a 250+ chapter, not a SaaS funnel. Off-limits, even when they look like "engagement boosts":
+We're a 280+ chapter, not a SaaS funnel. Off-limits, even when they look like "engagement boosts":
 
 - **No auto-DMs.** Not on join, not on event. DMs from the org account are reserved for safety and admin escalation.
 - **No drip-email funnels.** If we send email, it's a single human-edited monthly note, opt-in, one-click unsubscribe. We don't have one yet; we don't need one yet.
@@ -231,7 +231,7 @@ We're a 250+ chapter, not a SaaS funnel. Off-limits, even when they look like "e
 > *PICK YOUR DOOR.*
 > *NO GATEKEEPING.*
 >
-> 250+ practitioners. CNCF-affiliated. Built and run from Lahore, Karachi, Islamabad — and wherever your `kubectl` points. Walk in through whichever door fits today. *Bharosa* is earned, not asked for.
+> 280+ practitioners. CNCF-affiliated. Built and run from Lahore, Karachi, Islamabad — and wherever your `kubectl` points. Walk in through whichever door fits today. *Bharosa* is earned, not asked for.
 >
 > `[ Tap into WhatsApp → ]   [ Browse upcoming sessions → ]`
 
@@ -267,7 +267,7 @@ Coming soon. The deep technical home: threaded, searchable, channel-organised. G
 
 ### WhatsApp first message (pinned)
 
-> *Asalaam-o-alaikum.* Welcome to **CNSPK** — Cloud Native Security Pakistan. We're ~250+ practitioners running cloud-native security in Pakistani teams.
+> *Asalaam-o-alaikum.* Welcome to **CNSPK** — Cloud Native Security Pakistan. We're ~280+ practitioners running cloud-native security in Pakistani teams.
 >
 > House rules:
 > • On-topic: tech, CVEs, your own jobs (not vendor pitches), chai.
@@ -319,10 +319,10 @@ Coming soon. The deep technical home: threaded, searchable, channel-organised. G
 
 ### Data the join page needs
 
-- Member count, derived from `data/members.json`. Displayed as `~{count}+`, floored to nearest 50 (so "250+", not "263").
+- Member count — verified at **280+** against the official CNCF group page (ocgroups.dev/cncf/group/sxcyqt9). Use "280+" until the next audit; do not invent a more precise figure.
 - WhatsApp invite URL — `https://chat.whatsapp.com/F5Hf1ZwI22TK6EcV6zz4wo`. Stored as a constant or in `data/channels.json`.
 - CNCF chapter URL — `https://community.cncf.io/cloud-native-security-pakistan/`.
-- GitHub join repo URL — `https://github.com/Cloud-Native-Security-Pakistan/become-a-member`.
+- GitHub join repo URL — `https://github.com/Cloud-Native-Security-Pakistan/becoming-a-member`.
 - Social URLs — already in `Footer.js`; reuse.
 
 No new JSON schemas. No data migration.
@@ -346,8 +346,8 @@ Links to `/join/`. Not WhatsApp. Not GitHub. Not the CNCF chapter. Single canoni
 - No member testimonials.
 - No sponsor logos.
 - No fictional event or city counts.
-- The number is ~250+. The chapter is CNCF-affiliated. Both are true. Anything else needs a `TODO:` and a question to the strategist before it ships.
+- The number is ~280+. The chapter is CNCF-affiliated. Both are true. Anything else needs a `TODO:` and a question to the strategist before it ships.
 
 ---
 
-*The doorways are real. The voice is the brand. The 250+ is the only number we use until the next audit. **kubectl apply -f pakistan.yaml**.*
+*The doorways are real. The voice is the brand. The 280+ is the only number we use until the next audit. **kubectl apply -f pakistan.yaml**.*
