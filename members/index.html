@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://api.github.com https://sheets.googleapis.com https://unpkg.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: https://*.openstreetmap.org https://cartodb-basemaps-a.global.ssl.fastly.net; connect-src 'self' https://api.github.com https://sheets.googleapis.com;">
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://api.github.com https://sheets.googleapis.com https://docs.google.com https://unpkg.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: https://*.openstreetmap.org https://cartodb-basemaps-a.global.ssl.fastly.net; connect-src 'self' https://api.github.com https://sheets.googleapis.com https://docs.google.com https://*.googleusercontent.com; frame-src https://docs.google.com; form-action 'self' https://docs.google.com;">
     <title>Members - Cloud Native Security Pakistan</title>
     <meta name="description"
         content="The CNSPK member directory — security practitioners across Pakistan, mapped. Find your people.">
@@ -216,6 +216,11 @@
                     <p class="members-sub">Security practitioners across Pakistan. Tap a card to find them on the map.
                     </p>
 
+                    <button id="open-join-form" type="button" class="btn-primary btn-primary--sm" style="margin-bottom:16px;">
+                        Add yourself to the map
+                        <span style="font-family:var(--font-mono);">→</span>
+                    </button>
+
                     <div id="filter-panel"></div>
                 </div>
 
@@ -249,15 +254,26 @@
         </div>
     </main>
 
+    <!-- ===== Membership form modal (mounted by MembershipForm.js) ===== -->
+    <div id="membership-form-mount"></div>
+
     <script type="module">
         import { MemberCard } from '../js/MemberCard.js';
         import { FilterPanel } from '../js/FilterPanel.js';
         import { Navbar } from '../js/Navbar.js';
         import { Map } from '../js/Map.js';
-        import { fetchData, domReady } from '../js/utils.js';
+        import { domReady } from '../js/utils.js';
+        import { getAllMembers } from '../js/members-source.js';
+        import { MembershipForm } from '../js/MembershipForm.js';
 
         // Initialize Nav (No footer on this dashboard view)
         new Navbar().init();
+
+        // Mount the membership form modal + wire the "Add yourself" button
+        const membershipForm = new MembershipForm();
+        membershipForm.init('membership-form-mount');
+        const openBtn = document.getElementById('open-join-form');
+        if (openBtn) openBtn.addEventListener('click', () => membershipForm.open());
 
         let allMembers = [];
         let mapInstance = null;
@@ -276,8 +292,8 @@
                 mapInstance = new Map('map');
                 mapInstance.init();
 
-                // Fetch Data
-                allMembers = await fetchData('../data/members.json');
+                // Fetch Data — seed members + live Google-Sheet submissions, geocoded.
+                allMembers = await getAllMembers();
                 loading.classList.add('hidden');
 
                 if (!allMembers || allMembers.length === 0) {

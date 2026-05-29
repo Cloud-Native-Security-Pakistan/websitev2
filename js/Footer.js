@@ -43,13 +43,11 @@ export class Footer {
         this.connect = [
             // TODO: wire real Discord invite when the server launches (JOIN_STRATEGY §5).
             { name: 'Discord', href: '#', external: true, todo: true },
-            { name: 'LinkedIn', href: 'https://linkedin.com/company/cloudnativesecurity-pk', external: true },
-            // TODO: confirm canonical X/Twitter handle before launch — placeholder uses /cnscpk from the legacy footer.
-            { name: 'X / Twitter', href: 'https://twitter.com/cnscpk', external: true, todo: true },
-            // TODO: wire real YouTube channel when uploads start.
-            { name: 'YouTube', href: '#', external: true, todo: true },
+            // Verified against the official CNCF group page (ocgroups.dev/cncf/group/sxcyqt9).
+            { name: 'LinkedIn', href: 'https://www.linkedin.com/company/cloud-native-security-pakistan', external: true },
+            { name: 'X / Twitter', href: 'https://x.com/CloudSecPK', external: true },
             { name: 'GitHub', href: 'https://github.com/Cloud-Native-Security-Pakistan', external: true },
-            { name: 'Instagram', href: 'https://www.instagram.com/cnspakistan/', external: true }
+            { name: 'Instagram', href: 'https://www.instagram.com/cloudnativesecuritypk', external: true }
         ];
     }
 
