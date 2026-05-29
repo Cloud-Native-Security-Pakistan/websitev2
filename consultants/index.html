@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--
+      CSP matches the homepage pattern: tokens.css is loaded from 'self' and
+      @imports the four brand fonts from fonts.googleapis.com (style-src) with
+      font files from fonts.gstatic.com (font-src). jsdelivr/tailwind allowances
+      are retained from the legacy CSP so no other v2 page routing breaks.
+    -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+
+    <title>Hire Experts · CNSPK</title>
+    <meta name="description"
+        content="Hire cloud-native security practitioners from CNSPK — Kubernetes, DevSecOps, cloud architecture, container security. Independent, vetted by the chapter, no middleman fees.">
+    <meta name="keywords"
+        content="CNSPK consultants, cloud security experts Pakistan, Kubernetes security, DevSecOps, hire cloud native experts">
+    <meta name="author" content="Cloud Native Security Pakistan">
+    <meta name="theme-color" content="#0F1115">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Hire Experts · Cloud Native Security Pakistan">
+    <meta property="og:description"
+        content="Hire cloud-native security practitioners from CNSPK. Kubernetes, DevSecOps, cloud architecture. Vetted by the chapter, no middleman fees.">
+    <meta property="og:url" content="https://cloudnativesecurity.pk/consultants/">
+    <meta property="og:site_name" content="Cloud Native Security Pakistan">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Hire Experts · Cloud Native Security Pakistan">
+    <meta name="twitter:description"
+        content="Hire cloud-native security practitioners from CNSPK. Vetted by the chapter, no middleman fees.">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="canonical" href="https://cloudnativesecurity.pk/consultants/">
+
+    <!-- Design tokens first -->
+    <link rel="stylesheet" href="/css/tokens.css">
+
+    <style>
+        .wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+
+        /* ---- Scroll reveal ---- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity var(--dur-reveal) var(--ease-out),
+                        transform var(--dur-reveal) var(--ease-out);
+            will-change: opacity, transform;
+        }
+        .reveal.is-visible { opacity: 1; transform: none; }
+
+        /* ---- Hero ---- */
+        .hero {
+            position: relative;
+            padding: 140px 0 100px;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse 70% 50% at 80% 30%, rgba(199, 255, 62, 0.06) 0%, transparent 60%),
+                var(--carbon);
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(199, 255, 62, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(199, 255, 62, 0.03) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none;
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+        }
+
+        .hero-content { position: relative; z-index: 2; max-width: 720px; }
+
+        .hero-meta {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--steel);
+            letter-spacing: 0.08em;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .hero-meta .cmd { color: var(--lime); }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: clamp(40px, 7vw, 80px);
+            line-height: 0.92;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            color: var(--bone);
+            margin-bottom: 24px;
+        }
+        .hero h1 .lime { color: var(--lime); }
+
+        .hero .lede {
+            font-size: 20px;
+            color: var(--bone-2);
+            line-height: 1.6;
+            max-width: 600px;
+            margin-bottom: 36px;
+        }
+        .hero .lede strong { color: var(--lime); font-weight: 600; }
+        .hero .lede em { color: var(--lime-glow); font-style: italic; }
+
+        /* ---- Expertise grid ---- */
+        .expertise { padding: 100px 0; border-top: 1px solid var(--slate); }
+
+        .expertise-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 48px;
+        }
+
+        .expertise-card {
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-lg);
+            padding: 32px;
+            transition: border-color var(--dur-hover) var(--ease),
+                        transform var(--dur-elevate) var(--ease);
+        }
+        .expertise-card:hover {
+            border-color: var(--lime);
+            transform: translateY(-3px);
+        }
+
+        .expertise-card .icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--r-md);
+            background: rgba(199, 255, 62, 0.08);
+            border: 1px solid rgba(199, 255, 62, 0.2);
+            display: grid;
+            place-items: center;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .expertise-card h3 {
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--bone);
+            margin-bottom: 10px;
+        }
+
+        .expertise-card p {
+            font-size: 14px;
+            color: var(--steel);
+            line-height: 1.6;
+        }
+
+        /* ---- Section headings ---- */
+        .section-heading {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: clamp(28px, 4vw, 44px);
+            text-transform: uppercase;
+            letter-spacing: -0.03em;
+            line-height: 0.95;
+            color: var(--bone);
+            margin-bottom: 12px;
+        }
+
+        .section-sub {
+            font-size: 17px;
+            color: var(--steel);
+            max-width: 560px;
+        }
+
+        /* ---- How it works ---- */
+        .how-it-works {
+            padding: 100px 0;
+            border-top: 1px solid var(--slate);
+            background: var(--charcoal);
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-top: 56px;
+        }
+
+        .step { text-align: center; }
+
+        .step-num {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(199, 255, 62, 0.08);
+            border: 1px solid rgba(199, 255, 62, 0.3);
+            display: grid;
+            place-items: center;
+            margin: 0 auto 20px;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--lime);
+        }
+
+        .step h3 {
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--bone);
+            margin-bottom: 10px;
+        }
+
+        .step p {
+            font-size: 14px;
+            color: var(--steel);
+            line-height: 1.6;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        /* ---- CTA panel ---- */
+        .cta-section { padding: 100px 0; border-top: 1px solid var(--slate); }
+
+        .cta-panel {
+            position: relative;
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-lg);
+            padding: 64px;
+            text-align: center;
+            overflow: hidden;
+        }
+        .cta-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 4px;
+            background: var(--grad-stamp-glow);
+        }
+
+        .cta-panel h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(28px, 4vw, 40px);
+            letter-spacing: -0.03em;
+            color: var(--bone);
+            margin-bottom: 16px;
+        }
+
+        .cta-panel p {
+            font-size: 18px;
+            color: var(--bone-2);
+            margin-bottom: 32px;
+            max-width: 560px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-panel .note {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--steel);
+            margin-top: 16px;
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 900px) {
+            .expertise-grid { grid-template-columns: repeat(2, 1fr); }
+            .steps-grid { grid-template-columns: 1fr; gap: 48px; }
+        }
+        @media (max-width: 600px) {
+            .expertise-grid { grid-template-columns: 1fr; }
+            .hero { padding: 100px 0 72px; }
+            .expertise, .how-it-works, .cta-section { padding: 72px 0; }
+            .cta-panel { padding: 40px 24px; }
+            .wrap { padding: 0 20px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="navbar"></div>
+
+    <main>
+
+        <!-- ===== Hero ===== -->
+        <section class="hero">
+            <div class="wrap hero-content reveal">
+                <div class="hero-meta">
+                    <span class="status-pill">
+                        <span class="status-dot"></span>
+                        <span>talent / community-vetted</span>
+                    </span>
+                    <span class="cmd">$ ./match.sh --no-middleman</span>
+                </div>
+                <h1>
+                    Hire the people who<br>
+                    <span class="lime">break it on purpose.</span>
+                </h1>
+                <p class="lede">
+                    CNSPK runs deep on Kubernetes, DevSecOps, and cloud architecture. Tell us what you need —
+                    we connect you straight to practitioners who do this for a living. Direct intros,
+                    <strong>no middleman fees</strong>, built on <em>bharosa</em>.
+                </p>
+                <a href="mailto:hire@cloudnativesecurity.pk?subject=Consulting%20Inquiry" class="btn-primary">
+                    Get in Touch
+                    <span style="font-family:var(--font-mono);">→</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- ===== Expertise Areas ===== -->
+        <section class="expertise" aria-label="Areas of expertise">
+            <div class="wrap">
+                <div class="reveal">
+                    <div class="section-eyebrow">// expertise</div>
+                    <h2 class="section-heading">What Our Experts Cover</h2>
+                    <p class="section-sub">Deep expertise across the cloud-native security stack, battle-tested in production environments.</p>
+                </div>
+                <div class="expertise-grid reveal">
+                    <div class="expertise-card">
+                        <div class="icon-box" aria-hidden="true">☸️</div>
+                        <h3>Kubernetes Security</h3>
+                        <p>RBAC, network policies, pod security, runtime protection, and cluster hardening.</p>
+                    </div>
+                    <div class="expertise-card">
+                        <div class="icon-box" aria-hidden="true">🔄</div>
+                        <h3>DevSecOps</h3>
+                        <p>Secure CI/CD pipelines, SAST/DAST integration, shift-left security practices.</p>
+                    </div>
+                    <div class="expertise-card">
+                        <div class="icon-box" aria-hidden="true">☁️</div>
+                        <h3>Cloud Architecture</h3>
+                        <p>AWS, GCP, Azure security architecture, IAM, and infrastructure-as-code.</p>
+                    </div>
+                    <div class="expertise-card">
+                        <div class="icon-box" aria-hidden="true">📦</div>
+                        <h3>Container Security</h3>
+                        <p>Image scanning, supply chain security, Sigstore, SBOM, and secure registries.</p>
+                    </div>
+                    <div class="expertise-card">
+                        <div class="icon-box" aria-hidden="true">🛡️</div>
+                        <h3>Compliance &amp; Governance</h3>
+                        <p>OPA/Gatekeeper, policy-as-code, audit readiness, and regulatory compliance.</p>
+                    </div>
+                    <div class="expertise-card">
+                        <div class="icon-box" aria-hidden="true">🔍</div>
+                        <h3>Security Assessments</h3>
+                        <p>Penetration testing, vulnerability assessments, threat modeling for cloud-native apps.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== How It Works ===== -->
+        <section class="how-it-works" aria-label="How it works">
+            <div class="wrap">
+                <div class="reveal" style="text-align:center;">
+                    <div class="section-eyebrow" style="justify-content:center;">// process</div>
+                    <h2 class="section-heading">How It Works</h2>
+                    <p class="section-sub" style="margin:0 auto;">Simple, no-hassle process to find the right expert.</p>
+                </div>
+                <div class="steps-grid reveal">
+                    <div class="step">
+                        <div class="step-num">1</div>
+                        <h3>Tell Us What You Need</h3>
+                        <p>Drop us an email with your project requirements, timeline, and the kind of expertise you're looking for.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">2</div>
+                        <h3>We Match You</h3>
+                        <p>We review your needs and connect you with the best-fit consultants from our community.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">3</div>
+                        <h3>Get Connected</h3>
+                        <p>We introduce you directly. You work out the details together — we stay available if you need us.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== CTA ===== -->
+        <section class="cta-section">
+            <div class="wrap">
+                <div class="cta-panel reveal">
+                    <h2>Ready to Find Your Expert?</h2>
+                    <p>Reach out and we'll get back to you within 24 hours with the right match for your project.</p>
+                    <a href="mailto:hire@cloudnativesecurity.pk?subject=Consulting%20Inquiry" class="btn-primary">
+                        hire@cloudnativesecurity.pk
+                        <span style="font-family:var(--font-mono);">↗</span>
+                    </a>
+                    <p class="note">No commitment. No middleman fees. Just community.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="footer"></div>
+
+    <script type="module">
+        import { Navbar } from '/js/Navbar.js';
+        import { Footer } from '/js/Footer.js';
+
+        new Navbar().init();
+        new Footer().init();
+
+        /* Scroll-reveal */
+        (function () {
+            const els = document.querySelectorAll('.reveal');
+            const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            if (prefersReduced || !('IntersectionObserver' in window)) {
+                els.forEach(el => el.classList.add('is-visible'));
+                return;
+            }
+
+            const io = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+            els.forEach(el => io.observe(el));
+        })();
+    </script>
+</body>
+
+</html>

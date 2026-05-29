@@ -1,0 +1,112 @@
+[
+    {
+        "id": 1,
+        "title": "The Final Patch: 2025 Wrap-Up Gathering",
+        "date": "2025-12-28",
+        "location": "Lahore, Pakistan",
+        "type": "Meetup",
+        "description": "Join us for our final meetup of 2025 as we reflect on the year's achievements in cloud-native security and plan for 2026.",
+        "image": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80",
+        "link": "https://community.cncf.io/events/details/cncf-cloud-native-security-pakistan-presents-the-final-patch-2025-wrap-up-gathering/"
+    },
+    {
+        "id": 2,
+        "title": "Opensource Connect Lahore",
+        "date": "2025-10-18",
+        "location": "Lahore, Pakistan",
+        "type": "Meetup",
+        "description": "Connect with open source enthusiasts and learn about contributing to cloud-native security projects.",
+        "image": "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&q=80",
+        "link": "https://community.cncf.io/events/details/cncf-cloud-native-security-lahore-presents-opensource-connect-lahore/"
+    },
+    {
+        "id": 3,
+        "title": "Hacktoberfest Lahore 2025: Secure Cloud Edition",
+        "date": "2025-10-18",
+        "location": "Lahore, Pakistan",
+        "type": "Meetup",
+        "description": "Celebrate Hacktoberfest with hands-on contributions to cloud-native security open source projects.",
+        "image": "https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=800&q=80",
+        "link": "https://community.cncf.io/events/details/cncf-cloud-native-security-lahore-presents-hacktoberfest-lahore-2025-secure-cloud-edition/"
+    },
+    {
+        "id": 4,
+        "title": "#cTENcf Birthday Bash Lahore",
+        "date": "2025-08-23",
+        "location": "Lahore, Pakistan",
+        "type": "Meetup",
+        "description": "Celebrating 10 years of CNCF with the cloud-native community in Lahore.",
+        "image": "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=800&q=80",
+        "link": "https://community.cncf.io/events/details/cncf-cloud-native-security-lahore-presents-ctencf-birthday-bash-lahore/"
+    },
+    {
+        "id": 5,
+        "title": "KubeSecure",
+        "date": "2025-06-30",
+        "location": "Lahore, Pakistan",
+        "type": "Meetup",
+        "description": "Deep dive into Kubernetes security best practices and tools for securing cloud-native workloads.",
+        "image": "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=800&q=80",
+        "link": "https://community.cncf.io/events/details/cncf-cloud-native-security-lahore-presents-kubesecure/"
+    },
+    {
+        "id": 6,
+        "title": "DevSecOps for all: How Open Source Can Kickstart Your Security Journey",
+        "date": "2025-05-03",
+        "location": "Lahore, Pakistan",
+        "type": "Meetup",
+        "description": "Learn how open source tools can accelerate your DevSecOps journey and enhance cloud security.",
+        "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80",
+        "link": "https://community.cncf.io/events/details/cncf-cloud-native-security-lahore-presents-devsecops-for-all-how-open-source-can-kickstart-your-security-journey/"
+    },
+    {
+        "id": 7,
+        "title": "Networking Friday",
+        "date": "2025-02-28",
+        "location": "Lahore, Pakistan",
+        "type": "Meetup",
+        "description": "Casual networking event for cloud-native security professionals and enthusiasts.",
+        "image": "https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&q=80",
+        "link": "https://community.cncf.io/events/details/cncf-cloud-native-security-lahore-presents-networking-friday/"
+    },
+    {
+        "id": 8,
+        "title": "Art of Recon",
+        "date": "2024-12-13",
+        "location": "Lahore, Pakistan",
+        "type": "Meetup",
+        "description": "Master reconnaissance techniques for security assessments in cloud-native environments.",
+        "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80",
+        "link": "https://community.cncf.io/events/details/cncf-cloud-native-security-lahore-presents-art-of-recon/"
+    },
+    {
+        "id": 9,
+        "title": "Decoding Cloud Native Security",
+        "date": "2024-11-16",
+        "location": "Lahore, Pakistan",
+        "type": "Meetup",
+        "description": "Understand the fundamentals of cloud-native security architecture and best practices.",
+        "image": "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&q=80",
+        "link": "https://community.cncf.io/events/details/cncf-cloud-native-security-lahore-presents-decoding-cloud-native-security/"
+    },
+    {
+        "id": 10,
+        "title": "We are hosting Security Fusion",
+        "date": "2024-06-10",
+        "location": "Pakistan",
+        "type": "Meetup",
+        "description": "A fusion of security topics covering cloud-native technologies and DevSecOps practices.",
+        "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80",
+        "link": "https://community.cncf.io/events/details/cncf-cloud-native-security-pakistan-presents-we-are-hosting-security-fusion/"
+    },
+    {
+        "id": 11,
+        "title": "Cloud Native Security Meetup Islamabad",
+        "date": "2024-05-03",
+        "location": "Islamabad, Pakistan",
+        "type": "Meetup",
+        "description": "Our first meetup in Islamabad focusing on cloud-native security fundamentals and community building.",
+        "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80",
+        "link": "https://community.cncf.io/events/details/cncf-cloud-native-security-pakistan-presents-cloud-native-security-meetup-islamabad/"
+    }
+]

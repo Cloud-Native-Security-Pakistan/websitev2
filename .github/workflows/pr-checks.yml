@@ -1,0 +1,32 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Lint Code
+      run: npm run lint
+
+    - name: Build CSS
+      run: npm run build:css
+
+    - name: Run Tests
+      # Currently creates a placeholder pass, but ensures the workflow exists for future tests
+      run: npm test

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://github.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+
+    <title>Submit a Talk — CNSPK Call for Proposals</title>
+    <meta name="description"
+        content="Submit a talk to Cloud Native Security Pakistan. Open CFP, a clear review timeline, and mentorship for first-time speakers. Show the kubectl.">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="canonical" href="https://cloudnativesecurity.pk/cfp/">
+
+    <link rel="stylesheet" href="/css/tokens.css">
+
+    <style>
+        .wrap { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+
+        .page-hero {
+            position: relative;
+            padding: 140px 0 80px;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse 80% 60% at 18% 18%, rgba(199, 255, 62, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 80% at 92% 90%, rgba(1, 65, 28, 0.35) 0%, transparent 60%),
+                var(--carbon);
+        }
+        .page-hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(199, 255, 62, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(199, 255, 62, 0.04) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none;
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+        }
+        .page-hero__content { position: relative; z-index: 2; max-width: 780px; }
+        .page-hero h1 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: clamp(44px, 8vw, 104px);
+            line-height: 0.92;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            color: var(--bone);
+            margin-bottom: 28px;
+        }
+        .page-hero h1 .accent { color: var(--lime); }
+
+        .lede {
+            font-size: clamp(18px, 2.4vw, 22px);
+            color: var(--bone-2);
+            max-width: 660px;
+            line-height: 1.55;
+            margin-bottom: 36px;
+        }
+        .lede strong { color: var(--lime); font-weight: 600; }
+
+        .hero-cta-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+        .urdu-accent {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--steel);
+            letter-spacing: 0.04em;
+            margin-top: 28px;
+        }
+        .urdu-accent em { color: var(--lime); font-style: normal; }
+
+        .section { padding: 88px 0; }
+        .section + .section { border-top: 1px solid var(--slate); }
+        .section h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: clamp(30px, 4.4vw, 52px);
+            text-transform: uppercase;
+            line-height: 0.96;
+            letter-spacing: -0.03em;
+            color: var(--bone);
+            margin-bottom: 24px;
+            max-width: 18ch;
+        }
+        .section .muted { font-size: 17px; color: var(--bone-2); max-width: 660px; line-height: 1.6; margin-bottom: 40px; }
+
+        /* What we look for */
+        .look-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+        .look {
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-md);
+            padding: 28px;
+            transition: border-color var(--dur-elevate) var(--ease), transform var(--dur-elevate) var(--ease);
+        }
+        .look:hover { border-color: var(--lime); transform: translateY(-3px); }
+        .look h3 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 22px;
+            letter-spacing: -0.02em;
+            color: var(--bone);
+            margin-bottom: 10px;
+        }
+        .look p { font-size: 14px; color: var(--bone-2); line-height: 1.55; }
+        .look .tick { color: var(--lime); font-family: var(--font-mono); }
+
+        /* Timeline */
+        .timeline { display: grid; gap: 0; max-width: 720px; }
+        .tl-step {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 24px;
+            padding: 24px 0;
+            border-bottom: 1px dashed var(--slate);
+            align-items: start;
+        }
+        .tl-step:last-child { border-bottom: 0; }
+        .tl-when {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--lime);
+            letter-spacing: 0.04em;
+            padding-top: 2px;
+        }
+        .tl-what h4 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 20px;
+            letter-spacing: -0.02em;
+            color: var(--bone);
+            margin-bottom: 6px;
+        }
+        .tl-what p { font-size: 14px; color: var(--bone-2); line-height: 1.55; }
+        @media (max-width: 560px) {
+            .tl-step { grid-template-columns: 1fr; gap: 6px; }
+        }
+
+        /* First-timer block (inverted bone surface) */
+        .first-timer {
+            background: var(--bone);
+            color: var(--carbon);
+            border-radius: var(--r-lg);
+            padding: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+        .first-timer::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 6px;
+            background: var(--grad-stamp-glow);
+        }
+        .first-timer .eyebrow {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--lime-600);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            display: block;
+        }
+        .first-timer h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(28px, 4vw, 44px);
+            letter-spacing: -0.02em;
+            line-height: 1;
+            color: var(--carbon);
+            margin-bottom: 16px;
+            max-width: 20ch;
+        }
+        .first-timer p { font-size: 16px; color: #2A2E37; line-height: 1.6; max-width: 60ch; margin-bottom: 12px; }
+        .first-timer a.inline { color: var(--lime-600); border-bottom: 2px solid var(--lime-600); font-weight: 600; }
+
+        /* Submission CTA cards */
+        .submit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .submit-card {
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-md);
+            padding: 32px;
+        }
+        .submit-card--primary { border-color: rgba(199, 255, 62, 0.4); }
+        .submit-card .num {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--lime);
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+        }
+        .submit-card h3 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 24px;
+            letter-spacing: -0.02em;
+            color: var(--bone);
+            margin-bottom: 10px;
+        }
+        .submit-card p { font-size: 14px; color: var(--bone-2); line-height: 1.55; margin-bottom: 22px; }
+
+        .empty-state {
+            border: 1px dashed var(--slate);
+            border-radius: var(--r-lg);
+            padding: 56px 32px;
+            text-align: center;
+            background: rgba(26, 29, 36, 0.4);
+            margin-top: 16px;
+        }
+        .empty-state .badge {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--lime);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border: 1px solid rgba(199, 255, 62, 0.25);
+            background: rgba(199, 255, 62, 0.08);
+            padding: 6px 12px;
+            border-radius: var(--r-pill);
+            margin-bottom: 20px;
+        }
+        .empty-state h3 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(24px, 3.4vw, 36px);
+            letter-spacing: -0.02em;
+            color: var(--bone);
+            margin-bottom: 12px;
+        }
+        .empty-state p { color: var(--bone-2); max-width: 480px; margin: 0 auto; font-size: 15px; line-height: 1.6; }
+
+        @media (max-width: 600px) {
+            .wrap { padding: 0 20px; }
+            .page-hero { padding: 112px 0 64px; }
+            .first-timer { padding: 32px 24px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="navbar"></div>
+
+    <main>
+        <!-- ===== Hero ===== -->
+        <section class="page-hero">
+            <div class="wrap page-hero__content">
+                <div class="section-eyebrow">// cfp / submit-a-talk</div>
+                <h1>Submit<br>a talk.<br><span class="accent">Show the kubectl.</span></h1>
+                <p class="lede">
+                    CNSPK runs on talks from practitioners who actually shipped the thing. If you've
+                    fixed it, broken it, hardened it, or scaled it in a Pakistani team —
+                    <strong>that's a talk.</strong> First-time speakers welcome. We mentor you through it.
+                </p>
+                <div class="hero-cta-row">
+                    <!-- TODO: replace with the real GitHub issue-template URL once the cfp template is published under the org. -->
+                    <a class="btn-primary"
+                        href="https://github.com/Cloud-Native-Security-Pakistan"
+                        target="_blank" rel="noopener noreferrer">
+                        Open the CFP template ↗
+                    </a>
+                    <a class="btn-secondary" href="#submit">
+                        <span class="mono">// how-it-works</span>
+                    </a>
+                </div>
+                <!-- Roman Urdu accent (one per page): mehfil = the gathering -->
+                <p class="urdu-accent">$ every talk turns a room into a <em>mehfil</em>. Bring yours.</p>
+            </div>
+        </section>
+
+        <!-- ===== What we look for ===== -->
+        <section class="section">
+            <div class="wrap">
+                <div class="section-eyebrow">// what-we-look-for</div>
+                <h2>Real work beats hot takes.</h2>
+                <p class="muted">
+                    No vendor pitches. No 40-slide intros to "what is Kubernetes." We want the demo, the
+                    incident, the config that actually ran in production.
+                </p>
+                <div class="look-grid">
+                    <article class="look">
+                        <h3><span class="tick">&gt;</span> Demos over decks</h3>
+                        <p>A live cluster, a runnable repo, a terminal you actually type in. Talk is cheap — show the kubectl.</p>
+                    </article>
+                    <article class="look">
+                        <h3><span class="tick">&gt;</span> Pakistani context</h3>
+                        <p>SBP guidelines, local fintech scale, the constraints you actually work under. Global topics welcome too — grounded ones land hardest.</p>
+                    </article>
+                    <article class="look">
+                        <h3><span class="tick">&gt;</span> Honest postmortems</h3>
+                        <p>The outage, the misconfig, the CVE that shipped. What broke, what you learned, what you'd do again.</p>
+                    </article>
+                    <article class="look">
+                        <h3><span class="tick">&gt;</span> One clear takeaway</h3>
+                        <p>The single thing the room can apply Monday morning. If a talk has one, it's a good talk.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Review timeline ===== -->
+        <section class="section">
+            <div class="wrap">
+                <div class="section-eyebrow">// review-timeline</div>
+                <h2>You'll always know where you stand.</h2>
+                <p class="muted">No black holes. Here's exactly what happens after you hit submit.</p>
+                <div class="timeline">
+                    <div class="tl-step">
+                        <div class="tl-when">≤ 24 hours</div>
+                        <div class="tl-what">
+                            <h4>Submission acknowledged</h4>
+                            <p>A human confirms we received your proposal. If you don't hear back in a day, ping us — something broke.</p>
+                        </div>
+                    </div>
+                    <div class="tl-step">
+                        <div class="tl-when">≤ 7 days</div>
+                        <div class="tl-what">
+                            <h4>Committee review</h4>
+                            <p>The CFP committee reads every proposal. We may ask a clarifying question or suggest a sharper angle.</p>
+                        </div>
+                    </div>
+                    <div class="tl-step">
+                        <div class="tl-when">≤ 10 days</div>
+                        <div class="tl-what">
+                            <h4>Decision</h4>
+                            <p>Accepted, waitlisted, or a "not this time, here's why." Every submitter gets a real answer — no silent rejections.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== First-time speakers ===== -->
+        <section class="section">
+            <div class="wrap">
+                <div class="first-timer">
+                    <span class="eyebrow">// first-time-speakers</span>
+                    <h2>Never spoken before? Perfect.</h2>
+                    <p>
+                        Half of CNSPK's best talks came from someone's first time on a stage. If you've got
+                        the substance but not the slides, we pair you with a mentor who's spoken at KubeCon
+                        and the chapter before. We help you scope the talk, build the demo, and run a dry-run
+                        in front of a friendly room.
+                    </p>
+                    <p>
+                        You bring the work. We bring the runway. No experience required — just something
+                        real you've done with cloud-native security.
+                    </p>
+                    <p style="margin-bottom:0;">
+                        Want a mentor first? Note it in your submission, or email
+                        <a class="inline" href="mailto:hi@cloudnativesecurity.pk?subject=CFP%20mentorship">hi@cloudnativesecurity.pk</a>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Submit ===== -->
+        <section class="section" id="submit">
+            <div class="wrap">
+                <div class="section-eyebrow">// submit</div>
+                <h2>Two ways in.</h2>
+                <p class="muted">Pick whichever fits how you work. Both reach the same committee.</p>
+                <div class="submit-grid">
+                    <article class="submit-card submit-card--primary">
+                        <div class="num">01 / GITHUB</div>
+                        <h3>File the CFP issue</h3>
+                        <p>
+                            The formal lane. Open the CFP issue template on the GitHub org, fill in the title,
+                            abstract, format, and your bio. Tracked in the open.
+                        </p>
+                        <!-- TODO: swap to the exact issue-template deep link, e.g.
+                             https://github.com/Cloud-Native-Security-Pakistan/<repo>/issues/new?template=cfp.yml
+                             once the template repo + filename are confirmed. -->
+                        <a class="btn-primary btn-primary--sm"
+                            href="https://github.com/Cloud-Native-Security-Pakistan"
+                            target="_blank" rel="noopener noreferrer">
+                            Open the template ↗
+                        </a>
+                    </article>
+                    <article class="submit-card">
+                        <div class="num">02 / EMAIL</div>
+                        <h3>Email the committee</h3>
+                        <p>
+                            Not a GitHub person? Send the title, a short abstract, the format, and a line
+                            about you. We'll take it from there.
+                        </p>
+                        <a class="btn-secondary"
+                            href="mailto:hi@cloudnativesecurity.pk?subject=CFP%20submission&body=Title%3A%0AAbstract%3A%0AFormat%20(talk%2Flab%2Flightning)%3A%0AAbout%20you%3A%0AFirst-time%20speaker%3F%20(we%20mentor)%3A">
+                            Email a proposal
+                        </a>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Past accepted talks (empty state) ===== -->
+        <section class="section">
+            <div class="wrap">
+                <div class="section-eyebrow">// past-accepted-talks</div>
+                <h2>What's landed before.</h2>
+                <p class="muted">Reference accepted talks to calibrate your pitch.</p>
+                <!--
+                    TODO: render accepted CFP talks from data/sessions.json (filter to accepted/recorded
+                    sessions) once the CFP-to-session link is established. Group by topic. Each card links
+                    to the session detail page. DO NOT fabricate talks, speakers, or dates.
+                -->
+                <div class="empty-state" role="status">
+                    <span class="badge">archive · empty</span>
+                    <h3>First CFP cycle is open</h3>
+                    <p>
+                        Accepted talks will be listed here as a reference for future submitters. Want to be
+                        the first one on this wall? Submit above.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer"></div>
+
+    <script type="module">
+        import { Navbar } from '/js/Navbar.js';
+        import { Footer } from '/js/Footer.js';
+        new Navbar().init();
+        new Footer().init();
+    </script>
+</body>
+
+</html>

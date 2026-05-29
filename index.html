@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--
+      CSP: tokens.css is loaded from 'self' and @imports the four brand fonts
+      (Bricolage Grotesque, Inter, JetBrains Mono, Noto Nastaliq Urdu) from
+      fonts.googleapis.com — covered by style-src; the font files come from
+      fonts.gstatic.com — covered by font-src. jsdelivr/tailwind allowances are
+      retained from the legacy CSP so no other v2 page routing breaks.
+    -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+
+    <!-- SEO Meta Tags — CNSPK is its own thing; CNCF affiliation is a credential, not the headline -->
+    <title>CNSPK · Cloud Native Security Pakistan</title>
+    <meta name="description"
+        content="Cloud Native Security Pakistan — 250+ engineers shipping cloud-native infrastructure, breaking it on purpose, and writing it back better. Independent. Run by practitioners. No gatekeeping. Built. Tested. Pakistani.">
+    <meta name="keywords"
+        content="cloud native security pakistan, CNSPK, Kubernetes security, cloud security, DevSecOps, container security, cloud native community Pakistan, Lahore, Islamabad, Karachi">
+    <meta name="author" content="Cloud Native Security Pakistan">
+    <meta name="theme-color" content="#0F1115">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="CNSPK · Cloud Native Security Pakistan">
+    <meta property="og:description"
+        content="250+ engineers shipping cloud-native infrastructure across Pakistan. Independent. Run by practitioners. No gatekeeping. Built. Tested. Pakistani.">
+    <meta property="og:url" content="https://cloudnativesecurity.pk/">
+    <meta property="og:site_name" content="Cloud Native Security Pakistan">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="CNSPK · Cloud Native Security Pakistan">
+    <meta name="twitter:description"
+        content="250+ engineers. Independent. Run by practitioners. No gatekeeping. Read the CVE. Drink the chai.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="canonical" href="https://cloudnativesecurity.pk/">
+
+    <!-- Design tokens first: colour, type, motion, shared primitives + font @import -->
+    <link rel="stylesheet" href="/css/tokens.css">
+
+    <style>
+        /* ==========================================================
+           Homepage · Electric register · page-specific styles
+           Shared primitives (.brand-shield, .btn-primary,
+           .btn-secondary, .status-pill, .status-dot, .section-eyebrow,
+           .glass-panel) come from /css/tokens.css.
+        ========================================================== */
+
+        .wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+
+        main { display: block; }
+
+        /* ---- Scroll reveal ----------------------------------- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity var(--dur-reveal) var(--ease-out),
+                        transform var(--dur-reveal) var(--ease-out);
+            will-change: opacity, transform;
+        }
+        .reveal.is-visible { opacity: 1; transform: none; }
+
+        /* ==========================================================
+           Hero — operator hero
+        ========================================================== */
+        .hero {
+            position: relative;
+            padding: 120px 0 100px;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 20%, rgba(199, 255, 62, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 80% at 90% 80%, rgba(1, 65, 28, 0.40) 0%, transparent 60%),
+                var(--carbon);
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(199, 255, 62, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(199, 255, 62, 0.04) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none;
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+        }
+
+        .hero-landmark {
+            position: absolute;
+            right: -40px;
+            top: 60px;
+            width: 320px;
+            opacity: 0.18;
+            pointer-events: none;
+        }
+
+        .hero-content { position: relative; z-index: 2; max-width: 920px; }
+
+        .hero-meta {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--steel);
+            letter-spacing: 0.08em;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .hero-meta .cmd { color: var(--lime); }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: clamp(48px, 9vw, 128px);
+            line-height: 0.92;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+            color: var(--bone);
+        }
+        .hero h1 .lime-line { color: var(--lime); display: inline-block; }
+        .hero h1 .underline { display: inline-block; position: relative; }
+        .hero h1 .underline::after {
+            content: '';
+            position: absolute;
+            bottom: 6px;
+            left: -2%;
+            width: 104%;
+            height: 14px;
+            background: var(--lime);
+            opacity: 0.35;
+            z-index: -1;
+            transform: skew(-4deg) rotate(-1deg);
+        }
+
+        .hero .lede {
+            font-size: 22px;
+            color: var(--bone-2);
+            max-width: 720px;
+            line-height: 1.55;
+            margin-bottom: 40px;
+            font-weight: 400;
+        }
+        .hero .lede strong { color: var(--lime); font-weight: 600; }
+
+        .hero-cta-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        .hero-cta-row .btn-secondary { gap: 10px; }
+        .hero-cta-row .btn-secondary .mono { color: var(--lime); }
+
+        .hero-tagline-urdu {
+            font-family: var(--font-urdu);
+            font-size: 28px;
+            color: var(--gold);
+            direction: rtl;
+            text-align: left;
+            line-height: 2.2;
+            opacity: 0.7;
+            margin-top: 8px;
+            max-width: 600px;
+        }
+
+        /* Chapter ID stamp */
+        .chapter-stamp {
+            position: absolute;
+            top: 96px;
+            right: 64px;
+            transform: rotate(-6deg);
+            padding: 12px 18px 10px;
+            border: 2px solid var(--lime);
+            border-radius: 6px;
+            pointer-events: none;
+            user-select: none;
+            opacity: 0.55;
+            z-index: 2;
+        }
+        .chapter-stamp .l1 {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--lime);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+        .chapter-stamp .l2 {
+            display: block;
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: 22px;
+            color: var(--lime);
+            letter-spacing: -0.01em;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+        @media (max-width: 900px) { .chapter-stamp { display: none; } }
+
+        /* ==========================================================
+           Stat strip
+        ========================================================== */
+        .stats {
+            border-top: 1px solid var(--slate);
+            border-bottom: 1px solid var(--slate);
+            background: var(--charcoal);
+            padding: 40px 0;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+        }
+        .stat { display: flex; flex-direction: column; gap: 6px; }
+        .stat-num {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: 56px;
+            line-height: 1;
+            color: var(--lime);
+            letter-spacing: -0.03em;
+        }
+        .stat-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--steel);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        @media (max-width: 768px) { .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 28px; } }
+
+        /* ==========================================================
+           Section primitives
+        ========================================================== */
+        .section { padding: 100px 0; }
+
+        /* ==========================================================
+           Threat advisory ribbon — editorial register (bone block)
+        ========================================================== */
+        .advisory {
+            background: var(--bone);
+            color: var(--carbon);
+            padding: 60px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .advisory::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 6px;
+            background: var(--breach);
+        }
+        .advisory-flex { display: flex; gap: 48px; align-items: flex-start; flex-wrap: wrap; }
+        .advisory-tag {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            color: var(--breach);
+            text-transform: uppercase;
+            padding: 6px 12px;
+            border: 2px solid var(--breach);
+            border-radius: 4px;
+            align-self: flex-start;
+            flex-shrink: 0;
+            font-weight: 700;
+        }
+        .advisory-body { flex: 1; min-width: 280px; }
+        .advisory-body h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(26px, 4vw, 34px);
+            letter-spacing: -0.02em;
+            color: var(--carbon);
+            margin-bottom: 12px;
+            line-height: 1.05;
+        }
+        .advisory-body p {
+            font-size: 17px;
+            color: #2A2E37;
+            line-height: 1.55;
+            margin-bottom: 16px;
+            max-width: 760px;
+        }
+        .advisory-cta {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--carbon);
+            border-bottom: 2px solid var(--carbon);
+            padding-bottom: 2px;
+        }
+        .advisory-cta:hover { color: var(--carbon); border-bottom-color: var(--lime-600); }
+
+        /* ==========================================================
+           Manifesto block
+        ========================================================== */
+        .manifesto {
+            background: var(--carbon);
+            padding: 120px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .manifesto::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle at 1px 1px, rgba(199, 255, 62, 0.06) 1px, transparent 0);
+            background-size: 40px 40px;
+            mask-image: linear-gradient(to bottom, black, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+            pointer-events: none;
+        }
+        .manifesto-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: start;
+            position: relative;
+        }
+        @media (max-width: 880px) { .manifesto-grid { grid-template-columns: 1fr; gap: 40px; } }
+        .manifesto-left h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(36px, 6vw, 72px);
+            line-height: 0.92;
+            letter-spacing: -0.04em;
+            color: var(--bone);
+            margin-bottom: 28px;
+        }
+        .manifesto-left h2 em { color: var(--lime); font-style: italic; }
+        .manifesto-lede {
+            font-size: 18px;
+            color: var(--bone-2);
+            line-height: 1.6;
+            max-width: 520px;
+            margin-bottom: 20px;
+        }
+        .manifesto-subline {
+            font-size: 14px;
+            color: var(--steel);
+            line-height: 1.6;
+            max-width: 520px;
+            font-family: var(--font-mono);
+            letter-spacing: 0.02em;
+        }
+        .pillar { padding: 24px 0; border-bottom: 1px solid var(--slate); }
+        .pillar:first-child { padding-top: 0; }
+        .pillar:last-child { border-bottom: 0; }
+        .pillar-num {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--lime);
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+        .pillar h3 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 24px;
+            letter-spacing: -0.02em;
+            color: var(--bone);
+            margin-bottom: 8px;
+        }
+        .pillar p { font-size: 15px; color: var(--bone-2); line-height: 1.55; }
+
+        /* ==========================================================
+           Tagline mark — the kubectl stamp (bone block)
+        ========================================================== */
+        .tag-block {
+            background: var(--bone);
+            padding: 100px 0;
+            color: var(--carbon);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .tag-block::before, .tag-block::after {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background-image: radial-gradient(circle at 1px 1px, var(--carbon) 1px, transparent 0);
+            background-size: 8px 8px;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+        .tag-block::before { top: 40px; left: 40px; }
+        .tag-block::after { bottom: 40px; right: 40px; }
+        .tag-mark {
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: clamp(20px, 4vw, 48px);
+            color: var(--carbon);
+            display: inline-block;
+            padding: 16px 32px;
+            background: var(--lime);
+            box-shadow: 8px 8px 0 var(--carbon);
+            border: 3px solid var(--carbon);
+            margin-bottom: 32px;
+            transform: rotate(-1deg);
+        }
+        .tag-block h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: clamp(32px, 5vw, 56px);
+            text-transform: uppercase;
+            line-height: 1;
+            letter-spacing: -0.03em;
+            color: var(--carbon);
+            margin: 0 auto 16px;
+            max-width: 18ch;
+        }
+        .tag-block p {
+            font-size: 18px;
+            color: #2A2E37;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ==========================================================
+           Hire experts CTA — charcoal panel, lime offset accent
+        ========================================================== */
+        .hire { padding: 100px 0; background: var(--carbon); }
+        .hire-panel {
+            position: relative;
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-lg);
+            padding: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            flex-wrap: wrap;
+            overflow: hidden;
+        }
+        .hire-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
+            background: var(--grad-stamp-glow);
+        }
+        .hire-copy { max-width: 560px; }
+        .hire-copy .section-eyebrow { margin-bottom: 16px; }
+        .hire-copy h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(28px, 4.5vw, 44px);
+            line-height: 0.98;
+            letter-spacing: -0.03em;
+            color: var(--bone);
+            margin-bottom: 16px;
+        }
+        .hire-copy p { font-size: 17px; color: var(--bone-2); line-height: 1.6; }
+        .hire-panel .btn-primary { flex-shrink: 0; }
+
+        @media (max-width: 768px) {
+            .hero { padding: 88px 0 72px; }
+            .section, .manifesto, .hire, .tag-block { padding: 72px 0; }
+            .hire-panel { padding: 36px 28px; }
+            .wrap { padding: 0 20px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===== Navbar (mounted via /js/Navbar.js) ===== -->
+    <div id="navbar"></div>
+
+    <main>
+
+        <!-- ===== Hero ===== -->
+        <section id="top" class="hero">
+            <!-- Faint Pakistani landmark silhouette (Minar-e-Pakistan, abstracted) -->
+            <svg class="hero-landmark" viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <g fill="none" stroke="#C7FF3E" stroke-width="1.5">
+                    <rect x="40" y="280" width="120" height="20" />
+                    <rect x="55" y="260" width="90" height="20" />
+                    <rect x="80" y="180" width="40" height="80" />
+                    <rect x="86" y="120" width="28" height="60" />
+                    <rect x="92" y="60" width="16" height="60" />
+                    <circle cx="100" cy="40" r="14" />
+                    <circle cx="105" cy="38" r="10" fill="#0F1115" />
+                    <line x1="100" y1="56" x2="100" y2="60" />
+                </g>
+            </svg>
+
+            <!-- Chapter ID stamp — CNCF affiliation as a credential, not the headline -->
+            <div class="chapter-stamp" aria-hidden="true">
+                <span class="l1">CNCF Chapter · est. 2024</span>
+                <span class="l2">Pakistan</span>
+            </div>
+
+            <div class="wrap hero-content">
+                <div class="hero-meta">
+                    <span class="status-pill">
+                        <span class="status-dot"></span>
+                        <span>chapter / live / lhe-khi-isb</span>
+                    </span>
+                    <span style="opacity:0.6">·</span>
+                    <span class="cmd">$ ./join.sh --no-gatekeeping</span>
+                </div>
+
+                <h1>
+                    Built.<br />
+                    <span class="underline">Tested.</span><br />
+                    <span class="lime-line">Pakistani.</span>
+                </h1>
+
+                <p class="lede">
+                    <strong>250+ engineers</strong> shipping cloud-native infrastructure across Pakistan, breaking it
+                    on purpose, and writing it back better. Independent. Run by practitioners. Free to join.
+                    <strong>No gatekeeping.</strong>
+                </p>
+
+                <div class="hero-cta-row">
+                    <a href="/join/" class="btn-primary">
+                        Join the Chapter
+                        <span style="font-family:var(--font-mono);">↗</span>
+                    </a>
+                    <a href="/events/" class="btn-secondary">
+                        <span class="mono">// browse-events</span>
+                        Upcoming sessions
+                    </a>
+                </div>
+
+                <p class="hero-tagline-urdu" lang="ur" dir="rtl">کلاؤڈ نیٹو سیکیورٹی پاکستان</p>
+            </div>
+        </section>
+
+        <!-- ===== Stat strip ===== -->
+        <section class="stats" aria-label="Chapter by the numbers">
+            <div class="wrap stats-grid">
+                <div class="stat">
+                    <div class="stat-num">250+</div>
+                    <div class="stat-label">Engineers</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-num">12</div>
+                    <div class="stat-label">Events shipped</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-num">3</div>
+                    <div class="stat-label">Cities</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-num">∞</div>
+                    <div class="stat-label">Bharosa</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Threat advisory ribbon (editorial register) ===== -->
+        <!--
+          TODO: This advisory is illustrative of the editorial register, not a
+          live CVE. Wire to a real /threat-of-week writeup (or remove) before
+          launch so the byline never reads as fabricated security reporting.
+        -->
+        <section class="advisory reveal" id="advisory" aria-label="Threat advisory">
+            <div class="wrap">
+                <div class="advisory-flex">
+                    <div class="advisory-tag">Advisory&nbsp;·&nbsp;Register</div>
+                    <div class="advisory-body">
+                        <h2>The IAM role nobody owns just shipped to prod.</h2>
+                        <p>
+                            Over-permissioned default service accounts are the quiet default across cloud-native
+                            stacks. This is the register we write in: read the misconfig, ship the five-line fix,
+                            keep it dead with policy-as-code. Practitioners, not press releases.
+                        </p>
+                        <a href="/sessions/" class="advisory-cta">Browse the sessions →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Manifesto ===== -->
+        <section class="manifesto" id="chapter">
+            <div class="wrap manifesto-grid">
+
+                <div class="manifesto-left reveal">
+                    <div class="section-eyebrow">// chapter / what-we-stand-for</div>
+                    <h2>
+                        A community of <em>cloud security practitioners</em> in Pakistan.
+                        Independent. Run by engineers.
+                    </h2>
+                    <p class="manifesto-lede">
+                        CNSPK is its own thing. We are engineers, students, and security leads in Lahore, Karachi,
+                        and Islamabad — meeting online and in person, and building a body of practice that didn't
+                        exist here before.
+                    </p>
+                    <p class="manifesto-subline">
+                        Affiliated with CNCF as a recognised security chapter. Not a CNCF franchise.
+                    </p>
+                </div>
+
+                <div class="manifesto-right reveal">
+                    <div class="pillar">
+                        <div class="pillar-num">PILLAR 01</div>
+                        <h3>Rigor</h3>
+                        <p>What is true matters more than what sounds good. We test, we cite, we date-stamp our
+                            corrections.</p>
+                    </div>
+                    <div class="pillar">
+                        <div class="pillar-num">PILLAR 02</div>
+                        <h3>Belonging</h3>
+                        <p>The first question is the most valuable one in the room. No gatekeeping on credentials,
+                            English fluency, or city.</p>
+                    </div>
+                    <div class="pillar">
+                        <div class="pillar-num">PILLAR 03</div>
+                        <h3>Bridge</h3>
+                        <p>We connect Pakistani engineers to KubeCon, OSS contribution, and the global CNCF in both
+                            directions.</p>
+                    </div>
+                    <div class="pillar">
+                        <div class="pillar-num">PILLAR 04</div>
+                        <h3>Practice</h3>
+                        <p>Talk is cheap. Show the kubectl. Every concept gets a demo, a code block, or a runnable
+                            lab.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ===== Tagline mark ===== -->
+        <section class="tag-block reveal" aria-label="Chapter tagline">
+            <div class="wrap">
+                <code class="tag-mark">kubectl apply -f pakistan.yaml</code>
+                <h2>Read the CVE.<br />Drink the chai.</h2>
+                <p>
+                    Defense in depth. Hospitality on top. The chapter for engineers who actually ship.
+                </p>
+            </div>
+        </section>
+
+        <!-- ===== Hire experts CTA (preserved from existing site, rethemed) ===== -->
+        <section class="hire" id="hire">
+            <div class="wrap">
+                <div class="hire-panel reveal">
+                    <div class="hire-copy">
+                        <div class="section-eyebrow">// need-an-expert</div>
+                        <h2>Need cloud security expertise?</h2>
+                        <p>
+                            The chapter runs deep on Kubernetes, DevSecOps, and cloud architecture. Browse the
+                            consultants directory and connect with practitioners who do this for a living.
+                        </p>
+                    </div>
+                    <a href="/consultants/" class="btn-primary">
+                        Hire Experts
+                        <span style="font-family:var(--font-mono);">→</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== Footer (mounted via /js/Footer.js) ===== -->
+    <div id="footer"></div>
+
+    <script type="module">
+        import { Navbar } from '/js/Navbar.js';
+        import { Footer } from '/js/Footer.js';
+
+        new Navbar().init();
+        new Footer().init();
+
+        /* ---- Scroll-reveal — respects prefers-reduced-motion ---- */
+        (function () {
+            const els = document.querySelectorAll('.reveal');
+            const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            if (prefersReduced || !('IntersectionObserver' in window)) {
+                els.forEach(el => el.classList.add('is-visible'));
+                return;
+            }
+
+            const io = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+            els.forEach(el => io.observe(el));
+        })();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://api.github.com https://sheets.googleapis.com https://unpkg.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: https://*.openstreetmap.org https://cartodb-basemaps-a.global.ssl.fastly.net; connect-src 'self' https://api.github.com https://sheets.googleapis.com;">
+    <title>Members - Cloud Native Security Pakistan</title>
+    <meta name="description"
+        content="The CNSPK member directory — security practitioners across Pakistan, mapped. Find your people.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <!-- Electric register tokens (load first) -->
+    <link rel="stylesheet" href="/css/tokens.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Map the components' Tailwind palette onto the Electric register.
+        // MemberCard.js / FilterPanel.js (other stream) render with brand-*/dark-*
+        // utility classes — these only ever sit on dark surfaces here, so lime is safe.
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#F5FFDF',
+                            100: '#E8FF8A',
+                            500: '#C7FF3E', // lime — accent on dark only
+                            600: '#9BD11A',
+                            900: '#3F5B00',
+                        },
+                        dark: {
+                            900: '#0F1115', // carbon
+                            800: '#1A1D24', // charcoal
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <!-- DOMPurify -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+
+    <style>
+        /* ==========================================================
+           Members — Electric register dashboard shell.
+           Full-height split view: charcoal sidebar + dark map.
+           No footer here by design (see AGENT_BRIEF page structure).
+        ========================================================== */
+
+        /* Card / panel surface consumed by MemberCard + FilterPanel.
+           tokens.css ships .glass-panel; we restate it here so the
+           component cards read as charcoal tiles on the carbon page. */
+        .glass-panel {
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            box-shadow: var(--shadow-card);
+            -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+        }
+
+        /* Charcoal sidebar */
+        .members-sidebar {
+            background: var(--charcoal);
+            border-right: 1px solid var(--slate);
+        }
+
+        .members-sidebar__head {
+            padding: var(--space-6);
+            border-bottom: 1px solid var(--slate);
+        }
+
+        .members-title {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -0.03em;
+            line-height: 0.92;
+            font-size: clamp(32px, 4vw, 44px);
+            color: var(--bone);
+            margin: var(--space-3) 0 var(--space-3);
+        }
+
+        .members-sub {
+            font-size: 13px;
+            color: var(--steel);
+            line-height: 1.55;
+            margin-bottom: var(--space-6);
+            max-width: 42ch;
+        }
+
+        .members-list {
+            padding: var(--space-6);
+        }
+
+        /* Mono filter labels — themes the FilterPanel (other stream).
+           The panel emits a "N Members Found" count + selects; we give
+           the whole block a mono, lime-accented register. */
+        #filter-panel .glass-panel {
+            background: rgba(15, 17, 21, 0.55);
+            border-color: var(--slate);
+            box-shadow: none;
+        }
+        #filter-panel #member-count {
+            font-family: var(--font-display);
+            font-style: italic;
+            color: var(--lime);
+        }
+        #filter-panel label,
+        #filter-panel .text-white {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            letter-spacing: 0.04em;
+            color: var(--bone-2);
+        }
+        #filter-panel select,
+        #filter-panel input {
+            font-family: var(--font-mono);
+            letter-spacing: 0.02em;
+        }
+
+        /* Lime loading spinner is driven by border-brand-500 (= lime). */
+        #loading .text-gray-500 {
+            font-family: var(--font-mono);
+            letter-spacing: 0.06em;
+        }
+
+        /* Lime-tinted scrollbar */
+        .custom-scrollbar {
+            scrollbar-width: thin;
+            scrollbar-color: var(--slate) transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: var(--slate);
+            border-radius: var(--r-pill);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: var(--lime-600);
+        }
+
+        /* Map column + dark overlay gradient */
+        .map-wrap {
+            background: var(--carbon);
+        }
+        .map-overlay-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 96px;
+            background: linear-gradient(180deg, var(--carbon) 0%, rgba(15, 17, 21, 0) 100%);
+            pointer-events: none;
+            z-index: 400;
+        }
+        .map-overlay-left {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            background: linear-gradient(90deg, rgba(15, 17, 21, 0.7) 0%, rgba(15, 17, 21, 0) 100%);
+            pointer-events: none;
+            z-index: 400;
+        }
+
+        /* Leaflet attribution — keep readable on the dark basemap */
+        .leaflet-control-attribution {
+            background: rgba(15, 17, 21, 0.8) !important;
+            color: var(--steel) !important;
+        }
+        .leaflet-control-attribution a {
+            color: var(--lime-600) !important;
+        }
+    </style>
+</head>
+
+<body class="antialiased h-screen flex flex-col overflow-hidden">
+    <div id="navbar"></div>
+
+    <main class="flex-grow flex flex-col min-h-0">
+        <div class="flex-grow flex flex-col md:flex-row min-h-0 overflow-hidden">
+
+            <!-- Sidebar (List + Filters) -->
+            <aside class="members-sidebar w-full md:w-5/12 lg:w-4/12 flex flex-col min-h-0 relative z-10"
+                aria-label="Member directory and filters">
+                <div class="members-sidebar__head">
+                    <div class="section-eyebrow">// chapter / members</div>
+                    <h1 class="members-title">Member<br>Directory</h1>
+                    <p class="members-sub">Security practitioners across Pakistan. Tap a card to find them on the map.
+                    </p>
+
+                    <div id="filter-panel"></div>
+                </div>
+
+                <div id="members-list-scroll"
+                    class="members-list flex-grow min-h-0 overflow-y-auto space-y-4 custom-scrollbar">
+                    <div id="loading" class="text-center py-12" role="status" aria-live="polite">
+                        <div
+                            class="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto mb-4">
+                        </div>
+                        <span class="text-gray-500 text-sm">Scanning the chapter…</span>
+                    </div>
+
+                    <div id="members-container" class="space-y-4"></div>
+
+                    <div id="no-results" class="hidden text-center py-12 text-gray-500">
+                        No members match these filters.
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Map Area -->
+            <div class="hidden md:block w-full md:w-7/12 lg:w-8/12 h-full relative map-wrap">
+                <div id="map" class="w-full h-full z-0" role="region" aria-label="Map of CNSPK members across Pakistan">
+                </div>
+
+                <!-- Dark map overlay gradients -->
+                <div class="map-overlay-top"></div>
+                <div class="map-overlay-left"></div>
+            </div>
+
+        </div>
+    </main>
+
+    <script type="module">
+        import { MemberCard } from '../js/MemberCard.js';
+        import { FilterPanel } from '../js/FilterPanel.js';
+        import { Navbar } from '../js/Navbar.js';
+        import { Map } from '../js/Map.js';
+        import { fetchData, domReady } from '../js/utils.js';
+
+        // Initialize Nav (No footer on this dashboard view)
+        new Navbar().init();
+
+        let allMembers = [];
+        let mapInstance = null;
+
+        // Set up event listeners once (outside render to avoid duplicates)
+        let isListenerSet = false;
+
+        // Load members
+        async function loadMembers() {
+            const container = document.getElementById('members-container');
+            const loading = document.getElementById('loading');
+            const noResults = document.getElementById('no-results');
+
+            try {
+                // Initialize Map
+                mapInstance = new Map('map');
+                mapInstance.init();
+
+                // Fetch Data
+                allMembers = await fetchData('../data/members.json');
+                loading.classList.add('hidden');
+
+                if (!allMembers || allMembers.length === 0) {
+                    // Handle empty
+                    return;
+                }
+
+                // Initial Render
+                renderMembers(allMembers);
+                mapInstance.updateMarkers(allMembers);
+
+                // Initialize Filters
+                new FilterPanel((filters) => {
+                    const filtered = allMembers.filter(member => {
+                        const cityMatch = !filters.city || member.location?.toLowerCase().includes(filters.city.toLowerCase());
+                        const teamMatch = !filters.team || member.team?.toLowerCase() === filters.team.toLowerCase();
+                        const skillMatch = !filters.skill || member.interests?.some(i => i.toLowerCase().includes(filters.skill.toLowerCase()));
+                        return cityMatch && teamMatch && skillMatch;
+                    });
+
+                    renderMembers(filtered);
+                    mapInstance.updateMarkers(filtered);
+                }).render();
+
+                // Re-render filter panel to inject into DOM (since FilterPanel.render returns string)
+                // We need to slightly adjust how FilterPanel is used or manually inject it
+                const filterPanel = new FilterPanel((filters) => {
+                    const filtered = allMembers.filter(member => {
+                        const cityMatch = !filters.city || member.location?.toLowerCase().includes(filters.city.toLowerCase());
+                        const teamMatch = !filters.team || member.team?.toLowerCase() === filters.team.toLowerCase();
+                        const skillMatch = !filters.skill || member.interests?.some(i => i.toLowerCase().includes(filters.skill.toLowerCase()));
+                        return cityMatch && teamMatch && skillMatch;
+                    });
+                    renderMembers(filtered);
+                    mapInstance.updateMarkers(filtered);
+                });
+
+                document.getElementById('filter-panel').innerHTML = filterPanel.render();
+                filterPanel.setupEventListeners();
+
+                // Update counts
+                updateCount(allMembers.length);
+
+            } catch (err) {
+                console.error('Error loading members:', err);
+                loading.innerHTML = '<p class="text-red-500">CONNECTION LOST</p>';
+            }
+        }
+
+        function renderMembers(members) {
+            const container = document.getElementById('members-container');
+            const noResults = document.getElementById('no-results');
+
+            if (members.length === 0) {
+                container.innerHTML = '';
+                noResults.classList.remove('hidden');
+                updateCount(0);
+                return;
+            }
+
+            noResults.classList.add('hidden');
+            container.innerHTML = members.map(member => {
+                // Add data attributes for click handling
+                const cardHtml = new MemberCard(member).render();
+                // Add data attributes to the article - the id is already set by MemberCard
+                return cardHtml.replace(
+                    '<article ',
+                    `<article data-lat="${member.lat}" data-lng="${member.lng}" data-username="${member.username}" `
+                ).replace(
+                    'class="glass-panel',
+                    'class="cursor-pointer glass-panel'
+                );
+            }).join('');
+
+            // Set up event listeners once
+            if (!isListenerSet) {
+                isListenerSet = true;
+
+                // Handle click - fly to map AND open popup
+                container.addEventListener('click', (e) => {
+                    const card = e.target.closest('article[data-lat]');
+                    if (card && mapInstance) {
+                        const username = card.dataset.username;
+                        const lat = parseFloat(card.dataset.lat);
+                        const lng = parseFloat(card.dataset.lng);
+                        if (lat && lng) {
+                            mapInstance.flyTo(lat, lng, 12);
+                            // Open the marker popup after a small delay for fly animation
+                            setTimeout(() => {
+                                mapInstance.openPopupByUsername(username);
+                            }, 800);
+                        }
+                    }
+                });
+            }
+
+            updateCount(members.length);
+        }
+
+        function updateCount(count) {
+            const el = document.getElementById('member-count');
+            if (el) el.textContent = count;
+        }
+
+        domReady(loadMembers);
+    </script>
+</body>
+
+</html>

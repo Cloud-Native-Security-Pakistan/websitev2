@@ -1,0 +1,85 @@
+[
+  {
+    "id": "1",
+    "name": "Muhammad Farhan Ashraf",
+    "username": "farhanashrafdev",
+    "location": "Lahore, Pakistan",
+    "team": "admin",
+    "role": "DevSecOps Engineer - SystemsLTD",
+    "interests": [
+      "Kubernetes",
+      "DevSecOps",
+      "Cloud Security"
+    ],
+    "github": "https://github.com/farhanashrafdev",
+    "linkedin": "https://linkedin.com/in/farhanashrafdev",
+    "twitter": "https://twitter.com/mriceflame",
+    "website": "https://farhanashraf.dev",
+    "link": "https://community.cncf.io/u/mjq5k4/",
+    "lat": 31.5204,
+    "lng": 74.3587
+  },
+  {
+    "id": "2",
+    "name": "Syed Naqvi",
+    "username": "syednaqvi",
+    "location": "Islamabad, Pakistan",
+    "team": "admin",
+    "role": "Security Project Manager - Securiti.ai",
+    "interests": [
+      "Security Management",
+      "Compliance",
+      "AI Security"
+    ],
+    "link": "https://community.cncf.io/u/mgvg8e/",
+    "lat": 33.6844,
+    "lng": 73.0479
+  },
+  {
+    "id": "3",
+    "name": "Taskeen Fatima",
+    "username": "taskeenf",
+    "location": "Karachi, Pakistan",
+    "team": "contributor",
+    "role": "Operations Lead",
+    "interests": [
+      "Community Management",
+      "Operations"
+    ],
+    "link": "https://community.cncf.io/u/m5j7w9/",
+    "lat": 24.8607,
+    "lng": 67.0011
+  },
+  {
+    "id": "4",
+    "name": "Sharjeel Yunus",
+    "username": "sharjeely",
+    "location": "Lahore, Pakistan",
+    "team": "contributor",
+    "role": "Web and Graphics - Ensemble Technologies",
+    "interests": [
+      "Web Design",
+      "Graphics",
+      "Frontend"
+    ],
+    "link": "https://community.cncf.io/u/mjm63e/",
+    "lat": 31.5497,
+    "lng": 74.3436
+  },
+  {
+    "id": "5",
+    "name": "Hasnaat Iftikhar",
+    "username": "hasnaati",
+    "location": "Lahore, Pakistan",
+    "team": "contributor",
+    "role": "FullStack Developer & Designer - Webling",
+    "interests": [
+      "FullStack",
+      "Design",
+      "React"
+    ],
+    "link": "https://community.cncf.io/u/mm785x/",
+    "lat": 31.4800,
+    "lng": 74.3200
+  }
+]

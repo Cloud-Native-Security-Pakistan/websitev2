@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+
+    <title>About · CNSPK · Cloud Native Security Pakistan</title>
+    <meta name="description"
+        content="Independent. Run by engineers. CNCF-affiliated. CNSPK is a community of cloud security practitioners in Pakistan — 250+ members across Lahore, Karachi, and Islamabad. Est. 2024.">
+    <meta name="keywords"
+        content="about CNSPK, cloud native security pakistan, community, CNCF chapter, Kubernetes security Pakistan, DevSecOps community">
+    <meta name="author" content="Cloud Native Security Pakistan">
+    <meta name="theme-color" content="#0F1115">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="About · CNSPK · Cloud Native Security Pakistan">
+    <meta property="og:description"
+        content="Independent. Run by engineers. CNCF-affiliated. A community of cloud security practitioners in Pakistan.">
+    <meta property="og:url" content="https://cloudnativesecurity.pk/about/">
+    <meta property="og:site_name" content="Cloud Native Security Pakistan">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="About · CNSPK">
+    <meta name="twitter:description"
+        content="Independent. Run by engineers. CNCF-affiliated. 250+ members across 3 cities. Est. 2024.">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="canonical" href="https://cloudnativesecurity.pk/about/">
+
+    <!-- Design tokens first -->
+    <link rel="stylesheet" href="/css/tokens.css">
+
+    <style>
+        /* ==========================================================
+           About page · Electric register · page-specific styles
+           Shared primitives come from /css/tokens.css.
+        ========================================================== */
+
+        .wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+
+        main { display: block; }
+
+        /* ---- Scroll reveal ----------------------------------- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity var(--dur-reveal) var(--ease-out),
+                        transform var(--dur-reveal) var(--ease-out);
+            will-change: opacity, transform;
+        }
+        .reveal.is-visible { opacity: 1; transform: none; }
+
+        /* ==========================================================
+           Hero
+        ========================================================== */
+        .hero {
+            position: relative;
+            padding: 140px 0 100px;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse 70% 50% at 30% 30%, rgba(199, 255, 62, 0.07) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 70% at 85% 75%, rgba(1, 65, 28, 0.35) 0%, transparent 60%),
+                var(--carbon);
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(199, 255, 62, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(199, 255, 62, 0.04) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none;
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
+        }
+
+        .hero-content { position: relative; z-index: 2; max-width: 900px; }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: clamp(40px, 7vw, 96px);
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            margin-bottom: 32px;
+            color: var(--bone);
+        }
+        .hero h1 .lime { color: var(--lime); }
+
+        .hero .lede {
+            font-size: 20px;
+            color: var(--bone-2);
+            max-width: 680px;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+        .hero .lede strong { color: var(--lime); font-weight: 600; }
+
+        /* ==========================================================
+           Mission & Vision cards
+        ========================================================== */
+        .mv-section { padding: 100px 0; background: var(--carbon); }
+
+        .mv-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+
+        .mv-card {
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-lg);
+            padding: 48px 40px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color var(--dur-hover) var(--ease);
+        }
+        .mv-card:hover { border-color: var(--lime); }
+        .mv-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
+            background: var(--grad-stamp-glow);
+        }
+
+        .mv-card h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(24px, 3.5vw, 36px);
+            letter-spacing: -0.02em;
+            color: var(--bone);
+            margin-bottom: 16px;
+            line-height: 1;
+        }
+        .mv-card p {
+            font-size: 16px;
+            color: var(--bone-2);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) { .mv-grid { grid-template-columns: 1fr; } }
+
+        /* ==========================================================
+           Pillars grid
+        ========================================================== */
+        .pillars-section {
+            padding: 100px 0;
+            background: var(--charcoal);
+            border-top: 1px solid var(--slate);
+            border-bottom: 1px solid var(--slate);
+        }
+
+        .pillars-header {
+            margin-bottom: 56px;
+            max-width: 640px;
+        }
+        .pillars-header h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(32px, 5vw, 56px);
+            line-height: 0.95;
+            letter-spacing: -0.03em;
+            color: var(--bone);
+        }
+
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .pillar-card {
+            background: var(--carbon);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-md);
+            padding: 36px 28px;
+            transition: border-color var(--dur-hover) var(--ease),
+                        transform var(--dur-elevate) var(--ease);
+        }
+        .pillar-card:hover {
+            border-color: var(--lime);
+            transform: translateY(-4px);
+        }
+
+        .pillar-num {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--lime);
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+        .pillar-card h3 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 22px;
+            letter-spacing: -0.02em;
+            color: var(--bone);
+            margin-bottom: 10px;
+        }
+        .pillar-card p {
+            font-size: 14px;
+            color: var(--bone-2);
+            line-height: 1.55;
+        }
+
+        @media (max-width: 1024px) { .pillars-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 560px) { .pillars-grid { grid-template-columns: 1fr; } }
+
+        /* ==========================================================
+           Founding story
+        ========================================================== */
+        .story-section {
+            padding: 100px 0;
+            background: var(--carbon);
+            position: relative;
+            overflow: hidden;
+        }
+        .story-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle at 1px 1px, rgba(199, 255, 62, 0.05) 1px, transparent 0);
+            background-size: 48px 48px;
+            mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
+            pointer-events: none;
+        }
+
+        .story-content {
+            position: relative;
+            max-width: 720px;
+        }
+        .story-content h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(28px, 4.5vw, 44px);
+            line-height: 0.98;
+            letter-spacing: -0.03em;
+            color: var(--bone);
+            margin-bottom: 24px;
+        }
+        .story-content p {
+            font-size: 17px;
+            color: var(--bone-2);
+            line-height: 1.65;
+            margin-bottom: 20px;
+        }
+        .story-content p:last-of-type { margin-bottom: 0; }
+        .story-content .mono-detail {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--steel);
+            letter-spacing: 0.02em;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--slate);
+        }
+
+        /* ==========================================================
+           Team callout — bone block (inverted)
+        ========================================================== */
+        .team-callout {
+            background: var(--bone);
+            color: var(--carbon);
+            padding: 80px 0;
+            position: relative;
+        }
+        .team-callout::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: var(--grad-stamp-glow);
+        }
+
+        .team-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .team-copy { max-width: 560px; }
+        .team-copy h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(28px, 4.5vw, 44px);
+            line-height: 0.98;
+            letter-spacing: -0.03em;
+            color: var(--carbon);
+            margin-bottom: 12px;
+        }
+        .team-copy p {
+            font-size: 17px;
+            color: #2A2E37;
+            line-height: 1.6;
+        }
+
+        .team-callout .btn-team {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 32px;
+            background: var(--carbon);
+            color: var(--bone);
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            text-decoration: none;
+            border: 0;
+            border-radius: var(--r-sm);
+            box-shadow: 6px 6px 0 0 var(--bone-2), 6px 6px 0 1px var(--carbon);
+            transition: transform var(--dur-hover) var(--ease),
+                        box-shadow var(--dur-hover) var(--ease);
+        }
+        .team-callout .btn-team:hover,
+        .team-callout .btn-team:focus-visible {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0 0 var(--bone-2), 8px 8px 0 1px var(--carbon);
+            color: var(--bone);
+            outline: none;
+        }
+
+        /* ==========================================================
+           Responsive
+        ========================================================== */
+        @media (max-width: 768px) {
+            .hero { padding: 100px 0 72px; }
+            .mv-section, .pillars-section, .story-section, .team-callout { padding: 72px 0; }
+            .mv-card { padding: 36px 28px; }
+            .wrap { padding: 0 20px; }
+            .team-inner { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===== Navbar (mounted via /js/Navbar.js) ===== -->
+    <div id="navbar"></div>
+
+    <main>
+
+        <!-- ===== Hero ===== -->
+        <section class="hero" aria-labelledby="about-headline">
+            <div class="wrap hero-content">
+                <div class="section-eyebrow">// about</div>
+
+                <h1 id="about-headline">
+                    A community of <span class="lime">cloud security practitioners</span> in Pakistan.
+                </h1>
+
+                <p class="lede">
+                    <strong>Independent. Run by engineers. CNCF-affiliated.</strong> We are 250+ members across
+                    Lahore, Karachi, and Islamabad — building a body of cloud-native security practice that
+                    didn't exist here before. No gatekeeping. No corporate cringe. Just the work.
+                </p>
+            </div>
+        </section>
+
+        <!-- ===== Mission & Vision ===== -->
+        <section class="mv-section" aria-label="Mission and Vision">
+            <div class="wrap">
+                <div class="mv-grid reveal">
+                    <article class="mv-card">
+                        <div class="section-eyebrow">// mission</div>
+                        <h2>Make cloud security knowledge accessible to every engineer in Pakistan.</h2>
+                        <p>
+                            We run sessions, publish walkthroughs, and build labs so practitioners at every level
+                            can ship secure infrastructure — regardless of city, company size, or credentials.
+                        </p>
+                    </article>
+                    <article class="mv-card">
+                        <div class="section-eyebrow">// vision</div>
+                        <h2>A Pakistan where cloud-native security is a practiced discipline, not a buzzword.</h2>
+                        <p>
+                            We want Pakistani engineers contributing upstream to CNCF security projects, speaking
+                            at KubeCon, and setting the standard for how cloud infrastructure gets hardened in
+                            this region.
+                        </p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Four Pillars ===== -->
+        <section class="pillars-section" aria-label="Our four pillars">
+            <div class="wrap">
+                <div class="pillars-header reveal">
+                    <div class="section-eyebrow">// what-we-stand-for</div>
+                    <h2>Four pillars.</h2>
+                </div>
+
+                <div class="pillars-grid reveal">
+                    <article class="pillar-card">
+                        <div class="pillar-num">01</div>
+                        <h3>Rigor</h3>
+                        <p>What is true matters more than what sounds good. We test, we cite, we date-stamp our corrections.</p>
+                    </article>
+                    <article class="pillar-card">
+                        <div class="pillar-num">02</div>
+                        <h3>Belonging</h3>
+                        <p>The first question is the most valuable one in the room. No gatekeeping on credentials, English fluency, or city.</p>
+                    </article>
+                    <article class="pillar-card">
+                        <div class="pillar-num">03</div>
+                        <h3>Bridge</h3>
+                        <p>We connect Pakistani engineers to KubeCon, OSS contribution, and the global CNCF in both directions.</p>
+                    </article>
+                    <article class="pillar-card">
+                        <div class="pillar-num">04</div>
+                        <h3>Practice</h3>
+                        <p>Talk is cheap. Show the kubectl. Every concept gets a demo, a code block, or a runnable lab.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Founding Story ===== -->
+        <section class="story-section" aria-label="Our story">
+            <div class="wrap">
+                <div class="story-content reveal">
+                    <div class="section-eyebrow">// origin</div>
+                    <h2>Defense in depth. Hospitality on top.</h2>
+                    <p>
+                        CNSPK — Cloud Native Security Pakistan — was founded in 2024 by a group of engineers who
+                        noticed the gap: Pakistan had cloud practitioners, but no dedicated space for the security
+                        side of cloud-native. No meetups dissecting Kubernetes RBAC misconfigs. No community
+                        reviewing supply-chain attestation. No mehfil for the people who actually read the CVE.
+                    </p>
+                    <p>
+                        So we built one. Affiliated with the Cloud Native Computing Foundation as a recognised
+                        chapter, but independent in governance, voice, and direction. We run our own events, set
+                        our own agenda, and answer to the community — not a parent org's marketing calendar.
+                    </p>
+                    <p class="mono-detail">
+                        est. 2024 · CNCF-affiliated · 250+ members · 3 cities (Lahore, Karachi, Islamabad) · independent governance
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Team Callout (bone block) ===== -->
+        <section class="team-callout reveal" aria-label="Meet the team">
+            <div class="wrap">
+                <div class="team-inner">
+                    <div class="team-copy">
+                        <div class="section-eyebrow" style="color: var(--lime-600);">// the-humans</div>
+                        <h2>Meet the team behind CNSPK.</h2>
+                        <p>
+                            Organizers, speakers, and contributors — the people who keep the chapter running,
+                            the sessions shipping, and the community growing.
+                        </p>
+                    </div>
+                    <a href="/team/" class="btn-team">
+                        View the Team
+                        <span style="font-family:var(--font-mono);">→</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== Footer (mounted via /js/Footer.js) ===== -->
+    <div id="footer"></div>
+
+    <script type="module">
+        import { Navbar } from '/js/Navbar.js';
+        import { Footer } from '/js/Footer.js';
+
+        new Navbar().init();
+        new Footer().init();
+
+        /* ---- Scroll-reveal — respects prefers-reduced-motion ---- */
+        (function () {
+            const els = document.querySelectorAll('.reveal');
+            const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            if (prefersReduced || !('IntersectionObserver' in window)) {
+                els.forEach(el => el.classList.add('is-visible'));
+                return;
+            }
+
+            const io = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+            els.forEach(el => io.observe(el));
+        })();
+    </script>
+</body>
+
+</html>

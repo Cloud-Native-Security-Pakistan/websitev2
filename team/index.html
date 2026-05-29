@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'">
+
+    <!-- SEO Meta Tags -->
+    <title>Meet the Team - Cloud Native Security Pakistan | CNSPK Organizers</title>
+    <meta name="description"
+        content="Meet the organizers behind Cloud Native Security Pakistan (CNSPK) — DevSecOps engineers, security leads, and cloud-native practitioners running the chapter.">
+    <meta name="keywords"
+        content="CNSPK team, cloud native security organizers, DevSecOps Pakistan, CNCF chapter, security community leaders, cloud security experts">
+    <meta name="author" content="Cloud Native Security Pakistan">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Meet the Team - Cloud Native Security Pakistan">
+    <meta property="og:description"
+        content="Meet the organizers behind CNSPK — the practitioners running the chapter.">
+    <meta property="og:url" content="https://cloudnativesecurity.pk/team">
+    <meta property="og:site_name" content="Cloud Native Security Pakistan">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Meet the Team - Cloud Native Security Pakistan">
+    <meta name="twitter:description"
+        content="Meet the organizers behind CNSPK — the practitioners running the chapter.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="canonical" href="https://cloudnativesecurity.pk/team">
+
+    <!-- Electric register tokens (load first) -->
+    <link rel="stylesheet" href="/css/tokens.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- DOMPurify -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+
+    <style>
+        /* ==========================================================
+           Team — Electric register. Monogram tile cards on carbon,
+           italic display names, lime roles, mono locations.
+        ========================================================== */
+
+        /* Faint lime grid wash behind the header */
+        .team-hero {
+            position: relative;
+        }
+        .team-hero::before {
+            content: '';
+            position: absolute;
+            inset: -40px 0 0;
+            background-image: radial-gradient(circle at 1px 1px, rgba(199, 255, 62, 0.06) 1px, transparent 0);
+            background-size: 40px 40px;
+            -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+            mask-image: linear-gradient(to bottom, black, transparent);
+            pointer-events: none;
+        }
+
+        .team-title {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -0.03em;
+            line-height: 0.92;
+            font-size: clamp(40px, 7vw, 80px);
+            color: var(--bone);
+        }
+        .team-title em {
+            font-style: italic;
+            color: var(--lime);
+        }
+        .team-lede {
+            font-size: 18px;
+            color: var(--bone-2);
+            line-height: 1.6;
+        }
+
+        /* Filter bar */
+        .team-filter {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            letter-spacing: 0.04em;
+            color: var(--steel);
+        }
+        .team-filter select {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            letter-spacing: 0.02em;
+            color: var(--bone);
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-sm);
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: border-color var(--dur-hover) var(--ease);
+        }
+        .team-filter select:hover {
+            border-color: var(--lime);
+        }
+        .team-filter select:focus-visible {
+            outline: 2px solid var(--lime);
+            outline-offset: 2px;
+        }
+
+        /* ---- Team card ---------------------------------------- */
+        .team-card {
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-lg);
+            box-shadow: var(--shadow-card);
+            transition: transform var(--dur-elevate) var(--ease),
+                        border-color var(--dur-elevate) var(--ease);
+        }
+        .team-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--lime);
+        }
+
+        /* Monogram avatar — lime tile, carbon mono initials */
+        .team-monogram {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--r-md);
+            background: var(--grad-stamp-glow);
+            color: var(--carbon);
+            display: grid;
+            place-items: center;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: 28px;
+            letter-spacing: 0.02em;
+            box-shadow: 4px 4px 0 0 var(--carbon), 4px 4px 0 1px var(--lime-600);
+        }
+
+        .team-name {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            line-height: 1;
+            font-size: 22px;
+            color: var(--bone);
+        }
+        .team-role {
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--lime);
+        }
+        .team-company {
+            font-size: 13px;
+            color: var(--bone-2);
+        }
+        .team-location {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.04em;
+            color: var(--steel);
+        }
+        .team-bio {
+            font-size: 14px;
+            color: var(--bone-2);
+            line-height: 1.55;
+        }
+
+        .team-card__social {
+            border-top: 1px dashed var(--slate);
+        }
+        .social-icon {
+            color: var(--steel);
+            transition: color var(--dur-hover) var(--ease), transform var(--dur-hover) var(--ease);
+        }
+        .social-icon:hover {
+            color: var(--lime);
+            transform: translateY(-2px);
+        }
+        .social-icon:focus-visible {
+            outline: 2px solid var(--lime);
+            outline-offset: 2px;
+            border-radius: var(--r-sm);
+        }
+
+        /* Loading spinner — lime */
+        .team-spinner {
+            border-color: var(--slate);
+            border-top-color: var(--lime);
+        }
+        .team-status {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            letter-spacing: 0.06em;
+            color: var(--steel);
+        }
+
+        /* Join CTA block */
+        .join-block {
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-2xl);
+        }
+        .join-title {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -0.03em;
+            line-height: 0.95;
+            font-size: clamp(28px, 4vw, 44px);
+            color: var(--bone);
+        }
+        .join-copy {
+            color: var(--bone-2);
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen antialiased flex flex-col">
+    <div id="navbar"></div>
+
+    <main class="flex-grow pt-28 pb-20 px-4">
+        <div class="max-w-6xl mx-auto">
+            <!-- Header -->
+            <header class="team-hero text-center mb-12">
+                <div class="section-eyebrow" style="justify-content:center;">// chapter / organizers</div>
+                <h1 class="team-title mb-5">Meet the <em>Team</em></h1>
+                <p class="team-lede max-w-2xl mx-auto">
+                    The practitioners running CNSPK — engineers and leads keeping the chapter shipping. Built on
+                    <span style="color:var(--lime);font-weight:600;">bharosa</span>.
+                </p>
+            </header>
+
+            <!-- Filter bar (city) -->
+            <div id="team-controls"
+                class="team-filter hidden flex-wrap items-center justify-center gap-3 mb-12">
+                <label for="filter-city" class="uppercase">// filter-by-city</label>
+                <select id="filter-city" aria-label="Filter team by city">
+                    <option value="">All cities</option>
+                </select>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loading" class="text-center py-12" role="status" aria-live="polite">
+                <div class="team-spinner w-12 h-12 border-2 border-t-transparent rounded-full animate-spin mx-auto mb-4">
+                </div>
+                <span class="team-status">Loading the crew…</span>
+            </div>
+
+            <!-- Team Grid -->
+            <div id="team-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 hidden">
+                <!-- Team cards will be inserted here -->
+            </div>
+
+            <!-- No results (filter) -->
+            <div id="no-results" class="hidden text-center py-12 team-status">
+                No team members in that city.
+            </div>
+
+            <!-- Error State -->
+            <div id="error" class="hidden text-center py-12">
+                <p style="color:var(--breach);" class="font-mono">Failed to load team data. Please try again later.</p>
+            </div>
+
+            <!-- Join CTA -->
+            <section class="join-block mt-20 p-12 text-center">
+                <h2 class="join-title mb-4">Want in on the crew?</h2>
+                <p class="join-copy mb-8 max-w-2xl mx-auto">
+                    We're always looking for practitioners to help grow cloud-native security in Pakistan. Bring your
+                    skills, take the work seriously, leave the gatekeeping at the door.
+                </p>
+                <a href="mailto:hi@cloudnativesecurity.pk" class="btn-primary">
+                    Get in Touch
+                    <span style="font-family:var(--font-mono);" aria-hidden="true">↗</span>
+                </a>
+            </section>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+
+    <script type="module">
+        import { Navbar } from '../js/Navbar.js';
+        import { Footer } from '../js/Footer.js';
+        import { fetchData, sanitize } from '../js/utils.js';
+
+        // Initialize components
+        new Navbar().init();
+        new Footer().init();
+
+        // Team Card Component
+        class TeamCard {
+            constructor(member) {
+                this.member = member;
+            }
+
+            render() {
+                const { name, role, company, location, bio, image, social } = this.member;
+
+                const socialLinks = Object.entries(social || {})
+                    .map(([platform, url]) => {
+                        const icons = {
+                            website: `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 0C4.477 0 0 4.477 0 10s4.477 10 10 10 10-4.477 10-10S15.523 0 10 0zm7.75 6.25h-3.108a15.677 15.677 0 00-1.393-3.542A8.007 8.007 0 0117.75 6.25zM10 1.25c.822 0 1.886 1.24 2.584 3.75H7.416C8.114 2.49 9.178 1.25 10 1.25zM1.25 10c0-.463.042-.914.12-1.35h3.63c-.05.443-.075.893-.075 1.35s.025.907.075 1.35h-3.63A8.74 8.74 0 011.25 10zm1 3.75h3.108c.346 1.287.82 2.463 1.393 3.542A8.007 8.007 0 012.25 13.75zm3.108-7.5H2.25a8.007 8.007 0 014.501-3.542A15.677 15.677 0 005.358 6.25zM10 18.75c-.822 0-1.886-1.24-2.584-3.75h5.168c-.698 2.51-1.762 3.75-2.584 3.75zm2.916-5H7.084a14.251 14.251 0 01-.084-1.35c0-.457.025-.907.084-1.35h5.832c.059.443.084.893.084 1.35s-.025.907-.084 1.35zm.335 4.042a15.677 15.677 0 001.393-3.542h3.108a8.007 8.007 0 01-4.501 3.542zM14.925 10c0-.457-.025-.907-.075-1.35h3.63c.078.436.12.887.12 1.35s-.042.914-.12 1.35h-3.63c.05-.443.075-.893.075-1.35z"/></svg>`,
+                            twitter: `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
+                            linkedin: `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.338 16.338H13.67V12.16c0-.995-.017-2.277-1.387-2.277-1.39 0-1.601 1.086-1.601 2.207v4.248H8.014v-8.59h2.559v1.174h.037c.356-.675 1.227-1.387 2.526-1.387 2.703 0 3.203 1.778 3.203 4.092v4.711zM5.005 6.575a1.548 1.548 0 11-.003-3.096 1.548 1.548 0 01.003 3.096zm-1.337 9.763H6.34v-8.59H3.667v8.59zM17.668 1H2.328C1.595 1 1 1.581 1 2.298v15.403C1 18.418 1.595 19 2.328 19h15.34c.734 0 1.332-.582 1.332-1.299V2.298C19 1.581 18.402 1 17.668 1z"/></svg>`,
+                            facebook: `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>`,
+                            cncf: `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>`
+                        };
+
+                        return `
+                            <a href="${sanitize(url)}" target="_blank" rel="noopener noreferrer"
+                               class="social-icon"
+                               title="${platform}" aria-label="${sanitize(name)} on ${platform}">
+                                ${icons[platform] || icons.website}
+                            </a>
+                        `;
+                    }).join('');
+
+                // Initials monogram — keep the original initials logic.
+                const initials = sanitize(name.split(' ').map(n => n[0]).join(''));
+
+                return `
+                    <article class="team-card p-6 flex flex-col items-center text-center">
+                        <div class="team-monogram mb-6" aria-hidden="true">
+                            ${initials}
+                        </div>
+
+                        <h3 class="team-name mb-2">${sanitize(name)}</h3>
+                        <p class="team-role mb-1">${sanitize(role)}</p>
+                        <p class="team-company mb-2">${sanitize(company)}</p>
+                        <p class="team-location mb-4 flex items-center gap-1 justify-center">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                            </svg>
+                            ${sanitize(location)}
+                        </p>
+
+                        <p class="team-bio mb-6 flex-grow">${sanitize(bio)}</p>
+
+                        <div class="team-card__social flex gap-4 pt-4 w-full justify-center">
+                            ${socialLinks}
+                        </div>
+                    </article>
+                `;
+            }
+        }
+
+        // Keep a reference to the full roster so the city filter can
+        // re-render without re-fetching. loadTeam() owns the data fetch.
+        let allTeam = [];
+
+        // Render a list of team members into the grid.
+        function renderTeam(team) {
+            const container = document.getElementById('team-container');
+            const noResults = document.getElementById('no-results');
+
+            if (!team || team.length === 0) {
+                container.innerHTML = '';
+                container.classList.add('hidden');
+                noResults.classList.remove('hidden');
+                return;
+            }
+
+            noResults.classList.add('hidden');
+            container.innerHTML = team.map(member => new TeamCard(member).render()).join('');
+            container.classList.remove('hidden');
+        }
+
+        // City = first segment of "City, Country". No fabrication —
+        // options are derived straight from the loaded data.
+        function cityOf(member) {
+            return (member.location || '').split(',')[0].trim();
+        }
+
+        function buildCityFilter(team) {
+            const controls = document.getElementById('team-controls');
+            const select = document.getElementById('filter-city');
+            const cities = [...new Set(team.map(cityOf).filter(Boolean))].sort();
+
+            if (cities.length <= 1) {
+                // Nothing useful to filter on — leave the bar hidden.
+                return;
+            }
+
+            select.insertAdjacentHTML('beforeend',
+                cities.map(c => `<option value="${sanitize(c)}">${sanitize(c)}</option>`).join(''));
+
+            select.addEventListener('change', () => {
+                const value = select.value;
+                const filtered = value ? allTeam.filter(m => cityOf(m) === value) : allTeam;
+                renderTeam(filtered);
+            });
+
+            controls.classList.remove('hidden');
+            controls.classList.add('flex');
+        }
+
+        // Load team data
+        async function loadTeam() {
+            const container = document.getElementById('team-container');
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+
+            try {
+                const team = await fetchData('../data/team.json');
+                loading.classList.add('hidden');
+
+                if (!team || team.length === 0) {
+                    error.classList.remove('hidden');
+                    return;
+                }
+
+                allTeam = team;
+                renderTeam(team);
+                buildCityFilter(team);
+            } catch (err) {
+                console.error('Error loading team:', err);
+                loading.classList.add('hidden');
+                error.classList.remove('hidden');
+            }
+        }
+
+        // Initialize
+        loadTeam();
+    </script>
+</body>
+
+</html>

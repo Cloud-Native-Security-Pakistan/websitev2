@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://github.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+
+    <title>Member Wins — CNSPK | Shabaash</title>
+    <meta name="description"
+        content="Member wins from Cloud Native Security Pakistan — PRs merged, talks accepted, CVEs published, new jobs. The chapter celebrates what its members ship. Shabaash.">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="canonical" href="https://cloudnativesecurity.pk/wins/">
+
+    <link rel="stylesheet" href="/css/tokens.css">
+
+    <style>
+        .wrap { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+
+        .page-hero {
+            position: relative;
+            padding: 140px 0 80px;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse 80% 60% at 18% 18%, rgba(199, 255, 62, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 80% at 92% 90%, rgba(1, 65, 28, 0.35) 0%, transparent 60%),
+                var(--carbon);
+        }
+        .page-hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(199, 255, 62, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(199, 255, 62, 0.04) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none;
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+        }
+        .page-hero__content { position: relative; z-index: 2; max-width: 800px; }
+        .page-hero h1 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: clamp(44px, 8vw, 104px);
+            line-height: 0.92;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            color: var(--bone);
+            margin-bottom: 28px;
+        }
+        .page-hero h1 .accent { color: var(--lime); }
+
+        .lede {
+            font-size: clamp(18px, 2.4vw, 22px);
+            color: var(--bone-2);
+            max-width: 640px;
+            line-height: 1.55;
+            margin-bottom: 36px;
+        }
+        .lede strong { color: var(--lime); font-weight: 600; }
+
+        .hero-cta-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+        .urdu-accent {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--steel);
+            letter-spacing: 0.04em;
+            margin-top: 28px;
+        }
+        .urdu-accent em { color: var(--lime); font-style: normal; }
+
+        .section { padding: 88px 0; }
+        .section + .section { border-top: 1px solid var(--slate); }
+        .section h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: clamp(30px, 4.4vw, 52px);
+            text-transform: uppercase;
+            line-height: 0.96;
+            letter-spacing: -0.03em;
+            color: var(--bone);
+            margin-bottom: 24px;
+            max-width: 18ch;
+        }
+        .section .muted { font-size: 17px; color: var(--bone-2); max-width: 660px; line-height: 1.6; margin-bottom: 40px; }
+
+        /* What counts as a win */
+        .kinds {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+        .kind {
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-md);
+            padding: 24px;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+        .kind .tag {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--lime);
+            border: 1px solid rgba(199, 255, 62, 0.25);
+            background: rgba(199, 255, 62, 0.08);
+            padding: 4px 8px;
+            border-radius: var(--r-sm);
+            flex-shrink: 0;
+        }
+        .kind p { font-size: 14px; color: var(--bone-2); line-height: 1.5; }
+        .kind p strong { color: var(--bone); font-weight: 600; }
+
+        /* Empty-state grid */
+        .wins-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .win-ghost {
+            border: 1px dashed var(--slate);
+            border-radius: var(--r-md);
+            padding: 28px;
+            background: rgba(26, 29, 36, 0.4);
+        }
+        .win-ghost .line {
+            height: 10px;
+            border-radius: var(--r-pill);
+            background: var(--slate);
+            opacity: 0.5;
+            margin-bottom: 12px;
+        }
+        .win-ghost .line.short { width: 45%; }
+        .win-ghost .line.mid { width: 70%; }
+        .win-ghost .chip {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--steel);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-sm);
+            padding: 4px 8px;
+            margin-top: 8px;
+            letter-spacing: 0.06em;
+        }
+
+        .empty-banner {
+            border: 1px dashed var(--slate);
+            border-radius: var(--r-lg);
+            padding: 48px 32px;
+            text-align: center;
+            background: rgba(199, 255, 62, 0.04);
+            margin-bottom: 24px;
+        }
+        .empty-banner .badge {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--lime);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border: 1px solid rgba(199, 255, 62, 0.25);
+            background: rgba(199, 255, 62, 0.08);
+            padding: 6px 12px;
+            border-radius: var(--r-pill);
+            margin-bottom: 18px;
+        }
+        .empty-banner h3 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(24px, 3.4vw, 36px);
+            letter-spacing: -0.02em;
+            color: var(--bone);
+            margin-bottom: 12px;
+        }
+        .empty-banner p { color: var(--bone-2); max-width: 520px; margin: 0 auto; font-size: 15px; line-height: 1.6; }
+
+        /* Share-your-win CTA */
+        .share-cta {
+            background: var(--bone);
+            color: var(--carbon);
+            border-radius: var(--r-lg);
+            padding: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+        .share-cta::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 6px;
+            background: var(--grad-stamp-glow);
+        }
+        .share-cta .eyebrow {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--lime-600);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            display: block;
+        }
+        .share-cta h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(28px, 4vw, 44px);
+            letter-spacing: -0.02em;
+            line-height: 1;
+            color: var(--carbon);
+            margin-bottom: 16px;
+            max-width: 18ch;
+        }
+        .share-cta p { font-size: 16px; color: #2A2E37; line-height: 1.6; max-width: 56ch; margin-bottom: 24px; }
+        .share-cta .row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+
+        @media (max-width: 600px) {
+            .wrap { padding: 0 20px; }
+            .page-hero { padding: 112px 0 64px; }
+            .share-cta { padding: 32px 24px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="navbar"></div>
+
+    <main>
+        <!-- ===== Hero ===== -->
+        <section class="page-hero">
+            <div class="wrap page-hero__content">
+                <div class="section-eyebrow">// member-wins</div>
+                <!-- Roman Urdu accent (one per page): shabaash = well done -->
+                <h1>Member wins —<br><span class="accent">shabaash.</span></h1>
+                <p class="lede">
+                    When a member ships something, the chapter says so out loud. PR merged, talk accepted,
+                    CVE published, new job landed — <strong>your wins belong here.</strong> Not vanity metrics.
+                    Real work by real people in the room.
+                </p>
+                <div class="hero-cta-row">
+                    <a class="btn-primary" href="#share">Share your win →</a>
+                    <a class="btn-secondary" href="#feed">
+                        <span class="mono">// the-feed</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== What counts ===== -->
+        <section class="section">
+            <div class="wrap">
+                <div class="section-eyebrow">// what-counts</div>
+                <h2>If you shipped it, it counts.</h2>
+                <p class="muted">No win is too small. The first merged PR matters as much as the KubeCon acceptance.</p>
+                <div class="kinds">
+                    <div class="kind">
+                        <span class="tag">PR</span>
+                        <p><strong>PR merged.</strong> An open-source contribution landed — to a CNCF project or anywhere else.</p>
+                    </div>
+                    <div class="kind">
+                        <span class="tag">TALK</span>
+                        <p><strong>Talk accepted.</strong> A CFP came back green — at the chapter, a conference, or KubeCon.</p>
+                    </div>
+                    <div class="kind">
+                        <span class="tag">JOB</span>
+                        <p><strong>Job change.</strong> New role, promotion, first security gig. Career moves are wins.</p>
+                    </div>
+                    <div class="kind">
+                        <span class="tag">CVE</span>
+                        <p><strong>CVE published.</strong> You found it, reported it, got the credit. Responsible disclosure counts double.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== The feed (empty state) ===== -->
+        <section class="section" id="feed">
+            <div class="wrap">
+                <div class="section-eyebrow">// the-feed</div>
+                <h2>The wins feed.</h2>
+                <p class="muted">Newest first. Submitted by members, posted with consent.</p>
+
+                <!--
+                    TODO: wire the wins feed to data/wins.json (per features audit item #20). Anyone can add a
+                    win via PR. Proposed shape (confirm with strategist before creating the file):
+                      [{ "member": "...", "username": "...", "type": "pr|talk|job|cve", "title": "...",
+                         "date": "YYYY-MM-DD", "url": "...", "consent": true }]
+                    Render newest-first; only render entries where consent === true. The ghost cards below are
+                    inert placeholders, NOT fake wins. DO NOT invent members, wins, dates, or links.
+                -->
+                <div class="empty-banner" role="status">
+                    <span class="badge">feed · empty</span>
+                    <h3>First win lands here</h3>
+                    <p>
+                        No wins posted yet. The moment a member merges a PR, lands a talk, or ships a CVE
+                        writeup — with their nod — it shows up in this feed. Be the first: share yours below.
+                    </p>
+                </div>
+
+                <div class="wins-grid" aria-hidden="true">
+                    <div class="win-ghost">
+                        <div class="line short"></div>
+                        <div class="line mid"></div>
+                        <div class="line"></div>
+                        <span class="chip">// awaiting first win</span>
+                    </div>
+                    <div class="win-ghost">
+                        <div class="line short"></div>
+                        <div class="line"></div>
+                        <div class="line mid"></div>
+                        <span class="chip">// awaiting first win</span>
+                    </div>
+                    <div class="win-ghost">
+                        <div class="line short"></div>
+                        <div class="line mid"></div>
+                        <div class="line"></div>
+                        <span class="chip">// awaiting first win</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Share your win ===== -->
+        <section class="section" id="share">
+            <div class="wrap">
+                <div class="share-cta">
+                    <span class="eyebrow">// share-your-win</span>
+                    <h2>Done something? Say it.</h2>
+                    <p>
+                        Drop your win in the <code>#wins</code> channel and a mod will surface the good ones
+                        here (with your okay). Modest is overrated — if you shipped it, the room wants to know.
+                    </p>
+                    <div class="row">
+                        <!--
+                            TODO: replace with the real Discord #wins channel invite/deep-link once the Discord
+                            server launches (JOIN_STRATEGY §5 — Discord is a 90-day delay). Placeholder routes to
+                            the join page so it never dead-ends. DO NOT ship a fake Discord invite.
+                        -->
+                        <a class="btn-primary btn-primary--sm"
+                            href="/join/"
+                            style="box-shadow:4px 4px 0 0 var(--carbon),4px 4px 0 1px var(--lime-600);">
+                            Post in #wins →
+                        </a>
+                        <span style="font-family:var(--font-mono);font-size:12px;color:#6B7280;letter-spacing:0.04em;">
+                            // #wins opens with Discord — until then, tell us via /join/
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer"></div>
+
+    <script type="module">
+        import { Navbar } from '/js/Navbar.js';
+        import { Footer } from '/js/Footer.js';
+        new Navbar().init();
+        new Footer().init();
+    </script>
+</body>
+
+</html>

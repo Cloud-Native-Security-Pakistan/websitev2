@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+    <title>Events - CNSPK</title>
+    <meta name="description"
+        content="CNSPK meetups, labs, and panels across Pakistan. Free entry, real demos, run by practitioners. Built. Tested. Pakistani.">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Events - Cloud Native Security Pakistan">
+    <meta property="og:description"
+        content="CNSPK meetups, labs, and panels across Pakistan. Free entry, real demos, run by practitioners.">
+    <meta property="og:url" content="https://cloudnativesecurity.pk/events/">
+    <meta property="og:site_name" content="Cloud Native Security Pakistan">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="canonical" href="https://cloudnativesecurity.pk/events/">
+
+    <!-- Electric register design tokens — load first -->
+    <link rel="stylesheet" href="/css/tokens.css">
+
+    <!-- Existing stack: Tailwind + DOMPurify CDN (cards still depend on these) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+
+    <style>
+        /* ==========================================================
+           Events · Electric register · page-specific styles
+           Tokens come from /css/tokens.css
+        ========================================================== */
+        .wrap { max-width: 1280px; margin: 0 auto; padding: 0 var(--space-8); }
+
+        /* ---- Page header ---- */
+        .page-head {
+            position: relative;
+            padding: var(--space-24) 0 var(--space-12);
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse 70% 60% at 25% 10%, rgba(199, 255, 62, 0.07) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 70% at 90% 60%, rgba(1, 65, 28, 0.30) 0%, transparent 60%),
+                var(--carbon);
+        }
+        .page-head::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(199, 255, 62, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(199, 255, 62, 0.04) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none;
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+        }
+        .page-head-inner { position: relative; z-index: 2; max-width: 920px; }
+        .page-head h1 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: clamp(44px, 8vw, 104px);
+            line-height: 0.92;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            color: var(--bone);
+            margin-bottom: var(--space-6);
+        }
+        .page-head h1 .accent { color: var(--lime); }
+        .page-head .lede {
+            font-size: 20px;
+            color: var(--bone-2);
+            max-width: 680px;
+            line-height: 1.55;
+        }
+        .page-head .lede strong { color: var(--lime); font-weight: 600; }
+
+        /* ---- Tabs ---- */
+        .tabs {
+            display: flex;
+            gap: var(--space-2);
+            flex-wrap: wrap;
+            margin: var(--space-10) 0 var(--space-8);
+        }
+        .tab-btn {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--steel);
+            padding: 10px 18px;
+            border: 1px solid var(--slate);
+            border-radius: var(--r-pill);
+            background: transparent;
+            cursor: pointer;
+            transition: color var(--dur-hover) var(--ease),
+                        border-color var(--dur-hover) var(--ease),
+                        background var(--dur-hover) var(--ease);
+        }
+        .tab-btn:hover { color: var(--bone); border-color: var(--steel); }
+        .tab-btn[aria-selected="true"] {
+            color: var(--lime);
+            border-color: rgba(199, 255, 62, 0.45);
+            background: rgba(199, 255, 62, 0.10);
+        }
+        .tab-btn .count { opacity: 0.6; margin-left: 6px; }
+
+        /* ---- Grid ---- */
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: var(--space-6);
+        }
+
+        /* ---- Loading / empty / error states ---- */
+        .state-panel {
+            grid-column: 1 / -1;
+            border: 1px solid var(--slate);
+            border-radius: var(--r-lg);
+            background: var(--charcoal);
+            padding: var(--space-16) var(--space-8);
+            text-align: center;
+        }
+        .spinner {
+            width: 36px; height: 36px;
+            border: 3px solid rgba(199, 255, 62, 0.25);
+            border-top-color: var(--lime);
+            border-radius: 50%;
+            margin: 0 auto var(--space-4);
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @media (prefers-reduced-motion: reduce) {
+            .spinner { animation-duration: 0.001ms; }
+        }
+        .state-mono {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--steel);
+            letter-spacing: 0.04em;
+        }
+        .state-empty {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--steel);
+        }
+        .error-panel {
+            grid-column: 1 / -1;
+            border: 1px solid rgba(244, 63, 94, 0.30);
+            background: rgba(244, 63, 94, 0.08);
+            border-radius: var(--r-lg);
+            padding: var(--space-10);
+            text-align: center;
+        }
+        .error-panel p { color: var(--breach); margin-bottom: var(--space-5); font-family: var(--font-mono); font-size: 14px; }
+        .btn-retry {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--breach);
+            border: 1px solid rgba(244, 63, 94, 0.5);
+            border-radius: var(--r-sm);
+            padding: 10px 18px;
+            transition: background var(--dur-hover) var(--ease), color var(--dur-hover) var(--ease);
+        }
+        .btn-retry:hover { background: var(--breach); color: var(--bone); }
+
+        /* ---- Host CTA ---- */
+        .cta {
+            margin-top: var(--space-24);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--slate);
+            border-radius: var(--r-2xl);
+            background:
+                radial-gradient(ellipse 60% 80% at 85% 50%, rgba(199, 255, 62, 0.10), transparent 60%),
+                var(--charcoal);
+            padding: var(--space-16) var(--space-8);
+            text-align: center;
+        }
+        .cta-eyebrow {
+            display: inline-flex; align-items: center; gap: 10px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--lime);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: var(--space-4);
+        }
+        .cta h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(32px, 5vw, 56px);
+            line-height: 0.95;
+            letter-spacing: -0.03em;
+            color: var(--bone);
+            margin: 0 auto var(--space-4);
+            max-width: 16ch;
+        }
+        .cta p {
+            font-size: 17px;
+            color: var(--bone-2);
+            max-width: 540px;
+            margin: 0 auto var(--space-8);
+            line-height: 1.55;
+        }
+        .cta-row { display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap; }
+
+        @media (max-width: 600px) {
+            .wrap { padding: 0 var(--space-5); }
+            .cta { padding: var(--space-12) var(--space-5); }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col antialiased">
+    <div id="navbar"></div>
+
+    <main class="flex-grow">
+        <!-- Header -->
+        <header class="page-head">
+            <div class="wrap page-head-inner">
+                <div class="section-eyebrow">// events / meetups</div>
+                <h1>Show up.<br><span class="accent">Ship together.</span></h1>
+                <p class="lede">
+                    Meetups, hands-on labs, and panels across Pakistan. <strong>Free entry</strong>, real demos,
+                    real chai. Run by practitioners, vetted by the chapter. The kind of <em>mehfil</em> where you
+                    leave with a runnable repo, not a tote bag.
+                </p>
+            </div>
+        </header>
+
+        <div class="wrap" style="padding-top: var(--space-12); padding-bottom: var(--space-16);">
+            <!-- Upcoming / Past tabs -->
+            <div class="tabs" role="tablist" aria-label="Filter events by time">
+                <button class="tab-btn" role="tab" id="tab-upcoming" aria-selected="true"
+                    aria-controls="events-container" data-filter="upcoming">
+                    Upcoming<span class="count" id="count-upcoming" aria-hidden="true"></span>
+                </button>
+                <button class="tab-btn" role="tab" id="tab-past" aria-selected="false"
+                    aria-controls="events-container" data-filter="past">
+                    Past<span class="count" id="count-past" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <!-- Events Grid (EventCard rendering owned by the components stream — do not restyle card internals here) -->
+            <div id="events-container" class="events-grid" role="tabpanel" aria-labelledby="tab-upcoming">
+                <!-- Loading State -->
+                <div id="loading" class="state-panel">
+                    <div class="spinner" aria-hidden="true"></div>
+                    <span class="state-mono">$ fetching events.json …</span>
+                </div>
+            </div>
+
+            <div id="error" class="hidden">
+                <div class="error-panel">
+                    <p>// error · unable to load events</p>
+                    <button onclick="window.location.reload()" class="btn-retry">Retry</button>
+                </div>
+            </div>
+
+            <!-- Host an event CTA -->
+            <section class="cta">
+                <div class="cta-eyebrow">// host / propose</div>
+                <h2>Bring the next mehfil to your city.</h2>
+                <p>
+                    Got a venue, a talk, or a lab idea? CNSPK runs on community-submitted sessions.
+                    Open an issue or drop us a line — we handle the rest.
+                </p>
+                <div class="cta-row">
+                    <a href="https://github.com/cloudnativesecurity-pk/events/issues/new"
+                        class="btn-primary" target="_blank" rel="noopener noreferrer">
+                        Propose an event
+                        <span style="font-family:var(--font-mono);">↗</span>
+                    </a>
+                    <a href="mailto:hi@cloudnativesecurity.pk" class="btn-secondary">
+                        <span class="mono">// email</span>
+                        hi@cloudnativesecurity.pk
+                    </a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+
+    <script type="module">
+        import { EventCard } from '../js/EventCard.js';
+        import { Navbar } from '../js/Navbar.js';
+        import { Footer } from '../js/Footer.js';
+        import { fetchData, domReady } from '../js/utils.js';
+
+        new Navbar().init();
+        new Footer().init();
+
+        // --- Preserved data-loading state (unchanged contract) ---
+        let allEvents = [];
+        let activeFilter = 'upcoming';
+
+        // date >= today => upcoming, otherwise past
+        function isUpcoming(event) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return new Date(event.date) >= today;
+        }
+
+        async function loadEvents() {
+            const container = document.getElementById('events-container');
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+
+            try {
+                const events = await fetchData('../data/events.json');
+                loading.classList.add('hidden');
+
+                if (!events || events.length === 0) {
+                    container.innerHTML = `
+                        <div class="state-panel">
+                            <p class="state-empty">No events scheduled at the moment.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Preserved sort logic: newest first by date.
+                allEvents = events.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                updateCounts();
+                renderEvents();
+                setupTabs();
+
+            } catch (err) {
+                console.error('Events Error:', err);
+                loading.classList.add('hidden');
+                error.classList.remove('hidden');
+            }
+        }
+
+        function updateCounts() {
+            const upcoming = allEvents.filter(isUpcoming).length;
+            const past = allEvents.length - upcoming;
+            document.getElementById('count-upcoming').textContent = `(${upcoming})`;
+            document.getElementById('count-past').textContent = `(${past})`;
+        }
+
+        function renderEvents() {
+            const container = document.getElementById('events-container');
+
+            // Filter the already-sorted list by the active tab.
+            let filtered = allEvents.filter(e => activeFilter === 'upcoming' ? isUpcoming(e) : !isUpcoming(e));
+
+            // Upcoming reads best soonest-first; past stays newest-first (preserved order).
+            if (activeFilter === 'upcoming') {
+                filtered = filtered.slice().reverse();
+            }
+
+            if (filtered.length === 0) {
+                const msg = activeFilter === 'upcoming'
+                    ? 'No upcoming events right now — check the Past tab or propose one below.'
+                    : 'No past events on record yet.';
+                container.innerHTML = `
+                    <div class="state-panel">
+                        <p class="state-empty">${msg}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // EventCard render preserved exactly — card owns its own markup + images.
+            container.innerHTML = filtered.map(event => {
+                const card = new EventCard(event);
+                return card.render();
+            }).join('');
+        }
+
+        function setupTabs() {
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    buttons.forEach(b => b.setAttribute('aria-selected', 'false'));
+                    btn.setAttribute('aria-selected', 'true');
+                    document.getElementById('events-container')
+                        .setAttribute('aria-labelledby', btn.id);
+                    activeFilter = btn.dataset.filter;
+                    renderEvents();
+                });
+            });
+        }
+
+        domReady(loadEvents);
+    </script>
+</body>
+
+</html>

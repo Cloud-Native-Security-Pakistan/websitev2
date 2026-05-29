@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+
+    <title>Speakers — CNSPK | The people behind the talks</title>
+    <meta name="description"
+        content="Every speaker who has taken a CNSPK stage, in one place. Browse by speaker and see all their talks. Want to speak? Submit a talk to the chapter CFP.">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="canonical" href="https://cloudnativesecurity.pk/speakers/">
+
+    <link rel="stylesheet" href="/css/tokens.css">
+
+    <style>
+        .wrap { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+
+        .page-hero {
+            position: relative;
+            padding: 140px 0 80px;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse 80% 60% at 18% 18%, rgba(199, 255, 62, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 80% at 92% 90%, rgba(1, 65, 28, 0.35) 0%, transparent 60%),
+                var(--carbon);
+        }
+        .page-hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(199, 255, 62, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(199, 255, 62, 0.04) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none;
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+        }
+        .page-hero__content { position: relative; z-index: 2; max-width: 800px; }
+        .page-hero h1 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: clamp(44px, 8vw, 104px);
+            line-height: 0.92;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            color: var(--bone);
+            margin-bottom: 28px;
+        }
+        .page-hero h1 .accent { color: var(--lime); }
+
+        .lede {
+            font-size: clamp(18px, 2.4vw, 22px);
+            color: var(--bone-2);
+            max-width: 640px;
+            line-height: 1.55;
+            margin-bottom: 36px;
+        }
+        .lede strong { color: var(--lime); font-weight: 600; }
+
+        .hero-cta-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+        .urdu-accent {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--steel);
+            letter-spacing: 0.04em;
+            margin-top: 28px;
+        }
+        .urdu-accent em { color: var(--lime); font-style: normal; }
+
+        .section { padding: 88px 0; }
+        .section + .section { border-top: 1px solid var(--slate); }
+        .section h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: clamp(30px, 4.4vw, 52px);
+            text-transform: uppercase;
+            line-height: 0.96;
+            letter-spacing: -0.03em;
+            color: var(--bone);
+            margin-bottom: 24px;
+            max-width: 18ch;
+        }
+        .section .muted { font-size: 17px; color: var(--bone-2); max-width: 660px; line-height: 1.6; margin-bottom: 40px; }
+
+        /* Empty-state grid of ghost speaker cards */
+        .speakers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .speaker-ghost {
+            border: 1px dashed var(--slate);
+            border-radius: var(--r-md);
+            padding: 24px;
+            background: rgba(26, 29, 36, 0.4);
+        }
+        .speaker-ghost .row { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+        .speaker-ghost .avatar {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: var(--slate);
+            opacity: 0.6;
+            display: grid;
+            place-items: center;
+            font-family: var(--font-mono);
+            color: var(--steel);
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .speaker-ghost .line {
+            height: 10px;
+            border-radius: var(--r-pill);
+            background: var(--slate);
+            opacity: 0.5;
+            margin-bottom: 10px;
+        }
+        .speaker-ghost .line.short { width: 50%; }
+        .speaker-ghost .line.mid { width: 72%; }
+        .speaker-ghost .chip {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--steel);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-sm);
+            padding: 4px 8px;
+            margin-top: 6px;
+            letter-spacing: 0.06em;
+        }
+
+        .empty-banner {
+            border: 1px dashed var(--slate);
+            border-radius: var(--r-lg);
+            padding: 48px 32px;
+            text-align: center;
+            background: rgba(199, 255, 62, 0.04);
+            margin-bottom: 24px;
+        }
+        .empty-banner .badge {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--lime);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border: 1px solid rgba(199, 255, 62, 0.25);
+            background: rgba(199, 255, 62, 0.08);
+            padding: 6px 12px;
+            border-radius: var(--r-pill);
+            margin-bottom: 18px;
+        }
+        .empty-banner h3 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(24px, 3.4vw, 36px);
+            letter-spacing: -0.02em;
+            color: var(--bone);
+            margin-bottom: 12px;
+        }
+        .empty-banner p { color: var(--bone-2); max-width: 540px; margin: 0 auto; font-size: 15px; line-height: 1.6; }
+
+        /* Want to speak CTA */
+        .speak-cta {
+            background: var(--bone);
+            color: var(--carbon);
+            border-radius: var(--r-lg);
+            padding: 48px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .speak-cta::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 6px;
+            background: var(--grad-stamp-glow);
+        }
+        .speak-cta .eyebrow {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--lime-600);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .speak-cta h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(28px, 4vw, 44px);
+            letter-spacing: -0.02em;
+            line-height: 1;
+            color: var(--carbon);
+            margin-bottom: 12px;
+            max-width: 16ch;
+        }
+        .speak-cta p { font-size: 16px; color: #2A2E37; line-height: 1.6; max-width: 48ch; margin: 0; }
+
+        @media (max-width: 600px) {
+            .wrap { padding: 0 20px; }
+            .page-hero { padding: 112px 0 64px; }
+            .speak-cta { padding: 32px 24px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="navbar"></div>
+
+    <main>
+        <!-- ===== Hero ===== -->
+        <section class="page-hero">
+            <div class="wrap page-hero__content">
+                <div class="section-eyebrow">// speakers</div>
+                <h1>The people<br>behind<br><span class="accent">the talks.</span></h1>
+                <p class="lede">
+                    Every engineer who's taken a CNSPK stage, in one place — grouped by speaker, with the
+                    count of talks they've delivered. <strong>One name, every session they ran.</strong>
+                    Practitioners who showed the kubectl instead of just talking about it.
+                </p>
+                <div class="hero-cta-row">
+                    <a class="btn-primary" href="/cfp/">Want to speak? →</a>
+                    <a class="btn-secondary" href="/sessions/">
+                        <span class="mono">// browse-sessions</span>
+                    </a>
+                </div>
+                <!-- Roman Urdu accent (one per page): mehfil = the gathering -->
+                <p class="urdu-accent">$ every speaker turned a session into a <em>mehfil</em> worth showing up for.</p>
+            </div>
+        </section>
+
+        <!-- ===== Explanation ===== -->
+        <section class="section">
+            <div class="wrap">
+                <div class="section-eyebrow">// how-this-works</div>
+                <h2>Speaker-first, not talk-first.</h2>
+                <p class="muted">
+                    The sessions page lists talks. This page flips it: one card per speaker, so you can see
+                    the whole arc of what someone's brought to the chapter — and follow their socials to
+                    catch what they do next. Future speakers get their own profile the moment their first
+                    talk ships.
+                </p>
+            </div>
+        </section>
+
+        <!-- ===== Speakers index (empty state) ===== -->
+        <section class="section">
+            <div class="wrap">
+                <div class="section-eyebrow">// the-index</div>
+                <h2>Every CNSPK speaker.</h2>
+                <p class="muted">Grouped by speaker. Each card shows talk count and links to their sessions.</p>
+
+                <!--
+                    TODO: render this index from data/sessions.json — read the `speaker` object on each session
+                    ({ name, role, company, image, linkedin, twitter }), GROUP BY speaker (key on name, or a
+                    future stable speaker id), and render one card per unique speaker with:
+                      - avatar (speaker.image, with alt="<name> — speaker portrait"; fall back to initials)
+                      - name, role @ company
+                      - a talk count ("3 talks") derived from how many sessions reference that speaker
+                      - linkedin / twitter links when present (rel="noopener noreferrer")
+                      - a link to that speaker's sessions (filter the sessions page by speaker)
+                    Sort by talk count desc, then name. The ghost cards below are inert placeholders, NOT real
+                    speakers. DO NOT fabricate speakers, talk counts, roles, companies, or portraits — render
+                    only what exists in data/sessions.json. A future /speakers/{username}/ detail route can
+                    reuse the same data (features audit item #28).
+                -->
+                <div class="empty-banner" role="status">
+                    <span class="badge">index · not yet wired</span>
+                    <h3>Speakers load from the sessions data</h3>
+                    <p>
+                        This index is built to read from <code>data/sessions.json</code> and group every talk
+                        by its speaker. Until that wiring lands, it stays empty on purpose — no placeholder
+                        names, no invented bios. Real speakers only.
+                    </p>
+                </div>
+
+                <div class="speakers-grid" aria-hidden="true">
+                    <div class="speaker-ghost">
+                        <div class="row">
+                            <div class="avatar">?</div>
+                            <div style="flex:1;">
+                                <div class="line short"></div>
+                                <div class="line mid"></div>
+                            </div>
+                        </div>
+                        <div class="line"></div>
+                        <span class="chip">// from sessions.json</span>
+                    </div>
+                    <div class="speaker-ghost">
+                        <div class="row">
+                            <div class="avatar">?</div>
+                            <div style="flex:1;">
+                                <div class="line short"></div>
+                                <div class="line mid"></div>
+                            </div>
+                        </div>
+                        <div class="line"></div>
+                        <span class="chip">// from sessions.json</span>
+                    </div>
+                    <div class="speaker-ghost">
+                        <div class="row">
+                            <div class="avatar">?</div>
+                            <div style="flex:1;">
+                                <div class="line short"></div>
+                                <div class="line mid"></div>
+                            </div>
+                        </div>
+                        <div class="line"></div>
+                        <span class="chip">// from sessions.json</span>
+                    </div>
+                    <div class="speaker-ghost">
+                        <div class="row">
+                            <div class="avatar">?</div>
+                            <div style="flex:1;">
+                                <div class="line short"></div>
+                                <div class="line mid"></div>
+                            </div>
+                        </div>
+                        <div class="line"></div>
+                        <span class="chip">// from sessions.json</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Want to speak CTA ===== -->
+        <section class="section">
+            <div class="wrap">
+                <div class="speak-cta">
+                    <div>
+                        <span class="eyebrow">// want-to-speak</span>
+                        <h2>Your name could be on this wall.</h2>
+                        <p>
+                            First-time speakers welcome — we mentor you through scoping, demo, and dry-run.
+                            Bring something real you've shipped and the chapter will give you the stage.
+                        </p>
+                    </div>
+                    <a class="btn-primary btn-primary--sm" href="/cfp/"
+                        style="box-shadow:4px 4px 0 0 var(--carbon),4px 4px 0 1px var(--lime-600);">
+                        Submit a talk →
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer"></div>
+
+    <script type="module">
+        import { Navbar } from '/js/Navbar.js';
+        import { Footer } from '/js/Footer.js';
+        new Navbar().init();
+        new Footer().init();
+    </script>
+</body>
+
+</html>

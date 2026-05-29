@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--
+      CSP matches the v2 pattern: tokens.css is loaded from 'self' and @imports
+      the four brand fonts (Bricolage Grotesque, Inter, JetBrains Mono, Noto
+      Nastaliq Urdu) from fonts.googleapis.com — covered by style-src; the font
+      files come from fonts.gstatic.com — covered by font-src. jsdelivr/tailwind
+      allowances retained so no v2 routing breaks.
+    -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+
+    <title>Brand · CNSPK · Cloud Native Security Pakistan</title>
+    <meta name="description"
+        content="The CNSPK brand book — Electric register. The Shield, the lime-on-dark colour system, italic display typography, the voice, and the tagline: kubectl apply -f pakistan.yaml. Download the logo assets.">
+    <meta name="keywords"
+        content="CNSPK brand, brand guidelines, Cloud Native Security Pakistan, logo, brand book, Electric lime, design tokens, brand assets">
+    <meta name="author" content="Cloud Native Security Pakistan">
+    <meta name="theme-color" content="#0F1115">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Brand · CNSPK · Cloud Native Security Pakistan">
+    <meta property="og:description"
+        content="The CNSPK brand book — Electric register. The Shield, the lime-on-dark colour system, italic display type, the voice, and the assets.">
+    <meta property="og:url" content="https://cloudnativesecurity.pk/brand/">
+    <meta property="og:site_name" content="Cloud Native Security Pakistan">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Brand · CNSPK">
+    <meta name="twitter:description"
+        content="The CNSPK brand book — Electric register. Built. Tested. Pakistani.">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="canonical" href="https://cloudnativesecurity.pk/brand/">
+
+    <!-- Design tokens first: colour, type, motion, shared primitives + font @import -->
+    <link rel="stylesheet" href="/css/tokens.css">
+    <!-- Brand-book page-specific styles (Electric; no blue, no anti-scrape) -->
+    <link rel="stylesheet" href="/brand/styles.css">
+</head>
+
+<body>
+
+    <!-- ===== Navbar (mounted via /js/Navbar.js) ===== -->
+    <div id="navbar"></div>
+
+    <main>
+
+        <!-- ===== Hero ===== -->
+        <section id="top" class="brand-hero">
+            <div class="wrap brand-hero__content">
+                <div class="brand-hero__meta">
+                    <span class="status-pill">
+                        <span class="status-dot"></span>
+                        <span>brand / electric / v2</span>
+                    </span>
+                    <span style="opacity:0.6">·</span>
+                    <span class="cmd">$ cat brand-book.md</span>
+                </div>
+
+                <h1>
+                    The CNSPK<br />
+                    <span class="lime-line">brand.</span>
+                </h1>
+
+                <p class="lede">
+                    One register: <strong>Electric</strong>. Lime on charcoal, bone for warmth, italic
+                    display caps that declare instead of apologise. This is how the chapter looks, reads, and
+                    sounds — built for practitioners, not press releases.
+                </p>
+                <p class="brand-hero__version">// living document · Electric register · placeholder Shield until the Phase 2 vector ships</p>
+            </div>
+        </section>
+
+        <!-- ===== Logo / The Shield ===== -->
+        <section id="shield" class="section">
+            <div class="wrap">
+                <div class="section-head">
+                    <div class="section-eyebrow">// the-mark</div>
+                    <h2>The <em>Shield</em>.</h2>
+                    <p>
+                        Our mark is a hexagonal shield with a mono <strong>CN</strong> set inside it. It's drawn in
+                        pure CSS — a <code>clip-path</code> hexagon filled with Electric Lime, the wordmark cut out
+                        in Carbon. It reads at 24px in a nav and at 120px on a poster without losing its edges.
+                    </p>
+                </div>
+
+                <div class="shield-grid">
+                    <div class="shield-stage">
+                        <span class="brand-shield" role="img" aria-label="CNSPK shield mark — lime hexagon with CN">CN</span>
+                        <span class="shield-caption">placeholder mark · ships as a vector in phase 2</span>
+                    </div>
+
+                    <div class="shield-copy">
+                        <h3>Why a hexagon</h3>
+                        <p>
+                            The hex is the shape of the cloud-native world — Kubernetes, the CNCF landscape, the
+                            container. We took it, sharpened it into a shield, and put our initials inside. Defense
+                            in depth, drawn in one mark.
+                        </p>
+                        <h3>How it's built</h3>
+                        <p>
+                            <code>clip-path: polygon(50% 0%, 100% 22%, 100% 60%, 50% 100%, 0% 60%, 0% 22%)</code> on a
+                            lime fill, with <code>CN</code> in JetBrains Mono. Three sizes ship in tokens:
+                            <code>.brand-shield--sm</code>, the default, and <code>.brand-shield--lg</code>.
+                        </p>
+                        <h3>Clear space &amp; surface</h3>
+                        <p>
+                            Always lime on a dark surface. Keep clear space equal to the height of the
+                            <code>CN</code> on every side. Never recolour the fill, never add a stroke, never set the
+                            lime mark on a light background.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Existing legacy logo assets, rethemed in dark/light frames -->
+                <div class="asset-row">
+                    <div class="asset-card asset-card--dark">
+                        <div class="asset-card__frame">
+                            <img src="/brand/assets/Color Logo with Text (Short Form).png"
+                                alt="CNSPK colour logo lockup with wordmark, short form">
+                        </div>
+                        <span class="asset-card__label">Colour lockup · on dark</span>
+                    </div>
+                    <div class="asset-card asset-card--light">
+                        <div class="asset-card__frame">
+                            <img src="/brand/assets/CNSP Logo Black.png" alt="CNSPK shield logo in black on a light surface">
+                        </div>
+                        <span class="asset-card__label">Black mark · on light</span>
+                    </div>
+                    <div class="asset-card asset-card--dark">
+                        <div class="asset-card__frame">
+                            <img class="invert-logo" src="/brand/assets/CNSP Logo Black.png"
+                                alt="CNSPK shield logo reversed to white on a dark surface">
+                        </div>
+                        <span class="asset-card__label">Reversed mark · on dark</span>
+                    </div>
+                    <div class="asset-card asset-card--light">
+                        <div class="asset-card__frame">
+                            <img src="/brand/assets/Group 54.svg" alt="CNSPK full wordmark lockup, vector">
+                        </div>
+                        <span class="asset-card__label">Full wordmark · SVG</span>
+                    </div>
+                </div>
+                <!-- TODO: legacy lockups still carry the old wordmark colours. Replace with
+                     Electric-register vectors when the Phase 2 logo set ships. -->
+            </div>
+        </section>
+
+        <!-- ===== Colour system ===== -->
+        <section id="colors" class="section">
+            <div class="wrap">
+                <div class="section-head">
+                    <div class="section-eyebrow">// colour-system</div>
+                    <h2>Lime on dark. <em>Always.</em></h2>
+                    <p>
+                        The palette is dark-mode native: lime accents, charcoal surfaces, bone for warmth. Heritage
+                        green and gold are ceremonial only. Every colour below is a token in
+                        <code style="font-family:var(--font-mono);color:var(--lime)">/css/tokens.css</code>.
+                    </p>
+                </div>
+
+                <div class="swatch-group-label">primary · lime</div>
+                <div class="swatch-grid">
+                    <div class="swatch">
+                        <div class="swatch__chip" style="background:#C7FF3E"></div>
+                        <div class="swatch__body">
+                            <span class="swatch__name">Electric Lime</span>
+                            <span class="swatch__hex">#C7FF3E</span>
+                            <span class="swatch__role">Main accent, CTAs, display highlights. Dark surfaces only — 13.4:1 on Carbon (AAA).</span>
+                            <span class="swatch__token">--lime</span>
+                        </div>
+                    </div>
+                    <div class="swatch">
+                        <div class="swatch__chip" style="background:#9BD11A"></div>
+                        <div class="swatch__body">
+                            <span class="swatch__name">Lime 600</span>
+                            <span class="swatch__hex">#9BD11A</span>
+                            <span class="swatch__role">Darker companion. The only lime allowed on bone/light — passes AA at 18px+.</span>
+                            <span class="swatch__token">--lime-600</span>
+                        </div>
+                    </div>
+                    <div class="swatch">
+                        <div class="swatch__chip" style="background:#E8FF8A"></div>
+                        <div class="swatch__body">
+                            <span class="swatch__name">Lime Glow</span>
+                            <span class="swatch__hex">#E8FF8A</span>
+                            <span class="swatch__role">Subtle highlights and hover lift on lime CTAs.</span>
+                            <span class="swatch__token">--lime-glow</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swatch-group-label">surfaces · neutrals</div>
+                <div class="swatch-grid">
+                    <div class="swatch">
+                        <div class="swatch__chip swatch__chip--bordered" style="background:#0F1115"></div>
+                        <div class="swatch__body">
+                            <span class="swatch__name">Carbon</span>
+                            <span class="swatch__hex">#0F1115</span>
+                            <span class="swatch__role">Page background. Warmer than pure black.</span>
+                            <span class="swatch__token">--carbon</span>
+                        </div>
+                    </div>
+                    <div class="swatch">
+                        <div class="swatch__chip" style="background:#1A1D24"></div>
+                        <div class="swatch__body">
+                            <span class="swatch__name">Charcoal</span>
+                            <span class="swatch__hex">#1A1D24</span>
+                            <span class="swatch__role">Card and panel surfaces.</span>
+                            <span class="swatch__token">--charcoal</span>
+                        </div>
+                    </div>
+                    <div class="swatch">
+                        <div class="swatch__chip" style="background:#F4F1EA"></div>
+                        <div class="swatch__body">
+                            <span class="swatch__name">Bone</span>
+                            <span class="swatch__hex">#F4F1EA</span>
+                            <span class="swatch__role">Primary text on dark; primary surface in light/editorial blocks. 16.4:1 on Carbon (AAA).</span>
+                            <span class="swatch__token">--bone</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swatch-group-label">heritage · ceremonial only</div>
+                <div class="swatch-grid">
+                    <div class="swatch">
+                        <div class="swatch__chip" style="background:#01411C"></div>
+                        <div class="swatch__body">
+                            <span class="swatch__name">Pakistan Green</span>
+                            <span class="swatch__hex">#01411C</span>
+                            <span class="swatch__role">Ceremonial accent — anniversary, state co-brand, gold-paired moments. Used sparingly.</span>
+                            <span class="swatch__token">--pak-green</span>
+                        </div>
+                    </div>
+                    <div class="swatch">
+                        <div class="swatch__chip" style="background:#C9A227"></div>
+                        <div class="swatch__body">
+                            <span class="swatch__name">Gold</span>
+                            <span class="swatch__hex">#C9A227</span>
+                            <span class="swatch__role">Urdu tagline accent at low opacity. Ceremonial only.</span>
+                            <span class="swatch__token">--gold</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- The lime-on-dark-only rule -->
+                <div class="rule-callout">
+                    <h3>The one rule that breaks everything if you ignore it</h3>
+                    <p>
+                        Electric Lime <code>#C7FF3E</code> scores <strong>1.55:1 on white — a WCAG fail</strong>. It
+                        only ever appears on dark surfaces. On bone or any light surface, switch to
+                        <code>#9BD11A</code> (Lime 600) for text and CTAs.
+                    </p>
+                    <div class="rule-demo">
+                        <div class="rule-demo__tile rule-demo__tile--ok">
+                            Lime on Carbon
+                            <span class="mark">✓ #C7FF3E on dark · 13.4:1 · AAA</span>
+                        </div>
+                        <div class="rule-demo__tile rule-demo__tile--bad">
+                            Lime 600 on Bone
+                            <span class="mark">✓ #9BD11A on light · AA · never raw #C7FF3E here</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Typography ===== -->
+        <section id="type" class="section">
+            <div class="wrap">
+                <div class="section-head">
+                    <div class="section-eyebrow">// typography</div>
+                    <h2>Four faces. <em>One voice.</em></h2>
+                    <p>
+                        Display declares, body explains, mono operates, Urdu honours. Loaded once from the token
+                        sheet so every page sings in the same key.
+                    </p>
+                </div>
+
+                <!-- Display -->
+                <div class="type-specimen">
+                    <div class="type-specimen__meta">
+                        <span class="type-specimen__name">Bricolage Grotesque</span>
+                        <span class="type-specimen__role">// display · 800 · italic · uppercase</span>
+                    </div>
+                    <div class="specimen-display">Built. <span class="lime">Tested.</span> Pakistani.</div>
+                    <p class="type-note">letter-spacing −0.03em · line-height 0.92 · the brand's signature voice</p>
+                </div>
+
+                <!-- Body -->
+                <div class="type-specimen">
+                    <div class="type-specimen__meta">
+                        <span class="type-specimen__name">Inter</span>
+                        <span class="type-specimen__role">// body · 400–800</span>
+                    </div>
+                    <div class="specimen-body">
+                        <p>
+                            We are engineers, students, and security leads in Lahore, Karachi, and Islamabad —
+                            shipping cloud-native infrastructure, breaking it on purpose, and writing it back better.
+                            Body copy stays readable, calm, and high-contrast on dark.
+                        </p>
+                        <div class="weights">
+                            <span class="w400">Regular</span>
+                            <span class="w500">Medium</span>
+                            <span class="w600">Semibold</span>
+                            <span class="w700">Bold</span>
+                            <span class="w800">Extrabold</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mono -->
+                <div class="type-specimen">
+                    <div class="type-specimen__meta">
+                        <span class="type-specimen__name">JetBrains Mono</span>
+                        <span class="type-specimen__role">// mono · terminal moments · lime labels</span>
+                    </div>
+                    <div class="specimen-mono">
+                        <span class="dim">$</span> kubectl apply <span class="lime">-f pakistan.yaml</span><br />
+                        <span class="dim"># eyebrows, version stamps, code, and UI labels</span><br />
+                        <span class="lime">// chapter / live / lhe-khi-isb</span>
+                    </div>
+                </div>
+
+                <!-- Urdu -->
+                <div class="type-specimen">
+                    <div class="type-specimen__meta">
+                        <span class="type-specimen__name">Noto Nastaliq Urdu</span>
+                        <span class="type-specimen__role">// urdu · ceremonial · gold · RTL</span>
+                    </div>
+                    <div class="specimen-urdu" lang="ur" dir="rtl">
+                        کلاؤڈ نیٹو سیکیورٹی پاکستان
+                        <span class="small">بھروسہ</span>
+                    </div>
+                    <p class="type-note">direction: rtl · line-height 2.2 · low opacity · used sparingly, never a full paragraph</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Voice ===== -->
+        <section id="voice" class="section">
+            <div class="wrap">
+                <div class="section-head">
+                    <div class="section-eyebrow">// voice</div>
+                    <h2>How we <em>sound</em>.</h2>
+                </div>
+
+                <p class="voice-statement">
+                    Confident enough to declare, technical enough to be trusted, warm enough to feel like
+                    <em>home</em>, fast enough to respect your time.
+                </p>
+                <p class="voice-sub">
+                    Lead with the verb, not the apology. Headlines in italic display caps. One Roman Urdu word of
+                    attitude per page, where it earns its place — <em style="color:var(--lime);font-style:normal">bharosa</em>,
+                    <em style="color:var(--lime);font-style:normal">mehfil</em>,
+                    <em style="color:var(--lime);font-style:normal">takleef</em>. CNSPK is its own thing: independent,
+                    run by practitioners. CNCF affiliation is a credential, not the headline.
+                </p>
+
+                <div class="dodont-grid">
+                    <div class="dodont dodont--do">
+                        <div class="dodont__head">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                <polyline points="22 4 12 14.01 9 11.01" />
+                            </svg>
+                            <span>Do</span>
+                        </div>
+                        <ul>
+                            <li>
+                                Lead with the verb.
+                                <span class="ex">"Run this command."</span>
+                            </li>
+                            <li>
+                                Declare in italic display caps.
+                                <span class="ex">"BUILT. TESTED. PAKISTANI."</span>
+                            </li>
+                            <li>
+                                Show the kubectl. Every claim gets a demo, a code block, or a runnable lab.
+                                <span class="ex">"Here's the five-line fix."</span>
+                            </li>
+                            <li>
+                                One word of attitude, where it lands.
+                                <span class="ex">"∞ bharosa."</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="dodont dodont--dont">
+                        <div class="dodont__head">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="15" y1="9" x2="9" y2="15" />
+                                <line x1="9" y1="9" x2="15" y2="15" />
+                            </svg>
+                            <span>Don't</span>
+                        </div>
+                        <ul>
+                            <li>
+                                Open with corporate cringe.
+                                <span class="ex">"Excited to announce… 🚀🔥 buckle up."</span>
+                            </li>
+                            <li>
+                                Apologise before the point.
+                                <span class="ex">"We'd like to suggest you might consider…"</span>
+                            </li>
+                            <li>
+                                Machine-translate technical terms or publish a full Urdu paragraph.
+                                <span class="ex">Never translate "Kubernetes" into Urdu.</span>
+                            </li>
+                            <li>
+                                Lead with the CNCF badge.
+                                <span class="ex">"Pakistan's first CNCF Security Chapter."</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== The tagline (kubectl mono stamp on bone) ===== -->
+        <section id="tagline" class="tag-block invert reveal" aria-label="The tagline">
+            <div class="wrap">
+                <code class="tag-mark">kubectl apply -f pakistan.yaml</code>
+                <h2>Read the CVE.<br />Drink the chai.</h2>
+                <p>
+                    Defense in depth. Hospitality on top. The tagline lockup is the mono stamp — lime fill, carbon
+                    border, hard offset shadow, a one-degree tilt. Mix-and-match with "Built. Tested. Pakistani."
+                </p>
+                <p class="tag-note">// approved lines: kubectl apply -f pakistan.yaml · read the cve, drink the chai · built. tested. pakistani.</p>
+            </div>
+        </section>
+
+        <!-- ===== Download / assets ===== -->
+        <section id="download" class="section">
+            <div class="wrap">
+                <div class="section-head">
+                    <div class="section-eyebrow">// assets</div>
+                    <h2>Take the <em>files</em>.</h2>
+                    <p>
+                        The current logo set lives in <code style="font-family:var(--font-mono);color:var(--lime)">/brand/assets/</code>.
+                        Use approved files only, keep clear space, and never recolour the mark.
+                    </p>
+                </div>
+
+                <div class="download-panel reveal">
+                    <div class="download-panel__head">
+                        <div>
+                            <h3>Logo assets</h3>
+                            <p>PNG and SVG. The Electric-register vector set ships in Phase 2 — until then, these are the canonical files.</p>
+                        </div>
+                        <a href="/brand/assets/" class="btn-primary btn-primary--sm">
+                            Open assets folder
+                            <span style="font-family:var(--font-mono);">↗</span>
+                        </a>
+                    </div>
+
+                    <div class="file-list">
+                        <a class="file-row" href="/brand/assets/Color Logo with Text (Short Form).png" download>
+                            <span class="file-row__icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                    <polyline points="7 10 12 15 17 10" />
+                                    <line x1="12" y1="15" x2="12" y2="3" />
+                                </svg>
+                            </span>
+                            <span class="file-row__name">Color Logo with Text (Short Form)</span>
+                            <span class="file-row__type">PNG</span>
+                        </a>
+                        <a class="file-row" href="/brand/assets/CNSP Logo Black.png" download>
+                            <span class="file-row__icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                    <polyline points="7 10 12 15 17 10" />
+                                    <line x1="12" y1="15" x2="12" y2="3" />
+                                </svg>
+                            </span>
+                            <span class="file-row__name">CNSP Logo Black</span>
+                            <span class="file-row__type">PNG</span>
+                        </a>
+                        <a class="file-row" href="/brand/assets/Group 54.svg" download>
+                            <span class="file-row__icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                    <polyline points="7 10 12 15 17 10" />
+                                    <line x1="12" y1="15" x2="12" y2="3" />
+                                </svg>
+                            </span>
+                            <span class="file-row__name">Group 54 (full wordmark)</span>
+                            <span class="file-row__type">SVG</span>
+                        </a>
+                    </div>
+                    <p class="download-note">
+                        // these files carry the legacy lockup. The shield, type, and colour rules on this page are the
+                        current source of truth — apply them when placing any mark.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Usage do's and don'ts ===== -->
+        <section id="usage" class="section">
+            <div class="wrap">
+                <div class="section-head">
+                    <div class="section-eyebrow">// usage</div>
+                    <h2>Do's &amp; <em>don'ts</em>.</h2>
+                    <p>The mark sits high in the visual hierarchy — large, high-contrast, no effects. Keep it sharp.</p>
+                </div>
+
+                <div class="usage-grid">
+                    <div class="dodont dodont--do">
+                        <div class="dodont__head">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                <polyline points="22 4 12 14.01 9 11.01" />
+                            </svg>
+                            <span>Do</span>
+                        </div>
+                        <ul>
+                            <li>Put the lime Shield on dark surfaces only.</li>
+                            <li>Use #9BD11A (Lime 600) for any lime on light/bone.</li>
+                            <li>Keep clear space equal to the CN height on all sides.</li>
+                            <li>Scale proportionally and keep high contrast.</li>
+                            <li>Set headlines in Bricolage Grotesque — italic, uppercase.</li>
+                        </ul>
+                    </div>
+
+                    <div class="dodont dodont--dont">
+                        <div class="dodont__head">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="15" y1="9" x2="9" y2="15" />
+                                <line x1="9" y1="9" x2="15" y2="15" />
+                            </svg>
+                            <span>Don't</span>
+                        </div>
+                        <ul>
+                            <li>Never place raw #C7FF3E lime on white or bone — it fails WCAG.</li>
+                            <li>Don't recolour, stretch, rotate, or add shadows to the mark.</li>
+                            <li>Don't use the retired blue palette (#00A2FF / #003366). It's dead.</li>
+                            <li>Don't crowd the Shield or set it on busy backgrounds.</li>
+                            <li>Don't lead with the CNCF badge as the brand identifier.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== Footer (mounted via /js/Footer.js) ===== -->
+    <div id="footer"></div>
+
+    <script type="module">
+        import { Navbar } from '/js/Navbar.js';
+        import { Footer } from '/js/Footer.js';
+
+        new Navbar().init();
+        new Footer().init();
+
+        /* ---- Scroll-reveal — respects prefers-reduced-motion ---- */
+        (function () {
+            const els = document.querySelectorAll('.reveal');
+            const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            if (prefersReduced || !('IntersectionObserver' in window)) {
+                els.forEach(el => el.classList.add('is-visible'));
+                return;
+            }
+
+            const io = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+            els.forEach(el => io.observe(el));
+        })();
+    </script>
+</body>
+
+</html>

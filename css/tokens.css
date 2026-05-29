@@ -1,0 +1,400 @@
+/* ==========================================================
+   CNSPK · Electric Register · Design Tokens
+   v2.0.0 — Foundation stream (Stream 1)
+   ----------------------------------------------------------
+   Drop-in stylesheet. Link this first on every page:
+     <link rel="stylesheet" href="/css/tokens.css">
+
+   Defines: CSS custom properties (color, type, motion,
+   radius, spacing, shadow), Google Fonts bundle, base body
+   styles, accessible focus reset, reduced-motion handling,
+   and the canonical utility classes shared across the site
+   (brand-shield, section-eyebrow, btn-primary, btn-secondary,
+   status-pill, status-dot, pulse, glass-panel).
+
+   Reference: AGENT_BRIEF.md — Electric register.
+   Visual ground-truth: CNSPK-Rebrand-Research/sample-site.html
+   ========================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+/* ==========================================================
+   1. Tokens
+   ========================================================== */
+:root {
+  /* ---- Primary lime ------------------------------------- */
+  --lime: #C7FF3E;
+  --lime-600: #9BD11A;       /* darker companion; AA on bone/light */
+  --lime-glow: #E8FF8A;
+
+  /* ---- Heritage accents (ceremonial) -------------------- */
+  --pak-green: #01411C;
+  --gold: #C9A227;
+
+  /* ---- Surfaces (dark-mode native) ---------------------- */
+  --carbon: #0F1115;         /* page bg */
+  --charcoal: #1A1D24;       /* card surfaces */
+  --slate: #2A2E37;          /* borders, dividers */
+  --steel: #6B7280;          /* secondary text */
+  --bone: #F4F1EA;           /* primary text on dark; primary surface on light */
+  --bone-2: #E8E3D6;         /* subtler bone */
+
+  /* ---- Semantic ----------------------------------------- */
+  --watch: #F59E0B;          /* warning */
+  --breach: #F43F5E;         /* error / threat advisory */
+  --signal: #06B6D4;         /* info */
+
+  /* ---- Signature gradients ------------------------------ */
+  --grad-stamp-glow: linear-gradient(135deg, #C7FF3E 0%, #9BD11A 100%);
+  --grad-terminal-dawn: linear-gradient(180deg, #0F1115 0%, #01411C 50%, #C7FF3E 100%);
+
+  /* ---- Type families ------------------------------------ */
+  --font-display: 'Bricolage Grotesque', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'Courier New', monospace;
+  --font-urdu: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', serif;
+
+  /* ---- Motion ------------------------------------------- */
+  --dur-hover: 150ms;        /* hover state changes */
+  --dur-elevate: 200ms;      /* surface elevation */
+  --dur-reveal: 400ms;       /* scroll-reveal */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+
+  /* ---- Radius scale ------------------------------------- */
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+  --r-2xl: 24px;
+  --r-pill: 9999px;
+
+  /* ---- Spacing scale (4px base) ------------------------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --space-32: 128px;
+
+  /* ---- Shadow ------------------------------------------- */
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.02) inset, 0 8px 24px rgba(0, 0, 0, 0.32);
+  --shadow-cta: 6px 6px 0 0 var(--charcoal), 6px 6px 0 1px var(--lime-600);
+  --shadow-cta-hover: 8px 8px 0 0 var(--charcoal), 8px 8px 0 1px var(--lime-600);
+  --shadow-soft: 0 12px 40px rgba(0, 0, 0, 0.45);
+  --shadow-elevated: 0 20px 60px rgba(0, 0, 0, 0.55);
+}
+
+/* ==========================================================
+   2. Universal reset
+   ========================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -moz-tab-size: 4;
+  tab-size: 4;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--carbon);
+  color: var(--bone);
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: var(--lime);
+  text-decoration: none;
+  transition: color var(--dur-hover) var(--ease);
+}
+
+a:hover {
+  color: var(--lime-glow);
+}
+
+button {
+  font-family: inherit;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+code,
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+}
+
+::selection {
+  background: var(--lime);
+  color: var(--carbon);
+}
+
+/* ==========================================================
+   3. Accessibility — visible focus on all interactive
+   elements. Never strip outline without a replacement.
+   ========================================================== */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+/* ==========================================================
+   4. Brand mark — the lime hex CN shield
+   ----------------------------------------------------------
+   <span class="brand-shield">CN</span>
+   Pattern from AGENT_BRIEF and sample-site.
+   Real vector ships in Phase 2.
+   ========================================================== */
+.brand-shield {
+  width: 32px;
+  height: 36px;
+  background: var(--lime);
+  clip-path: polygon(50% 0%, 100% 22%, 100% 60%, 50% 100%, 0% 60%, 0% 22%);
+  display: grid;
+  place-items: center;
+  color: var(--carbon);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+.brand-shield--sm {
+  width: 24px;
+  height: 28px;
+  font-size: 10px;
+}
+
+.brand-shield--lg {
+  width: 48px;
+  height: 54px;
+  font-size: 16px;
+}
+
+/* ==========================================================
+   5. Section eyebrow — mono lime label, hairline marker
+   ----------------------------------------------------------
+   <div class="section-eyebrow">// upcoming-meetups</div>
+   ========================================================== */
+.section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--lime);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: var(--space-5);
+}
+
+.section-eyebrow::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--lime);
+  flex-shrink: 0;
+}
+
+/* ==========================================================
+   6. Buttons
+   ----------------------------------------------------------
+   .btn-primary   — lime CTA with offset shadow (dark only)
+   .btn-secondary — ghost border, mono label
+   ========================================================== */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 32px;
+  background: var(--lime);
+  color: var(--carbon);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  border: 0;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  box-shadow: var(--shadow-cta);
+  transition:
+    transform var(--dur-hover) var(--ease),
+    box-shadow var(--dur-hover) var(--ease),
+    background var(--dur-hover) var(--ease),
+    color var(--dur-hover) var(--ease);
+}
+
+.btn-primary:hover,
+.btn-primary:focus-visible {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-cta-hover);
+  background: var(--lime-glow);
+  color: var(--carbon);
+  outline: none;
+}
+
+.btn-primary:active {
+  transform: translate(0, 0);
+  box-shadow: var(--shadow-cta);
+}
+
+.btn-primary--sm {
+  padding: 10px 18px;
+  font-size: 13px;
+  box-shadow: 4px 4px 0 0 var(--charcoal), 4px 4px 0 1px var(--lime-600);
+}
+
+.btn-primary--sm:hover,
+.btn-primary--sm:focus-visible {
+  box-shadow: 6px 6px 0 0 var(--charcoal), 6px 6px 0 1px var(--lime-600);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 32px;
+  background: transparent;
+  color: var(--bone);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  border: 1px solid var(--slate);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition:
+    border-color var(--dur-hover) var(--ease),
+    color var(--dur-hover) var(--ease),
+    background var(--dur-hover) var(--ease);
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus-visible {
+  border-color: var(--lime);
+  color: var(--lime);
+  outline: none;
+}
+
+/* ==========================================================
+   7. Status pill — dark glass + pulsing lime dot
+   ----------------------------------------------------------
+   <span class="status-pill">
+     <span class="status-dot"></span>
+     <span>chapter / live / lhe-khi-isb</span>
+   </span>
+   ========================================================== */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: var(--r-pill);
+  background: rgba(199, 255, 62, 0.10);
+  border: 1px solid rgba(199, 255, 62, 0.25);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--lime);
+  letter-spacing: 0.04em;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--lime);
+  box-shadow: 0 0 12px var(--lime);
+  animation: pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.7; transform: scale(0.85); }
+  50%      { opacity: 1;   transform: scale(1.10); }
+}
+
+/* ==========================================================
+   8. Glass panel — frosted dark surface used by navbar,
+   modals, slide-in menus, and overlays.
+   ========================================================== */
+.glass-panel {
+  background: rgba(15, 17, 21, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--slate);
+}
+
+/* ==========================================================
+   9. Reduced motion — respect the user preference
+   ========================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  html { scroll-behavior: auto; }
+
+  .status-dot {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .btn-primary:hover,
+  .btn-primary:focus-visible {
+    transform: none;
+  }
+}

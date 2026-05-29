@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://github.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+
+    <title>Projects · CNSPK</title>
+    <meta name="description"
+        content="Open-source projects by Cloud Native Security Pakistan. The website, the membership pipeline, and community contributions to CNCF projects. All public. All contributable.">
+    <meta name="keywords"
+        content="CNSPK projects, open source Pakistan, cloud security projects, CNCF contributions, GitHub Pakistan">
+    <meta name="author" content="Cloud Native Security Pakistan">
+    <meta name="theme-color" content="#0F1115">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Projects · Cloud Native Security Pakistan">
+    <meta property="og:description"
+        content="Open-source projects by CNSPK — the website, the membership pipeline, and contributions to CNCF projects. All public. All contributable.">
+    <meta property="og:url" content="https://cloudnativesecurity.pk/projects/">
+    <meta property="og:site_name" content="Cloud Native Security Pakistan">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Projects · Cloud Native Security Pakistan">
+    <meta name="twitter:description"
+        content="Open-source projects by CNSPK. Build with us on GitHub. Read the CVE. Drink the chai.">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="canonical" href="https://cloudnativesecurity.pk/projects/">
+
+    <!-- Design tokens first -->
+    <link rel="stylesheet" href="/css/tokens.css">
+
+    <style>
+        .wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+
+        /* ---- Scroll reveal ---- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity var(--dur-reveal) var(--ease-out),
+                        transform var(--dur-reveal) var(--ease-out);
+            will-change: opacity, transform;
+        }
+        .reveal.is-visible { opacity: 1; transform: none; }
+
+        /* ---- Hero ---- */
+        .hero {
+            position: relative;
+            padding: 140px 0 80px;
+            overflow: hidden;
+            text-align: center;
+            background:
+                radial-gradient(ellipse 60% 50% at 50% 30%, rgba(199, 255, 62, 0.06) 0%, transparent 60%),
+                var(--carbon);
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(199, 255, 62, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(199, 255, 62, 0.03) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none;
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+        }
+
+        .hero-content { position: relative; z-index: 2; }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: clamp(40px, 7vw, 80px);
+            line-height: 0.92;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            color: var(--bone);
+            margin-bottom: 20px;
+        }
+        .hero h1 .lime { color: var(--lime); }
+
+        .hero .lede {
+            font-size: 19px;
+            color: var(--bone-2);
+            line-height: 1.6;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        /* ---- Projects grid ---- */
+        .projects { padding: 80px 0 100px; }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .project-card {
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-lg);
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            transition: border-color var(--dur-hover) var(--ease),
+                        transform var(--dur-elevate) var(--ease);
+        }
+        .project-card:hover {
+            border-color: var(--lime);
+            transform: translateY(-3px);
+        }
+
+        .project-card .card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .project-card .repo-name {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--lime);
+            letter-spacing: 0.04em;
+        }
+
+        /* ---- Status badge ---- */
+        .status-badge {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 4px 9px;
+            border-radius: var(--r-pill);
+            border: 1px solid var(--slate);
+            color: var(--steel);
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+        .status-badge.is-live {
+            color: var(--lime);
+            border-color: rgba(199, 255, 62, 0.3);
+            background: rgba(199, 255, 62, 0.08);
+        }
+        .status-badge.is-upstream {
+            color: var(--signal);
+            border-color: rgba(6, 182, 212, 0.35);
+            background: rgba(6, 182, 212, 0.08);
+        }
+        .status-badge.is-soon {
+            color: var(--watch);
+            border-color: rgba(245, 158, 11, 0.35);
+            background: rgba(245, 158, 11, 0.08);
+        }
+
+        .project-card h3 {
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--bone);
+            margin-bottom: 12px;
+        }
+
+        .project-card p {
+            font-size: 14px;
+            color: var(--steel);
+            line-height: 1.6;
+            flex: 1;
+            margin-bottom: 20px;
+        }
+
+        .project-card .card-link {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--lime);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color var(--dur-hover) var(--ease);
+        }
+        .project-card .card-link:hover { color: var(--lime-glow); }
+
+        /* Non-public initiatives: muted, non-linked note */
+        .project-card .card-note {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--steel);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ---- View all link ---- */
+        .view-all {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        /* ---- CTA panel ---- */
+        .cta-section { padding: 0 0 100px; }
+
+        .cta-panel {
+            position: relative;
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-lg);
+            padding: 64px;
+            text-align: center;
+            overflow: hidden;
+        }
+        .cta-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 4px;
+            background: var(--grad-stamp-glow);
+        }
+
+        .cta-panel h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(28px, 4vw, 40px);
+            letter-spacing: -0.03em;
+            color: var(--bone);
+            margin-bottom: 16px;
+        }
+
+        .cta-panel p {
+            font-size: 17px;
+            color: var(--bone-2);
+            margin-bottom: 32px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 900px) {
+            .projects-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+        }
+        @media (max-width: 600px) {
+            .projects-grid { grid-template-columns: 1fr; }
+            .hero { padding: 100px 0 60px; }
+            .projects { padding: 60px 0 72px; }
+            .cta-section { padding: 0 0 72px; }
+            .cta-panel { padding: 40px 24px; }
+            .wrap { padding: 0 20px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="navbar"></div>
+
+    <main>
+
+        <!-- ===== Hero ===== -->
+        <section class="hero">
+            <div class="wrap hero-content reveal">
+                <div class="section-eyebrow" style="justify-content:center;">// open-source</div>
+                <h1>Build it<br><span class="lime">in the open.</span></h1>
+                <p class="lede">
+                    The code behind CNSPK is public. The website you're reading, the pipeline that adds new
+                    members, the contributions we push upstream to CNCF — open an issue, send a PR, ship it.
+                </p>
+            </div>
+        </section>
+
+        <!-- ===== Projects Grid ===== -->
+        <section class="projects" aria-label="Community projects">
+            <div class="wrap">
+                <div class="projects-grid reveal">
+
+                    <!-- Real repo: verified live in the CNSPK GitHub org -->
+                    <article class="project-card">
+                        <div class="card-top">
+                            <span class="repo-name">cloudnativesecurity.pk-website</span>
+                            <span class="status-badge is-live">Live</span>
+                        </div>
+                        <h3>CNSPK Website</h3>
+                        <p>The site you're reading. Static HTML, Tailwind, vanilla ES6 modules, JSON data, shipped on GitHub Pages. Open a PR — the whole thing is yours to improve.</p>
+                        <a href="https://github.com/Cloud-Native-Security-Pakistan/cloudnativesecurity.pk-website"
+                           target="_blank" rel="noopener noreferrer" class="card-link"
+                           aria-label="View the CNSPK Website repository on GitHub">
+                            View on GitHub <span aria-hidden="true">→</span>
+                        </a>
+                    </article>
+
+                    <!-- Real repo: verified live — slug is 'becoming-a-member' -->
+                    <article class="project-card">
+                        <div class="card-top">
+                            <span class="repo-name">becoming-a-member</span>
+                            <span class="status-badge is-live">Live</span>
+                        </div>
+                        <h3>Become a Member</h3>
+                        <p>The membership pipeline. Open an issue, get added to the directory — onboarding driven by GitHub, no forms, no gatekeeping. This is how 250+ engineers joined.</p>
+                        <a href="https://github.com/Cloud-Native-Security-Pakistan/becoming-a-member"
+                           target="_blank" rel="noopener noreferrer" class="card-link"
+                           aria-label="View the Becoming a Member repository on GitHub">
+                            View on GitHub <span aria-hidden="true">→</span>
+                        </a>
+                    </article>
+
+                    <!-- Real: the GitHub organisation itself -->
+                    <article class="project-card">
+                        <div class="card-top">
+                            <span class="repo-name">@Cloud-Native-Security-Pakistan</span>
+                            <span class="status-badge is-live">Org</span>
+                        </div>
+                        <h3>The GitHub Organization</h3>
+                        <p>Home base for everything CNSPK builds in the open. Every public repo, every issue, every PR lives here. Star it, watch it, fork what's useful.</p>
+                        <a href="https://github.com/Cloud-Native-Security-Pakistan"
+                           target="_blank" rel="noopener noreferrer" class="card-link"
+                           aria-label="Explore the CNSPK GitHub organization">
+                            Explore the org <span aria-hidden="true">→</span>
+                        </a>
+                    </article>
+
+                    <!-- Real, honest framing: members contribute upstream to CNCF projects -->
+                    <article class="project-card">
+                        <div class="card-top">
+                            <span class="repo-name">upstream / cncf</span>
+                            <span class="status-badge is-upstream">Upstream</span>
+                        </div>
+                        <h3>CNCF Contributions</h3>
+                        <p>Chapter members contribute upstream to Cloud Native Computing Foundation projects — Kubernetes, Falco, OPA. Individual community contributions, not chapter-owned repos. The bridge runs both ways.</p>
+                        <a href="https://github.com/Cloud-Native-Security-Pakistan"
+                           target="_blank" rel="noopener noreferrer" class="card-link"
+                           aria-label="See CNSPK contributors on the GitHub organization">
+                            Meet the contributors <span aria-hidden="true">→</span>
+                        </a>
+                    </article>
+
+                    <!--
+                      TODO: CTF challenges repo is not yet public. When it ships under the
+                      CNSPK org, replace .card-note with a real .card-link to the repo and
+                      flip the badge to .is-live. Do not link to a placeholder URL.
+                    -->
+                    <article class="project-card">
+                        <div class="card-top">
+                            <span class="repo-name">ctf / challenges</span>
+                            <span class="status-badge is-soon">Not yet public</span>
+                        </div>
+                        <h3>CTF Challenges</h3>
+                        <p>Hands-on cloud-native security challenges — break a misconfigured cluster, escape a container, exploit an over-permissioned IAM role. In the works, not yet on GitHub.</p>
+                        <span class="card-note" aria-label="Repository not yet public">
+                            <span aria-hidden="true">//</span> coming soon
+                        </span>
+                    </article>
+
+                    <!--
+                      TODO: The Discord community bot exists in development but is not yet
+                      published to the CNSPK org. When the repo goes public, swap .card-note
+                      for a .card-link and update the badge to .is-live.
+                    -->
+                    <article class="project-card">
+                        <div class="card-top">
+                            <span class="repo-name">discord / bot</span>
+                            <span class="status-badge is-soon">Not yet public</span>
+                        </div>
+                        <h3>Community Bot</h3>
+                        <p>The Discord bot that runs the chapter's server — onboarding, role automation, event reminders, and automod. Being built in private until it's ready to open up.</p>
+                        <span class="card-note" aria-label="Repository not yet public">
+                            <span aria-hidden="true">//</span> coming soon
+                        </span>
+                    </article>
+
+                    <!--
+                      TODO: The Dispatch newsletter has no public repo/archive yet. When an
+                      archive or source repo is published, replace .card-note with a real link.
+                    -->
+                    <article class="project-card">
+                        <div class="card-top">
+                            <span class="repo-name">the / dispatch</span>
+                            <span class="status-badge is-soon">Not yet public</span>
+                        </div>
+                        <h3>The Dispatch</h3>
+                        <p>The chapter's CVE-and-chai newsletter — what broke this week, the five-line fix, and what to read next. Archive and tooling not yet open-sourced.</p>
+                        <span class="card-note" aria-label="Archive not yet public">
+                            <span aria-hidden="true">//</span> coming soon
+                        </span>
+                    </article>
+
+                </div>
+
+                <!-- View all on GitHub -->
+                <div class="view-all reveal">
+                    <a href="https://github.com/Cloud-Native-Security-Pakistan" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+                        <span class="mono">// github-org</span>
+                        View All on GitHub ↗
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Start Contributing CTA ===== -->
+        <section class="cta-section">
+            <div class="wrap">
+                <div class="cta-panel reveal">
+                    <h2>Start Contributing</h2>
+                    <p>
+                        We welcome contributions to our open-source projects. Whether it's improving documentation,
+                        adding features, or reporting issues — your work helps build a stronger community.
+                    </p>
+                    <div class="cta-buttons">
+                        <a href="https://github.com/Cloud-Native-Security-Pakistan" target="_blank" rel="noopener noreferrer" class="btn-primary">
+                            Explore Repos
+                            <span style="font-family:var(--font-mono);">↗</span>
+                        </a>
+                        <a href="/join/" class="btn-secondary">
+                            <span class="mono">// join-first</span>
+                            Join the Chapter
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="footer"></div>
+
+    <script type="module">
+        import { Navbar } from '/js/Navbar.js';
+        import { Footer } from '/js/Footer.js';
+
+        new Navbar().init();
+        new Footer().init();
+
+        /* Scroll-reveal */
+        (function () {
+            const els = document.querySelectorAll('.reveal');
+            const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            if (prefersReduced || !('IntersectionObserver' in window)) {
+                els.forEach(el => el.classList.add('is-visible'));
+                return;
+            }
+
+            const io = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+            els.forEach(el => io.observe(el));
+        })();
+    </script>
+</body>
+
+</html>

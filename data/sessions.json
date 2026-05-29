@@ -1,0 +1,213 @@
+[
+    {
+        "id": 1,
+        "title": "Kubernetes Security Deep Dive: From Zero to Production",
+        "description": "Learn how to secure your Kubernetes clusters from the ground up. We cover RBAC, Network Policies, Pod Security Standards, and runtime security with hands-on demos.",
+        "summary": "This session provides a comprehensive guide to securing Kubernetes clusters. It starts with the fundamentals of RBAC (Role-Based Access Control) to manage permissions effectively. The speaker then demonstrates how to implement Network Policies to isolate pod communication and uses Pod Security Standards to enforce best practices. The session concludes with a look at runtime security tools to detect and prevent threats in real-time.",
+        "keyTakeaways": [
+            "RBAC is the first line of defense; always follow the principle of least privilege.",
+            "Default deny all network policies are crucial for reducing the attack surface.",
+            "Pod Security Standards (PSS) effectively replace Pod Security Policies (PSP).",
+            "Runtime security adds an essential layer of protection against zero-day exploits."
+        ],
+        "transcript": [
+            {
+                "time": "00:00",
+                "text": "Welcome everyone to our deep dive into Kubernetes Security."
+            },
+            {
+                "time": "01:30",
+                "text": "Let's start by talking about the attack surface of a standard K8s cluster."
+            },
+            {
+                "time": "05:45",
+                "text": "RBAC can be tricky. Here is a common misconfiguration we see often."
+            },
+            {
+                "time": "12:20",
+                "text": "Now, let's move on to Network Policies. Think of them as a firewall for your pods."
+            },
+            {
+                "time": "25:10",
+                "text": "Runtime security is where things get interesting. We can detect anomalies in real-time."
+            },
+            {
+                "time": "42:00",
+                "text": "To wrap up, remember that security is layers. There is no silver bullet."
+            }
+        ],
+        "date": "2025-12-15",
+        "duration": "45 min",
+        "type": "recorded",
+        "topic": "Kubernetes Security",
+        "recordingUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        "registrationUrl": null,
+        "thumbnail": "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=800&q=80",
+        "speaker": {
+            "name": "Muhammad Farhan Ashraf",
+            "role": "DevSecOps Engineer",
+            "company": "SystemsLTD",
+            "image": "https://avatars.githubusercontent.com/u/35392263",
+            "linkedin": "https://www.linkedin.com/in/farhanashrafdev/",
+            "twitter": "https://twitter.com/mriceflame"
+        }
+    },
+    {
+        "id": 2,
+        "title": "Container Image Security: Building Secure Pipelines",
+        "description": "Master the art of securing container images. From base image selection to vulnerability scanning, signing, and secure CI/CD pipelines with Trivy and Cosign.",
+        "summary": "This talk focuses on the critical aspect of container image security within the CI/CD pipeline. It covers strategies for selecting secure base images, implementing automated vulnerability scanning using Trivy, and ensuring image integrity through signing with Cosign. The session emphasizes the importance of 'shifting left' to catch security issues early in the development lifecycle.",
+        "keyTakeaways": [
+            "Use minimal base images (like Distroless or Alpine) to reduce vulnerabilities.",
+            "Integrate scanning tools like Trivy directly into your CI pipeline.",
+            "Image signing with Cosign ensures that only trusted images are deployed.",
+            " regularly update and patch your base images."
+        ],
+        "transcript": [
+            {
+                "time": "00:00",
+                "text": "Hello, today we are going to talk about securing your container images."
+            },
+            {
+                "time": "03:15",
+                "text": "It all starts with the base image. Why are you using a full OS image?"
+            },
+            {
+                "time": "10:40",
+                "text": "Let me show you how to set up Trivy in a GitHub Action workflow."
+            },
+            {
+                "time": "22:50",
+                "text": "Now that we have scanned it, let's sign it. Cosign makes this incredibly easy."
+            },
+            {
+                "time": "35:00",
+                "text": "Verifying signatures in your cluster ensures only your code runs."
+            },
+            {
+                "time": "48:00",
+                "text": "Thanks for joining. The code examples are available in the repo."
+            }
+        ],
+        "date": "2025-11-20",
+        "duration": "50 min",
+        "type": "recorded",
+        "topic": "Container Security",
+        "recordingUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        "registrationUrl": null,
+        "thumbnail": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80",
+        "speaker": {
+            "name": "Syed Naqvi",
+            "role": "Security Project Manager",
+            "company": "Securiti.ai",
+            "image": "https://avatars.githubusercontent.com/u/12345678",
+            "linkedin": "https://LinkedIn.com/in/syedalizain033",
+            "twitter": "https://twitter.com/Syedalizain033"
+        }
+    },
+    {
+        "id": 3,
+        "title": "Cloud Native Secrets Management",
+        "description": "Explore best practices for managing secrets in cloud-native environments. We'll cover HashiCorp Vault, Kubernetes secrets, External Secrets Operator, and SOPS.",
+        "summary": "Managing secrets effectively is a cornerstone of cloud-native security. This session compares various approaches, from native Kubernetes secrets to advanced solutions like HashiCorp Vault. It provides a detailed walkthrough of using External Secrets Operator to sync secrets from cloud providers and demonstrates how SOPS can encrypt secrets in git repositories.",
+        "keyTakeaways": [
+            "Never check secrets into source control in plain text.",
+            "Kubernetes secrets are only base64 encoded, not encrypted by default.",
+            "External Secrets Operator bridges the gap between Cloud Secret Managers and K8s.",
+            "SOPS allows for safe GitOps workflows by encrypting secret files."
+        ],
+        "transcript": [
+            {
+                "time": "00:00",
+                "text": "Secrets management is hard. Let's try to make it easier."
+            },
+            {
+                "time": "05:00",
+                "text": "The problem with K8s secrets is that they are just base64 strings."
+            },
+            {
+                "time": "15:30",
+                "text": "HashiCorp Vault is the gold standard, but is it overkill for you?"
+            },
+            {
+                "time": "28:10",
+                "text": "Enter External Secrets Operator. Sync AWS Secrets Manager directly to K8s."
+            },
+            {
+                "time": "38:45",
+                "text": "For the GitOps fans, SOPS is a life saver. Encrypt your yaml files."
+            }
+        ],
+        "date": "2025-10-05",
+        "duration": "40 min",
+        "type": "recorded",
+        "topic": "Secrets Management",
+        "recordingUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        "registrationUrl": null,
+        "thumbnail": "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&q=80",
+        "speaker": {
+            "name": "Sharjeel Yunus",
+            "role": "Web and Graphics Lead",
+            "company": "Ensemble Technologies",
+            "image": "https://avatars.githubusercontent.com/u/87654321",
+            "linkedin": "https://www.linkedin.com/in/sharjeel-yunus/",
+            "twitter": "https://twitter.com/sharjeelyunus"
+        }
+    },
+    {
+        "id": 4,
+        "title": "Zero Trust Architecture in Kubernetes",
+        "description": "Implementing Zero Trust security models in Kubernetes with service mesh, mTLS, and identity-based access control using Istio and SPIFFE/SPIRE.",
+        "summary": "Zero Trust is more than a buzzword; it's a necessity. This session outlines how to implement Zero Trust principles in a Kubernetes environment. Key topics include enforcing mTLS between services using Istio, implementing identity-based access controls with SPIFFE/SPIRE, and moving beyond perimeter-based security models.",
+        "keyTakeaways": [
+            "Trust no one, verify everything - inside and outside the cluster.",
+            "Service Mesh (like Istio) makes mTLS implementation manageable.",
+            "Identity is the new perimeter; rely on strong workload identity.",
+            "Policy as Code ensures consistent security enforcement."
+        ],
+        "transcript": [],
+        "date": "2026-01-25",
+        "duration": "55 min",
+        "type": "upcoming",
+        "topic": "Zero Trust",
+        "recordingUrl": null,
+        "registrationUrl": "https://community.cncf.io/events/details/cncf-cloud-native-security-pakistan-presents-zero-trust-architecture/",
+        "thumbnail": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80",
+        "speaker": {
+            "name": "Muhammad Abdullah",
+            "role": "Software Engineer & Community Leader",
+            "company": "Manafa",
+            "image": "https://avatars.githubusercontent.com/u/11223344",
+            "linkedin": "https://www.linkedin.com/in/muhammad-abdullah-software-engineer-pk/",
+            "twitter": null
+        }
+    },
+    {
+        "id": 5,
+        "title": "Securing the Software Supply Chain",
+        "description": "Deep dive into software supply chain security with SLSA, Sigstore, in-toto, and SBOMs. Protect your builds from compromised dependencies and malicious code.",
+        "summary": "Supply chain attacks are on the rise. This session dives deep into the frameworks and tools designed to protect your software supply chain. We explore the SLSA framework levels, how Sigstore solves the public key infrastructure problem, and the importance of generating and verifying SBOMs (Software Bill of Materials).",
+        "keyTakeaways": [
+            "Understand your supply chain; you can't secure what you don't know.",
+            "SBOMs are essential for vulnerability management and compliance.",
+            "Sigstore democratizes code signing for open source projects.",
+            "Aim for SLSA Level 2 or 3 to ensure build integrity."
+        ],
+        "transcript": [],
+        "date": "2026-02-10",
+        "duration": "60 min",
+        "type": "upcoming",
+        "topic": "Supply Chain Security",
+        "recordingUrl": null,
+        "registrationUrl": "https://community.cncf.io/events/details/cncf-cloud-native-security-pakistan-presents-supply-chain-security/",
+        "thumbnail": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80",
+        "speaker": {
+            "name": "Hasnaat Iftikhar",
+            "role": "FullStack Developer & Designer",
+            "company": "Webling",
+            "image": "https://avatars.githubusercontent.com/u/55667788",
+            "linkedin": "https://www.linkedin.com/in/hasnaat-iftikhar/",
+            "twitter": "https://twitter.com/HasnaatIftikha1"
+        }
+    }
+]

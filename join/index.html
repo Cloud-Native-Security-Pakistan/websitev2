@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--
+      CSP mirrors index.html exactly: tokens.css from 'self' @imports the four
+      brand fonts (Bricolage Grotesque, Inter, JetBrains Mono, Noto Nastaliq
+      Urdu) from fonts.googleapis.com / fonts.gstatic.com; jsdelivr + tailwind
+      allowances retained so v2 routing never breaks.
+    -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+
+    <title>Join CNSPK · Pick Your Door</title>
+    <meta name="description"
+        content="Join Cloud Native Security Pakistan — 250+ practitioners. Five doorways, zero gatekeeping. WhatsApp, CNCF Chapter, GitHub, social, or Discord. Pick your friction.">
+    <meta name="keywords"
+        content="join CNSPK, cloud native security pakistan, WhatsApp community, CNCF chapter Pakistan, Kubernetes security community">
+    <meta name="author" content="Cloud Native Security Pakistan">
+    <meta name="theme-color" content="#0F1115">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Join CNSPK · Pick Your Door">
+    <meta property="og:description"
+        content="250+ practitioners. CNCF-affiliated. Five doorways, zero gatekeeping. Walk in through whichever door fits today.">
+    <meta property="og:url" content="https://cloudnativesecurity.pk/join/">
+    <meta property="og:site_name" content="Cloud Native Security Pakistan">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Join CNSPK · Pick Your Door">
+    <meta name="twitter:description"
+        content="250+ practitioners. Five doorways, zero gatekeeping. Bharosa is earned, not asked for.">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="canonical" href="https://cloudnativesecurity.pk/join/">
+
+    <!-- Design tokens first -->
+    <link rel="stylesheet" href="/css/tokens.css">
+
+    <style>
+        /* ==========================================================
+           Join Page · Electric register · page-specific styles
+           Shared primitives (.section-eyebrow, .btn-primary,
+           .btn-secondary, .status-pill, .status-dot) come from
+           /css/tokens.css.
+        ========================================================== */
+
+        .wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+        main { display: block; }
+
+        /* ---- Scroll reveal ----------------------------------- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity var(--dur-reveal) var(--ease-out),
+                        transform var(--dur-reveal) var(--ease-out);
+            will-change: opacity, transform;
+        }
+        .reveal.is-visible { opacity: 1; transform: none; }
+
+        /* ==========================================================
+           Hero
+        ========================================================== */
+        .hero {
+            position: relative;
+            padding: 120px 0 80px;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 20%, rgba(199, 255, 62, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 80% at 90% 80%, rgba(1, 65, 28, 0.40) 0%, transparent 60%),
+                var(--carbon);
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(199, 255, 62, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(199, 255, 62, 0.04) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none;
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+        }
+
+        .hero-content { position: relative; z-index: 2; max-width: 920px; }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: clamp(42px, 8vw, 100px);
+            line-height: 0.92;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+            color: var(--bone);
+        }
+        .hero h1 .lime { color: var(--lime); }
+
+        .hero .subhead {
+            font-size: 20px;
+            color: var(--bone-2);
+            max-width: 720px;
+            line-height: 1.55;
+            margin-bottom: 12px;
+            font-weight: 400;
+        }
+        .hero .subhead code {
+            font-family: var(--font-mono);
+            color: var(--lime);
+            font-size: 0.9em;
+        }
+
+        .hero .bharosa-line {
+            font-size: 16px;
+            color: var(--steel);
+            font-style: italic;
+            margin-bottom: 32px;
+            max-width: 720px;
+        }
+        .hero .bharosa-line em {
+            color: var(--lime);
+            font-style: italic;
+            font-weight: 500;
+        }
+
+        .hero-cta-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+        .hero-cta-row .btn-secondary .mono { color: var(--lime); }
+
+        /* ==========================================================
+           Code of Conduct link — appears BEFORE any join CTA flow
+        ========================================================== */
+        .coc-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--steel);
+            transition: color var(--dur-hover) var(--ease);
+        }
+        .coc-link:hover, .coc-link:focus-visible { color: var(--lime); }
+        .coc-link svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+        /* ==========================================================
+           Doorway Cards — 5-card grid, ordered by friction
+        ========================================================== */
+        .doorways { padding: 80px 0 100px; background: var(--carbon); }
+
+        .doorways-head { max-width: 720px; margin-bottom: 48px; }
+        .doorways-head h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(30px, 5vw, 52px);
+            line-height: 0.95;
+            letter-spacing: -0.03em;
+            color: var(--bone);
+            margin-bottom: 16px;
+        }
+        .doorways-head p {
+            font-size: 16px;
+            color: var(--bone-2);
+            line-height: 1.6;
+        }
+
+        .doorways-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+
+        .doorway-card {
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-lg);
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: transform var(--dur-elevate) var(--ease),
+                        box-shadow var(--dur-elevate) var(--ease),
+                        border-color var(--dur-hover) var(--ease);
+        }
+        .doorway-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-elevated);
+        }
+
+        /* Friction-ordered grid placement (desktop 2-2-1) */
+        .doorway-card--whatsapp { grid-column: span 6; border-color: var(--lime); }
+        .doorway-card--cncf     { grid-column: span 6; background: var(--bone); border-color: var(--bone-2); }
+        .doorway-card--signal   { grid-column: span 4; }
+        .doorway-card--github   { grid-column: span 4; }
+        .doorway-card--discord  { grid-column: span 4; position: relative; }
+
+        /* Primary doorway gets the lime offset accent bar */
+        .doorway-card--whatsapp { position: relative; overflow: hidden; }
+        .doorway-card--whatsapp::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
+            background: var(--grad-stamp-glow);
+        }
+
+        .doorway-card__topline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .doorway-card__eyebrow {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--lime);
+        }
+        .doorway-card--cncf .doorway-card__eyebrow { color: var(--lime-600); }
+
+        .doorway-card__title {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: 26px;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            color: var(--bone);
+            line-height: 1.05;
+        }
+        .doorway-card--cncf .doorway-card__title { color: var(--carbon); }
+
+        .doorway-card__body {
+            font-size: 15px;
+            color: var(--bone-2);
+            line-height: 1.55;
+            flex: 1;
+        }
+        .doorway-card--cncf .doorway-card__body { color: #2A2E37; }
+
+        .doorway-card__friction {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: var(--r-pill);
+            border: 1px solid var(--slate);
+            color: var(--steel);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .doorway-card--whatsapp .doorway-card__friction {
+            border-color: rgba(199, 255, 62, 0.4);
+            color: var(--lime);
+        }
+        .doorway-card--cncf .doorway-card__friction {
+            border-color: #B7B0A0;
+            color: #2A2E37;
+        }
+
+        .doorway-card__cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--lime);
+            text-decoration: none;
+            transition: gap var(--dur-hover) var(--ease), color var(--dur-hover) var(--ease);
+            align-self: flex-start;
+        }
+        .doorway-card__cta:hover, .doorway-card__cta:focus-visible { color: var(--lime-glow); gap: 12px; }
+        /* On bone surface use the AA-safe lime-600 (lime on white = WCAG fail) */
+        .doorway-card--cncf .doorway-card__cta { color: var(--lime-600); }
+        .doorway-card--cncf .doorway-card__cta:hover,
+        .doorway-card--cncf .doorway-card__cta:focus-visible { color: var(--pak-green); }
+
+        .doorway-card__coc {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--steel);
+        }
+        .doorway-card__coc a { color: var(--steel); border-bottom: 1px dotted var(--steel); }
+        .doorway-card__coc a:hover { color: var(--lime); border-bottom-color: var(--lime); }
+        .doorway-card--cncf .doorway-card__coc { color: #4A4E57; }
+        .doorway-card--cncf .doorway-card__coc a { color: #4A4E57; border-bottom-color: #4A4E57; }
+        .doorway-card--cncf .doorway-card__coc a:hover { color: var(--pak-green); border-bottom-color: var(--pak-green); }
+
+        /* Coming soon badge */
+        .badge-coming-soon {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: var(--r-pill);
+            background: rgba(199, 255, 62, 0.12);
+            border: 1px solid rgba(199, 255, 62, 0.3);
+            color: var(--lime);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* Notify-me input (Discord waitlist — mailto fallback) */
+        .notify-me {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+        .notify-me label {
+            position: absolute;
+            width: 1px; height: 1px;
+            padding: 0; margin: -1px;
+            overflow: hidden; clip: rect(0 0 0 0);
+            white-space: nowrap; border: 0;
+        }
+        .notify-me input {
+            flex: 1;
+            min-width: 0;
+            padding: 11px 14px;
+            background: var(--carbon);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-sm);
+            color: var(--bone);
+            font-family: var(--font-mono);
+            font-size: 13px;
+        }
+        .notify-me input::placeholder { color: var(--steel); }
+        .notify-me input:focus-visible {
+            outline: 2px solid var(--lime);
+            outline-offset: 1px;
+            border-color: var(--lime);
+        }
+        .notify-me a {
+            padding: 11px 16px;
+            background: var(--lime);
+            color: var(--carbon);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: var(--r-sm);
+            text-decoration: none;
+            white-space: nowrap;
+            transition: background var(--dur-hover) var(--ease), transform var(--dur-hover) var(--ease);
+        }
+        .notify-me a:hover, .notify-me a:focus-visible { background: var(--lime-glow); color: var(--carbon); }
+
+        @media (max-width: 900px) {
+            .doorway-card--whatsapp,
+            .doorway-card--cncf,
+            .doorway-card--signal,
+            .doorway-card--github,
+            .doorway-card--discord { grid-column: span 12; }
+        }
+
+        /* ==========================================================
+           Progression Ladder — XP, not bureaucracy
+        ========================================================== */
+        .progression {
+            padding: 90px 0;
+            background: var(--charcoal);
+            border-top: 1px solid var(--slate);
+            border-bottom: 1px solid var(--slate);
+        }
+        .progression-head { max-width: 720px; margin-bottom: 40px; }
+        .progression-head h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(28px, 4.5vw, 44px);
+            line-height: 0.98;
+            letter-spacing: -0.03em;
+            color: var(--bone);
+            margin-bottom: 14px;
+        }
+        .progression-head p { font-size: 16px; color: var(--bone-2); line-height: 1.6; }
+
+        .progression-bar {
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+            border: 1px solid var(--slate);
+            border-radius: var(--r-lg);
+            overflow: hidden;
+            background: var(--carbon);
+        }
+
+        .progression-step {
+            flex: 1;
+            min-width: 0;
+            padding: 28px 24px;
+            position: relative;
+            border-right: 1px solid var(--slate);
+        }
+        .progression-step:last-child { border-right: none; }
+
+        .progression-step__rank {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--lime);
+            margin-bottom: 8px;
+        }
+        .progression-step__desc {
+            font-size: 13px;
+            color: var(--bone-2);
+            line-height: 1.45;
+            font-style: italic;
+        }
+
+        /* Arrow connectors between steps */
+        .progression-step:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -9px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: var(--font-mono);
+            font-size: 16px;
+            color: var(--lime);
+            background: var(--charcoal);
+            padding: 4px 0;
+            z-index: 2;
+        }
+
+        @media (max-width: 760px) {
+            .progression-bar { flex-direction: column; }
+            .progression-step { border-right: none; border-bottom: 1px solid var(--slate); }
+            .progression-step:last-child { border-bottom: none; }
+            .progression-step:not(:last-child)::after {
+                content: '↓';
+                right: 50%;
+                top: auto;
+                bottom: -9px;
+                transform: translateX(50%);
+                padding: 0 4px;
+            }
+        }
+
+        /* ==========================================================
+           Expectations Block — bone-on-charcoal, no-spam guarantee
+        ========================================================== */
+        .expectations { padding: 90px 0; background: var(--carbon); }
+
+        .expectations-panel {
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-lg);
+            padding: 48px;
+            max-width: 820px;
+            position: relative;
+            overflow: hidden;
+        }
+        .expectations-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
+            background: var(--grad-stamp-glow);
+        }
+
+        .expectations-panel h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(26px, 4vw, 36px);
+            letter-spacing: -0.02em;
+            color: var(--bone);
+            margin-bottom: 10px;
+        }
+        .expectations-panel .sub {
+            font-size: 15px;
+            color: var(--steel);
+            font-family: var(--font-mono);
+            margin-bottom: 28px;
+        }
+
+        .expectations-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .expectations-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 16px;
+            color: var(--bone-2);
+            line-height: 1.5;
+        }
+        .expectations-list li::before {
+            content: '✓';
+            color: var(--lime);
+            font-family: var(--font-mono);
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .expectations-list li.no::before { content: '✕'; color: var(--breach); }
+
+        /* ==========================================================
+           Sub-asks — "Not here to join?" router chips
+        ========================================================== */
+        .subask {
+            padding: 90px 0 110px;
+            background: var(--carbon);
+            border-top: 1px solid var(--slate);
+        }
+        .subask-head { max-width: 640px; margin-bottom: 36px; }
+        .subask-head h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(24px, 3.5vw, 36px);
+            letter-spacing: -0.02em;
+            color: var(--bone);
+            margin-bottom: 12px;
+        }
+        .subask-head p { font-size: 15px; color: var(--bone-2); line-height: 1.6; }
+
+        .subask-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        .subask-chip {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 24px 24px 22px;
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-md);
+            text-decoration: none;
+            transition: border-color var(--dur-hover) var(--ease),
+                        transform var(--dur-elevate) var(--ease);
+        }
+        .subask-chip:hover, .subask-chip:focus-visible {
+            border-color: var(--lime);
+            transform: translateY(-3px);
+        }
+        .subask-chip__label {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 18px;
+            letter-spacing: -0.01em;
+            color: var(--bone);
+        }
+        .subask-chip__route {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--lime);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        @media (max-width: 720px) { .subask-grid { grid-template-columns: 1fr; } }
+
+        /* ==========================================================
+           Responsive
+        ========================================================== */
+        @media (max-width: 768px) {
+            .hero { padding: 96px 0 64px; }
+            .doorways, .progression, .expectations, .subask { padding: 64px 0; }
+            .doorway-card { padding: 28px 24px; }
+            .expectations-panel { padding: 36px 28px; }
+            .wrap { padding: 0 20px; }
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <!-- ===== Navbar (mounted via /js/Navbar.js) ===== -->
+    <div id="navbar"></div>
+
+    <main>
+
+        <!-- ===== Hero ===== -->
+        <section class="hero" aria-labelledby="join-headline">
+            <div class="wrap hero-content">
+                <div class="section-eyebrow">// JOIN.SH</div>
+
+                <h1 id="join-headline">
+                    Pick your door.<br />
+                    <span class="lime">No gatekeeping.</span>
+                </h1>
+
+                <p class="subhead">
+                    <strong style="color:var(--lime);font-weight:600;">250+ practitioners.</strong>
+                    CNCF-affiliated. Built and run from Lahore, Karachi, Islamabad — and wherever your
+                    <code>kubectl</code> points. Walk in through whichever door fits today.
+                </p>
+                <p class="bharosa-line">
+                    <em>Bharosa</em> is earned, not asked for.
+                </p>
+
+                <div class="hero-cta-row">
+                    <a href="https://chat.whatsapp.com/F5Hf1ZwI22TK6EcV6zz4wo"
+                        class="btn-primary" target="_blank" rel="noopener noreferrer">
+                        Tap into WhatsApp
+                        <span style="font-family:var(--font-mono);">→</span>
+                    </a>
+                    <a href="/events/" class="btn-secondary">
+                        <span class="mono">// sessions</span>
+                        Browse upcoming sessions →
+                    </a>
+                </div>
+
+                <!-- CoC link appears BEFORE the join flow per JOIN_STRATEGY §4 -->
+                <a href="/code-of-conduct/" class="coc-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    Read the Code of Conduct → /code-of-conduct/
+                </a>
+            </div>
+        </section>
+
+        <!-- ===== Doorway Picker — 5 cards, ordered by friction ===== -->
+        <section class="doorways" aria-labelledby="doorways-title">
+            <div class="wrap">
+                <div class="doorways-head reveal">
+                    <div class="section-eyebrow">// five-doorways</div>
+                    <h2 id="doorways-title">Five honest doors. Ordered by friction.</h2>
+                    <p>
+                        Lowest effort up top, formal lane in the back. You self-select the channel and the
+                        commitment — we don't decide it for you.
+                    </p>
+                </div>
+
+                <div class="doorways-grid reveal">
+
+                    <!-- 1. WhatsApp — lowest friction, primary visual weight -->
+                    <article class="doorway-card doorway-card--whatsapp">
+                        <div class="doorway-card__topline">
+                            <span class="doorway-card__eyebrow">// 01 · whatsapp</span>
+                            <span class="doorway-card__friction">Friction: Lowest</span>
+                        </div>
+                        <h3 class="doorway-card__title">Tap In</h3>
+                        <p class="doorway-card__body">
+                            The casual room. ~250 members, daily chatter, weekly questions. Mute any time.
+                            No DMs from strangers — ask in the room first.
+                        </p>
+                        <a href="https://chat.whatsapp.com/F5Hf1ZwI22TK6EcV6zz4wo"
+                            class="doorway-card__cta" target="_blank" rel="noopener noreferrer">
+                            Join WhatsApp →
+                        </a>
+                        <p class="doorway-card__coc">
+                            House rules in the <a href="/code-of-conduct/">Code of Conduct</a>.
+                        </p>
+                    </article>
+
+                    <!-- 2. CNCF Chapter — bone surface, medium weight -->
+                    <article class="doorway-card doorway-card--cncf">
+                        <div class="doorway-card__topline">
+                            <span class="doorway-card__eyebrow">// 02 · cncf chapter</span>
+                            <span class="doorway-card__friction">Friction: Medium</span>
+                        </div>
+                        <h3 class="doorway-card__title">RSVP a Session</h3>
+                        <p class="doorway-card__body">
+                            See the community before you join it. RSVP via our official CNCF chapter page.
+                            Free. Pakistani-time. Recordings posted after.
+                        </p>
+                        <a href="https://community.cncf.io/cloud-native-security-pakistan/"
+                            class="doorway-card__cta" target="_blank" rel="noopener noreferrer">
+                            Browse Events →
+                        </a>
+                        <p class="doorway-card__coc">
+                            By attending you agree to the <a href="/code-of-conduct/">Code of Conduct</a>.
+                        </p>
+                    </article>
+
+                    <!-- 3. Follow the Signal — small chip-style card -->
+                    <article class="doorway-card doorway-card--signal">
+                        <div class="doorway-card__topline">
+                            <span class="doorway-card__eyebrow">// 03 · social</span>
+                            <span class="doorway-card__friction">Friction: Near-zero</span>
+                        </div>
+                        <h3 class="doorway-card__title">Follow the Signal</h3>
+                        <p class="doorway-card__body">
+                            Read-only. Long-form on LinkedIn. Quick takes on X. Tool Tuesday on Instagram.
+                            Twice a week, max. Zero DM sales.
+                        </p>
+                        <a href="https://linkedin.com/company/cloudnativesecurity-pk"
+                            class="doorway-card__cta" target="_blank" rel="noopener noreferrer">
+                            Pick a feed →
+                        </a>
+                        <p class="doorway-card__coc">
+                            LinkedIn ·
+                            <a href="https://www.instagram.com/cnspakistan/" target="_blank" rel="noopener noreferrer">Instagram</a> ·
+                            <a href="https://github.com/Cloud-Native-Security-Pakistan" target="_blank" rel="noopener noreferrer">GitHub</a>
+                        </p>
+                    </article>
+
+                    <!-- 4. GitHub Membership — full charcoal card, the formal lane -->
+                    <article class="doorway-card doorway-card--github">
+                        <div class="doorway-card__topline">
+                            <span class="doorway-card__eyebrow">// 04 · github</span>
+                            <span class="doorway-card__friction">Friction: High</span>
+                        </div>
+                        <h3 class="doorway-card__title">Become a Member</h3>
+                        <p class="doorway-card__body">
+                            The formal lane. Get on the members map, earn the badge, unlock Contributor and
+                            Mentor ranks. One issue → Newbie team → PR or form → Member.
+                        </p>
+                        <a href="https://github.com/Cloud-Native-Security-Pakistan/become-a-member"
+                            class="doorway-card__cta" target="_blank" rel="noopener noreferrer">
+                            Start the request →
+                        </a>
+                        <p class="doorway-card__coc">
+                            Membership terms in the <a href="/code-of-conduct/">Code of Conduct</a>.
+                        </p>
+                    </article>
+
+                    <!-- 5. Discord — half-card, Coming soon, notify-me -->
+                    <article class="doorway-card doorway-card--discord">
+                        <div class="doorway-card__topline">
+                            <span class="doorway-card__eyebrow">// 05 · discord</span>
+                            <span class="badge-coming-soon">Coming soon</span>
+                        </div>
+                        <h3 class="doorway-card__title">The Inner Circle</h3>
+                        <p class="doorway-card__body">
+                            The deep technical home: threaded, searchable, channel-organised. Get a notify-me
+                            when the doors open.
+                        </p>
+                        <!--
+                          TODO: No form backend exists yet. Per JOIN_STRATEGY §10 (WaitlistInput),
+                          falling back to a mailto notify-me. Wire to a real waitlist capture (or the
+                          /join/discord-waitlist route) before Discord launch, then delete this card's
+                          mailto fallback.
+                        -->
+                        <form class="notify-me" action="mailto:hi@cloudnativesecurity.pk" method="get"
+                            onsubmit="return false;">
+                            <label for="discord-email">Email for the Discord waitlist</label>
+                            <input type="email" id="discord-email" name="email"
+                                placeholder="you@domain.pk" autocomplete="email" />
+                            <a href="mailto:hi@cloudnativesecurity.pk?subject=Discord%20waitlist&body=Notify%20me%20when%20the%20CNSPK%20Discord%20opens.">
+                                Notify me →
+                            </a>
+                        </form>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Progression Ladder ===== -->
+        <section class="progression" aria-labelledby="progression-title">
+            <div class="wrap">
+                <div class="progression-head reveal">
+                    <div class="section-eyebrow">// progression / xp-not-bureaucracy</div>
+                    <h2 id="progression-title">No points race. Recognition of work already done.</h2>
+                    <p>
+                        No percentages, no leaderboards, no timeline. You move up when the community sees the
+                        work — not when a funnel decides you're ready.
+                    </p>
+                </div>
+
+                <ol class="progression-bar reveal" aria-label="Membership progression ladder">
+                    <li class="progression-step">
+                        <div class="progression-step__rank">Lurker</div>
+                        <p class="progression-step__desc">You're in the room.</p>
+                    </li>
+                    <li class="progression-step">
+                        <div class="progression-step__rank">Newbie</div>
+                        <p class="progression-step__desc">You filed the join request.</p>
+                    </li>
+                    <li class="progression-step">
+                        <div class="progression-step__rank">Member</div>
+                        <p class="progression-step__desc">You're on the map.</p>
+                    </li>
+                    <li class="progression-step">
+                        <div class="progression-step__rank">Contributor</div>
+                        <p class="progression-step__desc">You shipped something we ship.</p>
+                    </li>
+                    <li class="progression-step">
+                        <div class="progression-step__rank">Mentor</div>
+                        <p class="progression-step__desc">You run a thing.</p>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- ===== Expectations / no-spam guarantee ===== -->
+        <section class="expectations" aria-labelledby="expectations-title">
+            <div class="wrap">
+                <div class="expectations-panel reveal">
+                    <div class="section-eyebrow">// the-deal</div>
+                    <h2 id="expectations-title">What you can expect.</h2>
+                    <p class="sub">No funnel. No drip. No sale. One promise per line.</p>
+                    <ul class="expectations-list">
+                        <li>We will not auto-DM you.</li>
+                        <li>We will not put you on a drip funnel.</li>
+                        <li>We will not sell your email or share the members map outside the org.</li>
+                        <li>We post at most twice a week on social. WhatsApp is busier — mute any time.</li>
+                        <li class="no">Vendor pitches, MLM, and "I have a course to sell" are removed on sight.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Sub-asks — "Not here to join?" ===== -->
+        <section class="subask" aria-labelledby="subask-title">
+            <div class="wrap">
+                <div class="subask-head reveal">
+                    <div class="section-eyebrow">// not-here-to-join</div>
+                    <h2 id="subask-title">Not here to join?</h2>
+                    <p>
+                        Three audiences, three doors of their own. The join page is for joiners — these get
+                        their own pages, not a buried DM.
+                    </p>
+                </div>
+
+                <div class="subask-grid reveal">
+                    <!--
+                      TODO: /hire/, /sponsor/, and /speak/ are the canonical routes per JOIN_STRATEGY §10.
+                      /hire/ and /sponsor/ pages are not yet live in v2 — routing to a mailto fallback with
+                      a clear subject until those pages ship. /speak/ maps to the existing /cfp/ route.
+                    -->
+                    <a class="subask-chip"
+                        href="mailto:hi@cloudnativesecurity.pk?subject=Hiring%20from%20CNSPK">
+                        <span class="subask-chip__label">Hire from CNSPK</span>
+                        <span class="subask-chip__route">hi@cloudnativesecurity.pk →</span>
+                    </a>
+                    <a class="subask-chip"
+                        href="mailto:hi@cloudnativesecurity.pk?subject=Sponsor%20a%20session%20or%20event">
+                        <span class="subask-chip__label">Sponsor a session</span>
+                        <span class="subask-chip__route">hi@cloudnativesecurity.pk →</span>
+                    </a>
+                    <a class="subask-chip" href="/cfp/">
+                        <span class="subask-chip__label">Speak at a session</span>
+                        <span class="subask-chip__route">/cfp/ →</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== Footer (mounted via /js/Footer.js) ===== -->
+    <div id="footer"></div>
+
+    <script type="module">
+        import { Navbar } from '/js/Navbar.js';
+        import { Footer } from '/js/Footer.js';
+
+        new Navbar().init();
+        new Footer().init();
+
+        /* ---- Scroll-reveal — respects prefers-reduced-motion ---- */
+        (function () {
+            const els = document.querySelectorAll('.reveal');
+            const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            if (prefersReduced || !('IntersectionObserver' in window)) {
+                els.forEach(el => el.classList.add('is-visible'));
+                return;
+            }
+
+            const io = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+            els.forEach(el => io.observe(el));
+        })();
+    </script>
+</body>
+
+</html>

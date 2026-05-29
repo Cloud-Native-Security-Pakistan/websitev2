@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+
+    <title>Code of Conduct — Cloud Native Security Pakistan (CNSPK)</title>
+    <meta name="description"
+        content="The Cloud Native Security Pakistan (CNSPK) Code of Conduct: our pledge, expected and unacceptable behaviour, scope, enforcement, and how to report. Adapted from the Contributor Covenant and the CNCF Code of Conduct.">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="canonical" href="https://cloudnativesecurity.pk/code-of-conduct/">
+
+    <link rel="stylesheet" href="/css/tokens.css">
+
+    <style>
+        .wrap { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+
+        .page-hero {
+            position: relative;
+            padding: 140px 0 72px;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse 80% 60% at 18% 18%, rgba(199, 255, 62, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 80% at 92% 90%, rgba(1, 65, 28, 0.35) 0%, transparent 60%),
+                var(--carbon);
+        }
+        .page-hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(199, 255, 62, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(199, 255, 62, 0.04) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none;
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+        }
+        .page-hero__content { position: relative; z-index: 2; max-width: 820px; }
+        .page-hero h1 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: clamp(40px, 7vw, 92px);
+            line-height: 0.92;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            color: var(--bone);
+            margin-bottom: 24px;
+        }
+        .page-hero h1 .accent { color: var(--lime); }
+        .lede {
+            font-size: clamp(17px, 2.2vw, 21px);
+            color: var(--bone-2);
+            max-width: 680px;
+            line-height: 1.55;
+            margin-bottom: 28px;
+        }
+        .lede strong { color: var(--lime); font-weight: 600; }
+        .meta-line {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--steel);
+            letter-spacing: 0.04em;
+        }
+
+        /* Layout: sticky TOC + content */
+        .coc-layout {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 56px;
+            padding: 72px 0 96px;
+            align-items: start;
+        }
+        .toc {
+            position: sticky;
+            top: 96px;
+            border-left: 1px solid var(--slate);
+            padding-left: 20px;
+        }
+        .toc .toc-title {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--lime);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .toc ul { display: flex; flex-direction: column; gap: 10px; }
+        .toc a {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--bone-2);
+            letter-spacing: 0.02em;
+            text-decoration: none;
+            transition: color var(--dur-hover) var(--ease);
+        }
+        .toc a:hover { color: var(--lime); }
+
+        .coc-body { max-width: 720px; }
+        .coc-section { margin-bottom: 56px; scroll-margin-top: 96px; }
+        .coc-section:last-child { margin-bottom: 0; }
+        .coc-section h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: clamp(26px, 3.6vw, 40px);
+            text-transform: uppercase;
+            line-height: 1;
+            letter-spacing: -0.03em;
+            color: var(--bone);
+            margin-bottom: 20px;
+        }
+        .coc-section h3 {
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 17px;
+            color: var(--bone);
+            margin: 28px 0 12px;
+        }
+        .coc-section p {
+            font-size: 16px;
+            color: var(--bone-2);
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+        .coc-section ul.bullets {
+            list-style: none;
+            margin: 0 0 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .coc-section ul.bullets li {
+            position: relative;
+            padding-left: 24px;
+            font-size: 16px;
+            color: var(--bone-2);
+            line-height: 1.6;
+        }
+        .coc-section ul.bullets li::before {
+            content: '›';
+            position: absolute;
+            left: 0;
+            color: var(--lime);
+            font-family: var(--font-mono);
+            font-weight: 700;
+        }
+        .coc-section a { color: var(--lime); border-bottom: 1px solid transparent; }
+        .coc-section a:hover { border-bottom-color: var(--lime); }
+
+        .eyebrow {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--lime);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        /* Enforcement ladder */
+        .ladder { display: flex; flex-direction: column; gap: 16px; margin: 8px 0 16px; }
+        .rung {
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-left: 3px solid var(--lime);
+            border-radius: var(--r-md);
+            padding: 24px 28px;
+        }
+        .rung .step {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--lime);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .rung h4 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 20px;
+            letter-spacing: -0.02em;
+            color: var(--bone);
+            margin-bottom: 8px;
+        }
+        .rung p { font-size: 15px; color: var(--bone-2); line-height: 1.6; margin: 0; }
+
+        /* Reporting callout */
+        .report {
+            background: var(--bone);
+            color: var(--carbon);
+            border-radius: var(--r-lg);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            margin: 8px 0 16px;
+        }
+        .report::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 6px;
+            background: var(--breach);
+        }
+        .report .tag {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            color: var(--breach);
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .report h3 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 26px;
+            letter-spacing: -0.02em;
+            color: var(--carbon);
+            margin: 0 0 12px;
+        }
+        .report p { font-size: 16px; color: #2A2E37; line-height: 1.6; margin-bottom: 12px; }
+        .report a.mail {
+            font-family: var(--font-mono);
+            font-weight: 700;
+            color: var(--carbon);
+            border-bottom: 2px solid var(--carbon);
+            font-size: 15px;
+        }
+        .report ul { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+        .report ul li { position: relative; padding-left: 22px; color: #2A2E37; font-size: 15px; line-height: 1.5; }
+        .report ul li::before {
+            content: '›'; position: absolute; left: 0; color: var(--lime-600); font-family: var(--font-mono); font-weight: 700;
+        }
+
+        @media (max-width: 880px) {
+            .coc-layout { grid-template-columns: 1fr; gap: 32px; }
+            .toc { position: static; border-left: 0; padding-left: 0; border-top: 1px solid var(--slate); padding-top: 24px; }
+            .toc ul { flex-flow: row wrap; gap: 8px 18px; }
+        }
+        @media (max-width: 600px) {
+            .wrap { padding: 0 20px; }
+            .page-hero { padding: 112px 0 56px; }
+            .report { padding: 28px 22px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="navbar"></div>
+
+    <main>
+        <!-- ===== Hero ===== -->
+        <section class="page-hero">
+            <div class="wrap page-hero__content">
+                <div class="section-eyebrow">// code-of-conduct</div>
+                <h1>The room is <span class="accent">safe.</span><br>So is the question.</h1>
+                <p class="lede">
+                    CNSPK is built on one promise: <strong>defense in depth, hospitality on top.</strong>
+                    This Code of Conduct applies to everyone in every CNSPK space — online and in person.
+                    Read it once. It's short, it's real, and we enforce it.
+                </p>
+                <!-- Roman Urdu accent (one per page): bharosa = trust -->
+                <p class="meta-line">$ this is the <span style="color:var(--lime);">bharosa</span> we run on · v1.0 · last reviewed 2026</p>
+            </div>
+        </section>
+
+        <div class="wrap">
+            <div class="coc-layout">
+                <!-- ===== Table of contents ===== -->
+                <nav class="toc" aria-label="Code of Conduct sections">
+                    <div class="toc-title">// contents</div>
+                    <ul>
+                        <li><a href="#pledge">01 · Our pledge</a></li>
+                        <li><a href="#expected">02 · Expected behaviour</a></li>
+                        <li><a href="#unacceptable">03 · Unacceptable behaviour</a></li>
+                        <li><a href="#scope">04 · Scope</a></li>
+                        <li><a href="#enforcement">05 · Enforcement</a></li>
+                        <li><a href="#reporting">06 · Reporting</a></li>
+                        <li><a href="#attribution">07 · Attribution</a></li>
+                    </ul>
+                </nav>
+
+                <!-- ===== Body ===== -->
+                <div class="coc-body">
+                    <!-- 01 Pledge -->
+                    <section class="coc-section" id="pledge">
+                        <span class="eyebrow">// 01</span>
+                        <h2>Our pledge</h2>
+                        <p>
+                            We — members, contributors, mentors, and organisers of Cloud Native Security
+                            Pakistan — pledge to make participation in the chapter a harassment-free
+                            experience for everyone, regardless of age, body size, visible or invisible
+                            disability, ethnicity, sex characteristics, gender identity and expression, level
+                            of experience, education, socio-economic status, nationality, personal appearance,
+                            race, caste, religion or sect, sexual identity and orientation, language, or which
+                            city your <code>kubectl</code> points at.
+                        </p>
+                        <p>
+                            We pledge to act and interact in ways that contribute to an open, welcoming,
+                            diverse, inclusive, and healthy community. The most valuable question in any room
+                            is the first one — we protect the people brave enough to ask it.
+                        </p>
+                    </section>
+
+                    <!-- 02 Expected -->
+                    <section class="coc-section" id="expected">
+                        <span class="eyebrow">// 02</span>
+                        <h2>Expected behaviour</h2>
+                        <p>Examples of behaviour that builds a healthy CNSPK:</p>
+                        <ul class="bullets">
+                            <li>Show empathy and kindness toward other people. Assume good faith before you assume malice.</li>
+                            <li>Be respectful of differing opinions, viewpoints, and experiences — especially across seniority and background.</li>
+                            <li>Give and gracefully accept constructive feedback. Critique the code, the config, or the idea — not the person.</li>
+                            <li>Take responsibility, apologise to those affected by our mistakes, and learn from the experience.</li>
+                            <li>Focus on what is best not just for us as individuals, but for the overall community.</li>
+                            <li>Help newcomers. Answer the basic question without condescension. Everyone was new to <code>kubectl</code> once.</li>
+                            <li>Respect people's time: stay on topic, keep self-promotion to where it's welcome, and credit others' work.</li>
+                        </ul>
+                    </section>
+
+                    <!-- 03 Unacceptable -->
+                    <section class="coc-section" id="unacceptable">
+                        <span class="eyebrow">// 03</span>
+                        <h2>Unacceptable behaviour</h2>
+                        <p>The following are not tolerated in any CNSPK space:</p>
+                        <ul class="bullets">
+                            <li>Sexualised language or imagery, and sexual attention or advances of any kind.</li>
+                            <li>Trolling, insulting or derogatory comments, and personal or political attacks.</li>
+                            <li>Public or private harassment, including sustained disruption of talks, labs, or discussions.</li>
+                            <li>Publishing others' private information — physical or email address, workplace, or private messages — without their explicit permission ("doxxing").</li>
+                            <li>Unsolicited direct messages to members you don't know. Ask in the room first. No cold DM recruiting or pitching.</li>
+                            <li>Vendor pitches, MLM, "I have a course to sell," and recruiter spam posted outside designated channels.</li>
+                            <li>Advocating for, or encouraging, any of the above behaviour.</li>
+                            <li>Sharing real exploits, malware, or stolen data against systems you are not authorised to test. Security research stays ethical and legal — responsible disclosure only.</li>
+                            <li>Other conduct which could reasonably be considered inappropriate in a professional setting.</li>
+                        </ul>
+                    </section>
+
+                    <!-- 04 Scope -->
+                    <section class="coc-section" id="scope">
+                        <span class="eyebrow">// 04</span>
+                        <h2>Scope</h2>
+                        <p>
+                            This Code of Conduct applies within all CNSPK community spaces, and also applies
+                            when an individual is officially representing the community in public spaces.
+                            CNSPK spaces include — but are not limited to:
+                        </p>
+                        <ul class="bullets">
+                            <li>The WhatsApp community and any future Discord server.</li>
+                            <li>The GitHub organisation — issues, pull requests, discussions, and reviews.</li>
+                            <li>In-person meetups, labs, CTFs, and workshops.</li>
+                            <li>CNCF chapter sessions and any event run under the CNSPK name.</li>
+                            <li>Official social accounts (LinkedIn, X, Instagram, YouTube) and the <code>hi@cloudnativesecurity.pk</code> inbox.</li>
+                        </ul>
+                        <p>
+                            Representing the community includes using an official email address, posting via an
+                            official social account, or acting as an appointed representative at an online or
+                            offline event.
+                        </p>
+                    </section>
+
+                    <!-- 05 Enforcement -->
+                    <section class="coc-section" id="enforcement">
+                        <span class="eyebrow">// 05</span>
+                        <h2>Enforcement</h2>
+                        <p>
+                            Community organisers and Discord/WhatsApp moderators are responsible for clarifying
+                            and enforcing this Code of Conduct. They will take fair, proportionate corrective
+                            action in response to any behaviour they deem inappropriate, threatening,
+                            offensive, or harmful — and may remove, edit, or reject contributions that violate
+                            it, with an explanation when appropriate.
+                        </p>
+                        <p>
+                            We follow a clear escalation ladder. The response matches the impact and whether
+                            the behaviour is repeated. Organisers may skip straight to a later step for severe
+                            or threatening behaviour.
+                        </p>
+                        <div class="ladder">
+                            <div class="rung">
+                                <div class="step">Step 01</div>
+                                <h4>Correction</h4>
+                                <p>
+                                    A private, written note from organisers explaining the violation and why
+                                    it was inappropriate. A public apology may be requested. No lasting mark —
+                                    most things end here.
+                                </p>
+                            </div>
+                            <div class="rung">
+                                <div class="step">Step 02</div>
+                                <h4>Warning</h4>
+                                <p>
+                                    A formal warning with consequences for continued behaviour. No interaction
+                                    with the people involved — including unsolicited contact with moderators —
+                                    for a set period. Violating these terms escalates further.
+                                </p>
+                            </div>
+                            <div class="rung">
+                                <div class="step">Step 03</div>
+                                <h4>Timeout / quarantine</h4>
+                                <p>
+                                    A temporary ban from any interaction or public communication with the
+                                    community for a specified period. No public or private contact with the
+                                    people involved is allowed during this time. Breaking it leads to a
+                                    permanent ban.
+                                </p>
+                            </div>
+                            <div class="rung">
+                                <div class="step">Step 04</div>
+                                <h4>Permanent ban</h4>
+                                <p>
+                                    A permanent ban from any kind of public interaction within the community,
+                                    for demonstrating a pattern of violation, harassment of an individual, or
+                                    aggression toward or disparagement of groups of people.
+                                </p>
+                            </div>
+                        </div>
+                        <p>
+                            All organisers are obligated to respect the privacy and security of anyone who
+                            reports an incident. Organisers who do not follow or enforce this Code in good
+                            faith may face temporary or permanent repercussions as determined by other members
+                            of the chapter's leadership.
+                        </p>
+                    </section>
+
+                    <!-- 06 Reporting -->
+                    <section class="coc-section" id="reporting">
+                        <span class="eyebrow">// 06</span>
+                        <h2>Reporting</h2>
+                        <p>
+                            If you experience or witness unacceptable behaviour — or have any other concern —
+                            please report it. Reports go to the chapter's conduct contact and are handled
+                            confidentially.
+                        </p>
+                        <div class="report">
+                            <span class="tag">Report · confidential</span>
+                            <h3>How to report</h3>
+                            <p>
+                                Email the conduct team. Include what happened, who was involved, when and
+                                where, any screenshots or links, and whether you'd like to stay anonymous to
+                                the people involved.
+                            </p>
+                            <p>
+                                <a class="mail" href="mailto:conduct@cloudnativesecurity.pk?subject=Code%20of%20Conduct%20report">conduct@cloudnativesecurity.pk</a>
+                            </p>
+                            <ul>
+                                <li>In a live WhatsApp room or Discord server, you can also message a named moderator directly — they can act immediately.</li>
+                                <li>If your report involves an organiser or moderator, email the conduct address and ask that the named person be excluded from handling it.</li>
+                                <li>We aim to acknowledge every report within 3 working days and will keep you informed of the outcome where appropriate.</li>
+                            </ul>
+                            <!--
+                                TODO: confirm conduct@cloudnativesecurity.pk is a live, monitored alias routed to
+                                the organiser conduct team before launch. If an anonymous web form is added later,
+                                link it here. Do NOT list individual moderator names/contacts until the Discord
+                                MODERATORS.md roster is published (JOIN_STRATEGY §5).
+                            -->
+                        </div>
+                        <p>
+                            We will not name a reporter to the person they reported without consent. Retaliation
+                            against anyone who reports in good faith is itself a violation of this Code.
+                        </p>
+                    </section>
+
+                    <!-- 07 Attribution -->
+                    <section class="coc-section" id="attribution">
+                        <span class="eyebrow">// 07</span>
+                        <h2>Attribution</h2>
+                        <p>
+                            This Code of Conduct is adapted from the
+                            <a href="https://www.contributor-covenant.org/version/2/1/code_of_conduct/" target="_blank" rel="noopener noreferrer">Contributor Covenant, version 2.1</a>,
+                            and draws on the
+                            <a href="https://github.com/cncf/foundation/blob/main/code-of-conduct.md" target="_blank" rel="noopener noreferrer">CNCF Code of Conduct</a>.
+                            The enforcement ladder is based on the Contributor Covenant's Community Impact
+                            Guidelines.
+                        </p>
+                        <p>
+                            CNSPK is affiliated with the Cloud Native Computing Foundation as a recognised
+                            chapter; participants in CNCF events are also subject to the CNCF Code of Conduct.
+                            For answers to common questions, see the Contributor Covenant
+                            <a href="https://www.contributor-covenant.org/faq" target="_blank" rel="noopener noreferrer">FAQ</a>.
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+
+    <script type="module">
+        import { Navbar } from '/js/Navbar.js';
+        import { Footer } from '/js/Footer.js';
+        new Navbar().init();
+        new Footer().init();
+    </script>
+</body>
+
+</html>

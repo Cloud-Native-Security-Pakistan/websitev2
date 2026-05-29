@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://github.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+
+    <title>Labs &amp; CTF — CNSPK | Practice &gt; Theory</title>
+    <meta name="description"
+        content="Hands-on cloud-native security labs and CTFs from Cloud Native Security Pakistan. Practice over theory. Show the kubectl. Runnable lab repos on the GitHub org.">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="canonical" href="https://cloudnativesecurity.pk/labs/">
+
+    <link rel="stylesheet" href="/css/tokens.css">
+
+    <style>
+        .wrap { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+
+        .page-hero {
+            position: relative;
+            padding: 140px 0 80px;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse 80% 60% at 18% 18%, rgba(199, 255, 62, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 80% at 92% 90%, rgba(1, 65, 28, 0.35) 0%, transparent 60%),
+                var(--carbon);
+        }
+        .page-hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(199, 255, 62, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(199, 255, 62, 0.04) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none;
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+        }
+        .page-hero__content { position: relative; z-index: 2; max-width: 800px; }
+        .page-hero h1 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: clamp(44px, 8vw, 104px);
+            line-height: 0.92;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            color: var(--bone);
+            margin-bottom: 24px;
+        }
+        .page-hero h1 .accent { color: var(--lime); }
+        .page-hero .cmd-mark {
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: clamp(15px, 2.2vw, 20px);
+            color: var(--carbon);
+            display: inline-block;
+            padding: 8px 16px;
+            background: var(--lime);
+            border-radius: var(--r-sm);
+            margin-bottom: 28px;
+            box-shadow: 4px 4px 0 var(--charcoal), 4px 4px 0 1px var(--lime-600);
+        }
+
+        .lede {
+            font-size: clamp(18px, 2.4vw, 22px);
+            color: var(--bone-2);
+            max-width: 660px;
+            line-height: 1.55;
+            margin-bottom: 36px;
+        }
+        .lede strong { color: var(--lime); font-weight: 600; }
+
+        .hero-cta-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+        .urdu-accent {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--steel);
+            letter-spacing: 0.04em;
+            margin-top: 28px;
+        }
+        .urdu-accent em { color: var(--lime); font-style: normal; }
+
+        .section { padding: 88px 0; }
+        .section + .section { border-top: 1px solid var(--slate); }
+        .section h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: clamp(30px, 4.4vw, 52px);
+            text-transform: uppercase;
+            line-height: 0.96;
+            letter-spacing: -0.03em;
+            color: var(--bone);
+            margin-bottom: 24px;
+            max-width: 18ch;
+        }
+        .section .muted { font-size: 17px; color: var(--bone-2); max-width: 660px; line-height: 1.6; margin-bottom: 40px; }
+
+        .what-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+        .what {
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-md);
+            padding: 28px;
+        }
+        .what .num {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--lime);
+            letter-spacing: 0.1em;
+            margin-bottom: 10px;
+        }
+        .what h3 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 22px;
+            letter-spacing: -0.02em;
+            color: var(--bone);
+            margin-bottom: 8px;
+        }
+        .what p { font-size: 14px; color: var(--bone-2); line-height: 1.55; }
+
+        /* Next lab countdown slot */
+        .next-lab {
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-lg);
+            padding: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+        .next-lab::after {
+            content: '';
+            position: absolute; bottom: -60px; right: -60px;
+            width: 220px; height: 220px;
+            background: radial-gradient(circle, rgba(199, 255, 62, 0.12), transparent 70%);
+            pointer-events: none;
+        }
+        .next-lab .badge {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--lime);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border: 1px solid rgba(199, 255, 62, 0.25);
+            background: rgba(199, 255, 62, 0.08);
+            padding: 6px 12px;
+            border-radius: var(--r-pill);
+            margin-bottom: 20px;
+        }
+        .next-lab h3 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(26px, 3.6vw, 40px);
+            letter-spacing: -0.02em;
+            color: var(--bone);
+            margin-bottom: 12px;
+        }
+        .next-lab p { color: var(--bone-2); max-width: 540px; font-size: 15px; line-height: 1.6; margin-bottom: 8px; }
+        .countdown-slot {
+            display: inline-flex;
+            gap: 12px;
+            margin-top: 20px;
+            font-family: var(--font-mono);
+            color: var(--steel);
+        }
+        .countdown-slot .cell {
+            border: 1px dashed var(--slate);
+            border-radius: var(--r-sm);
+            padding: 12px 16px;
+            text-align: center;
+            min-width: 64px;
+        }
+        .countdown-slot .cell .v {
+            display: block;
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: 28px;
+            color: var(--steel);
+            line-height: 1;
+        }
+        .countdown-slot .cell .u {
+            display: block;
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-top: 6px;
+        }
+
+        .empty-state {
+            border: 1px dashed var(--slate);
+            border-radius: var(--r-lg);
+            padding: 56px 32px;
+            text-align: center;
+            background: rgba(26, 29, 36, 0.4);
+            margin-top: 16px;
+        }
+        .empty-state .badge {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--lime);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border: 1px solid rgba(199, 255, 62, 0.25);
+            background: rgba(199, 255, 62, 0.08);
+            padding: 6px 12px;
+            border-radius: var(--r-pill);
+            margin-bottom: 20px;
+        }
+        .empty-state h3 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(24px, 3.4vw, 36px);
+            letter-spacing: -0.02em;
+            color: var(--bone);
+            margin-bottom: 12px;
+        }
+        .empty-state p { color: var(--bone-2); max-width: 480px; margin: 0 auto; font-size: 15px; line-height: 1.6; }
+
+        /* Repo CTA */
+        .repo-cta {
+            background: var(--bone);
+            color: var(--carbon);
+            border-radius: var(--r-lg);
+            padding: 48px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .repo-cta::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 6px;
+            background: var(--grad-stamp-glow);
+        }
+        .repo-cta h3 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(26px, 3.4vw, 40px);
+            letter-spacing: -0.02em;
+            line-height: 1;
+            color: var(--carbon);
+            margin-bottom: 10px;
+            max-width: 16ch;
+        }
+        .repo-cta p { font-size: 15px; color: #2A2E37; line-height: 1.55; max-width: 48ch; }
+
+        @media (max-width: 600px) {
+            .wrap { padding: 0 20px; }
+            .page-hero { padding: 112px 0 64px; }
+            .next-lab, .repo-cta { padding: 32px 24px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="navbar"></div>
+
+    <main>
+        <!-- ===== Hero ===== -->
+        <section class="page-hero">
+            <div class="wrap page-hero__content">
+                <div class="section-eyebrow">// labs / ctf</div>
+                <code class="cmd-mark">$ kubectl exec -it practice -- /bin/sh</code>
+                <h1>Practice<br>&gt; theory.<br><span class="accent">Show the kubectl.</span></h1>
+                <p class="lede">
+                    Reading about a misconfig won't save your cluster at 3am. <strong>Breaking one will.</strong>
+                    CNSPK labs and CTFs are hands-on — a deliberately broken cluster, a timer, and your
+                    terminal. BYO laptop. Leave knowing something you can run Monday.
+                </p>
+                <div class="hero-cta-row">
+                    <a class="btn-primary"
+                        href="https://github.com/Cloud-Native-Security-Pakistan"
+                        target="_blank" rel="noopener noreferrer">
+                        Browse lab repos ↗
+                    </a>
+                    <a class="btn-secondary" href="#next-lab">
+                        <span class="mono">// next-lab</span>
+                    </a>
+                </div>
+                <!-- Roman Urdu accent (one per page): takleef = the pain a tool removes -->
+                <p class="urdu-accent">$ every lab teaches you to spot the <em>takleef</em> before prod does.</p>
+            </div>
+        </section>
+
+        <!-- ===== What labs are ===== -->
+        <section class="section">
+            <div class="wrap">
+                <div class="section-eyebrow">// what-labs-are</div>
+                <h2>Hands on the keyboard.</h2>
+                <p class="muted">
+                    No slides-only sessions. Every lab is a real environment you attack or defend, scored on
+                    what you actually did — not what you remembered.
+                </p>
+                <div class="what-grid">
+                    <article class="what">
+                        <div class="num">01 / CTF</div>
+                        <h3>Capture the flag</h3>
+                        <p>Cloud-native challenges — leaky RBAC, exposed dashboards, supply-chain traps. Find the flag, write up the path.</p>
+                    </article>
+                    <article class="what">
+                        <div class="num">02 / HARDEN</div>
+                        <h3>Harden-the-cluster</h3>
+                        <p>Take a misconfigured cluster from "open dashboard" to "audit-passing" against the clock. BYO laptop.</p>
+                    </article>
+                    <article class="what">
+                        <div class="num">03 / RUNNABLE</div>
+                        <h3>Runnable repos</h3>
+                        <p>Every lab ships as a repo on the GitHub org. Clone it, run it at home, break it as many times as you like.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Next lab countdown slot ===== -->
+        <section class="section" id="next-lab">
+            <div class="wrap">
+                <div class="section-eyebrow">// next-lab</div>
+                <h2>Next lab.</h2>
+                <p class="muted">When a lab is scheduled, it shows up here with a live countdown and an RSVP link.</p>
+
+                <!--
+                    TODO: wire the "next lab" slot to data/events.json — filter to type/topic = lab/ctf with a
+                    future date, pick the soonest, and render a live countdown (date diff in JS) + the event's
+                    registrationUrl. The countdown cells below are an inert placeholder (em-dashes), NOT a fake
+                    timer. DO NOT hardcode a date.
+                -->
+                <div class="next-lab">
+                    <span class="badge">no lab scheduled</span>
+                    <h3>Nothing on the timer yet</h3>
+                    <p>
+                        The next lab isn't scheduled. When it is, this slot lights up with a countdown and an
+                        RSVP link. Watch the events page or the WhatsApp room — that's where labs get announced.
+                    </p>
+                    <div class="countdown-slot" aria-hidden="true">
+                        <div class="cell"><span class="v">—</span><span class="u">days</span></div>
+                        <div class="cell"><span class="v">—</span><span class="u">hrs</span></div>
+                        <div class="cell"><span class="v">—</span><span class="u">min</span></div>
+                    </div>
+                    <p style="margin-top:24px;">
+                        <a href="/events/">Check the events page →</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Past CTF artifacts (empty state) ===== -->
+        <section class="section">
+            <div class="wrap">
+                <div class="section-eyebrow">// past-ctf-artifacts</div>
+                <h2>The archive.</h2>
+                <p class="muted">Challenge repos, writeups, and final boards from past CTFs — replayable at home.</p>
+
+                <!--
+                    TODO: wire past CTF artifacts to a data source once one exists (proposed data/labs.json:
+                    [{ "name": "...", "date": "YYYY-MM-DD", "repo": "...", "writeup": "...", "board": "..." }]).
+                    Confirm the shape with the strategist before creating the file. DO NOT invent CTF names,
+                    winners, scores, or leaderboards.
+                -->
+                <div class="empty-state" role="status">
+                    <span class="badge">archive · empty</span>
+                    <h3>First CTF artifacts land here</h3>
+                    <p>
+                        After the first CNSPK CTF, the challenge repos, writeups, and final board show up here
+                        so anyone can replay them. Nothing to show yet — that's honest, not empty.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Repo CTA ===== -->
+        <section class="section">
+            <div class="wrap">
+                <div class="repo-cta">
+                    <div>
+                        <h3>Clone a lab. Break it at home.</h3>
+                        <p>
+                            Every runnable lab and CTF challenge lives on the CNSPK GitHub org. No event
+                            required — pull one down, spin it up, and practice on your own cluster.
+                        </p>
+                    </div>
+                    <!-- TODO: point to a dedicated labs/CTF repo or topic filter once one exists; org root for now. -->
+                    <a class="btn-primary btn-primary--sm"
+                        href="https://github.com/Cloud-Native-Security-Pakistan"
+                        target="_blank" rel="noopener noreferrer"
+                        style="box-shadow:4px 4px 0 0 var(--carbon),4px 4px 0 1px var(--lime-600);">
+                        Open the GitHub org ↗
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer"></div>
+
+    <script type="module">
+        import { Navbar } from '/js/Navbar.js';
+        import { Footer } from '/js/Footer.js';
+        new Navbar().init();
+        new Footer().init();
+    </script>
+</body>
+
+</html>
