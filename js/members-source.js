@@ -88,10 +88,10 @@ async function loadLiveMembers(cityCoords) {
   const col = cfg.sheetColumns;
   const idx = (name) => headers.indexOf(name);
 
-  const iName = idx(col.name), iRole = idx(col.role), iCity = idx(col.city),
-        iInterests = idx(col.interests), iGithub = idx(col.github),
-        iLinkedin = idx(col.linkedin), iConsent = idx(col.consent),
-        iApproved = idx(col.approved);
+  const iMemberNo = idx(col.membershipNo), iName = idx(col.name), iRole = idx(col.role),
+        iCity = idx(col.city), iInterests = idx(col.interests),
+        iGithub = idx(col.github), iLinkedin = idx(col.linkedin),
+        iApproved = idx('Approved');
 
   const out = [];
   for (let r = 1; r < rows.length && out.length < cfg.maxLiveMembers; r++) {
@@ -101,7 +101,7 @@ async function loadLiveMembers(cityCoords) {
     const name = get(iName);
     if (!name) continue;
 
-    if (cfg.requireConsent && iConsent >= 0 && !truthy(get(iConsent))) continue;
+    // The public sheet is already opt-in only, but honour manual approval if enabled.
     if (cfg.requireApproval && (iApproved < 0 || !truthy(get(iApproved)))) continue;
 
     const rawCity = get(iCity);
@@ -111,11 +111,13 @@ async function loadLiveMembers(cityCoords) {
     const interests = get(iInterests)
       .split(/[,;/|]/).map(s => s.trim()).filter(Boolean).slice(0, 4);
 
+    const memberNo = get(iMemberNo);
     const username = (get(iGithub).split('/').filter(Boolean).pop() || name)
       .toLowerCase().replace(/[^a-z0-9-]/g, '');
 
     out.push({
-      id: `live-${r}`,
+      id: memberNo || `live-${r}`,
+      memberNo,
       name,
       username,
       location: rawCity || 'Pakistan',

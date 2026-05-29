@@ -102,6 +102,12 @@ export class MembershipForm {
         font-size: 13px; color: var(--bone-2); line-height: 1.5;
         margin: 20px 0; cursor: pointer;
       }
+      .cnspk-mf__consent-group {
+        margin: 20px 0; padding: 16px; border: 1px solid var(--slate);
+        border-radius: var(--r-sm); background: var(--carbon);
+      }
+      .cnspk-mf__consent-group .cnspk-mf__consent { margin: 0 0 12px; }
+      .cnspk-mf__consent-group .cnspk-mf__consent:last-child { margin-bottom: 0; }
       .cnspk-mf__consent input { margin-top: 3px; accent-color: var(--lime); width: 16px; height: 16px; flex-shrink: 0; }
       .cnspk-mf__submit { width: 100%; justify-content: center; }
       .cnspk-mf__notice {
@@ -128,11 +134,18 @@ export class MembershipForm {
     document.head.appendChild(style);
   }
 
-  /** The list of Pakistani cities for the dropdown (mirrors city-coords.json keys). */
+  /** Pakistani cities for the dropdown (mirrors city-coords.json). */
   cityOptions() {
     return ['Lahore', 'Karachi', 'Islamabad', 'Rawalpindi', 'Faisalabad', 'Multan',
       'Peshawar', 'Quetta', 'Sialkot', 'Gujranwala', 'Hyderabad', 'Bahawalpur',
       'Abbottabad', 'Sargodha', 'Other Pakistan', 'Diaspora'];
+  }
+
+  /** Career-stage roles (mirrors the Apps Script). */
+  roleOptions() {
+    return ['Student', 'Junior Engineer (0–2 yrs)', 'Engineer (3–5 yrs)',
+      'Senior Engineer (6–10 yrs)', 'Staff / Principal (10+ yrs)',
+      'Security Lead / CISO', 'Founder / Freelancer', 'Other'];
   }
 
   render() {
@@ -147,58 +160,82 @@ export class MembershipForm {
       </button>`;
 
     const head = `
-      <div class="cnspk-mf__eyebrow">// add yourself to the map</div>
-      <h2 class="cnspk-mf__title">Put your pin on it.</h2>
-      <p class="cnspk-mf__sub">Fill this in and you'll appear on the members map. Real engineers, real cities, no gatekeeping. <em>Bharosa</em> — your details are only used for the public directory.</p>`;
+      <div class="cnspk-mf__eyebrow">// cnspk membership</div>
+      <h2 class="cnspk-mf__title">Join the chapter.</h2>
+      <p class="cnspk-mf__sub">Register once and you get a <strong style="color:var(--bone)">membership number</strong>, emailed to you. Appearing on the public map is optional — your call below. <em>Bharosa.</em></p>`;
 
     const cityOpts = this.cityOptions().map(c => `<option value="${c}">${c}</option>`).join('');
+    const roleOpts = this.roleOptions().map(r => `<option value="${r}">${r}</option>`).join('');
+    const featureText = this.cfg.featureOptionText || 'Yes — feature me on the CNSPK website and members map';
+    const shareText = this.cfg.shareOptionText || 'Yes — CNSPK may share my details with partner organizations for hiring and internships';
 
     const form = live ? `
       <form id="cnspk-mf-form" novalidate>
         <div class="cnspk-mf__field">
-          <label class="cnspk-mf__label" for="mf-name">Name <span class="req">*</span></label>
-          <input class="cnspk-mf__input" id="mf-name" name="name" type="text" required placeholder="Your name" autocomplete="name">
+          <label class="cnspk-mf__label" for="mf-name">Full name <span class="req">*</span></label>
+          <input class="cnspk-mf__input" id="mf-name" type="text" required placeholder="Your name" autocomplete="name">
         </div>
         <div class="cnspk-mf__field">
-          <label class="cnspk-mf__label" for="mf-role">Role / title</label>
-          <input class="cnspk-mf__input" id="mf-role" name="role" type="text" placeholder="e.g. DevSecOps Engineer @ Company">
+          <label class="cnspk-mf__label" for="mf-email">Email <span class="req">*</span></label>
+          <input class="cnspk-mf__input" id="mf-email" type="email" required placeholder="you@domain.pk" autocomplete="email">
+          <span style="font-size:11px;color:var(--steel);font-family:var(--font-mono)">// where we send your membership number — kept private, never shown</span>
         </div>
         <div class="cnspk-mf__field">
           <label class="cnspk-mf__label" for="mf-city">City <span class="req">*</span></label>
-          <select class="cnspk-mf__select" id="mf-city" name="city" required>
+          <select class="cnspk-mf__select" id="mf-city" required>
             <option value="" disabled selected>Pick your city</option>
             ${cityOpts}
           </select>
         </div>
         <div class="cnspk-mf__field">
-          <label class="cnspk-mf__label" for="mf-interests">Interests <span style="opacity:.6">(comma-separated)</span></label>
-          <input class="cnspk-mf__input" id="mf-interests" name="interests" type="text" placeholder="Kubernetes, DevSecOps, Supply Chain">
+          <label class="cnspk-mf__label" for="mf-role">Role / career stage <span class="req">*</span></label>
+          <select class="cnspk-mf__select" id="mf-role" required>
+            <option value="" disabled selected>Pick one</option>
+            ${roleOpts}
+          </select>
+        </div>
+        <div class="cnspk-mf__field">
+          <label class="cnspk-mf__label" for="mf-org">Organization / University <span style="opacity:.6">(optional)</span></label>
+          <input class="cnspk-mf__input" id="mf-org" type="text" placeholder="e.g. NUST / Systems Limited">
+        </div>
+        <div class="cnspk-mf__field">
+          <label class="cnspk-mf__label" for="mf-interests">Interests <span style="opacity:.6">(comma-separated, optional)</span></label>
+          <input class="cnspk-mf__input" id="mf-interests" type="text" placeholder="Kubernetes, DevSecOps, Supply Chain">
         </div>
         <div class="cnspk-mf__field">
           <label class="cnspk-mf__label" for="mf-github">GitHub <span style="opacity:.6">(optional)</span></label>
-          <input class="cnspk-mf__input" id="mf-github" name="github" type="url" placeholder="https://github.com/you">
+          <input class="cnspk-mf__input" id="mf-github" type="url" placeholder="https://github.com/you">
         </div>
         <div class="cnspk-mf__field">
           <label class="cnspk-mf__label" for="mf-linkedin">LinkedIn <span style="opacity:.6">(optional)</span></label>
-          <input class="cnspk-mf__input" id="mf-linkedin" name="linkedin" type="url" placeholder="https://linkedin.com/in/you">
+          <input class="cnspk-mf__input" id="mf-linkedin" type="url" placeholder="https://linkedin.com/in/you">
         </div>
-        <label class="cnspk-mf__consent">
-          <input type="checkbox" id="mf-consent" name="consent" required>
-          <span>I agree to have my name, role, and city shown on the public CNSPK members map and directory.</span>
-        </label>
+
+        <div class="cnspk-mf__consent-group">
+          <label class="cnspk-mf__consent">
+            <input type="checkbox" id="mf-feature">
+            <span>${featureText.replace(/^Yes\s*[—-]\s*/, '')} <span style="color:var(--steel)">(optional — leave off to stay a private member)</span></span>
+          </label>
+          <label class="cnspk-mf__consent">
+            <input type="checkbox" id="mf-share">
+            <span>${shareText.replace(/^Yes\s*[—-]\s*/, '')} <span style="color:var(--steel)">(optional — internships &amp; hiring)</span></span>
+          </label>
+        </div>
+
         <button class="btn-primary cnspk-mf__submit" type="submit" id="mf-submit">
-          Add me to the map
+          Register &amp; get my number
           <span style="font-family:var(--font-mono);">→</span>
         </button>
         <p class="cnspk-mf__err" id="mf-err" role="alert"></p>
       </form>` : `
       <div class="cnspk-mf__notice">
-        // membership form goes live once the chapter's Google Form is wired up.<br><br>
+        // membership registration goes live once the chapter's Google Form is wired up
+        (see MEMBERSHIP_SETUP.md).<br><br>
         For now, join through any door on the <a href="/join/">join page</a> — WhatsApp, the CNCF chapter, or GitHub.
       </div>`;
 
     mount.innerHTML = `
-      <div class="cnspk-mf__overlay" id="cnspk-mf-overlay" role="dialog" aria-modal="true" aria-label="Membership form">
+      <div class="cnspk-mf__overlay" id="cnspk-mf-overlay" role="dialog" aria-modal="true" aria-label="CNSPK membership form">
         <div class="cnspk-mf__dialog">
           ${closeBtn}
           <div id="cnspk-mf-body">
@@ -207,7 +244,6 @@ export class MembershipForm {
           </div>
         </div>
       </div>
-      <!-- Hidden submit target so the Google POST doesn't navigate away -->
       <iframe name="cnspk-mf-sink" id="cnspk-mf-sink" style="display:none" title="form sink"></iframe>`;
   }
 
@@ -253,14 +289,19 @@ export class MembershipForm {
     const val = (id) => (document.getElementById(id)?.value || '').trim();
 
     const name = val('mf-name');
+    const email = val('mf-email');
     const city = val('mf-city');
-    const consent = document.getElementById('mf-consent')?.checked;
+    const role = val('mf-role');
+    const featured = document.getElementById('mf-feature')?.checked;
+    const shared = document.getElementById('mf-share')?.checked;
 
+    // Compulsory core fields
     if (!name) { err.textContent = 'Name is required.'; return; }
+    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { err.textContent = 'A valid email is required — that\'s where your membership number goes.'; return; }
     if (!city) { err.textContent = 'Please pick your city.'; return; }
-    if (!consent) { err.textContent = 'Please tick the consent box — your details go on a public map.'; return; }
+    if (!role) { err.textContent = 'Please pick your role / career stage.'; return; }
 
-    // Build a hidden Google Form POST using the configured entry.* field ids.
+    // Build the Google Form POST
     const gForm = document.createElement('form');
     gForm.action = this.cfg.formActionUrl;
     gForm.method = 'POST';
@@ -268,7 +309,7 @@ export class MembershipForm {
     gForm.style.display = 'none';
 
     const add = (entryId, value) => {
-      if (!entryId || /entry\.0+$/.test(entryId)) return; // skip unconfigured placeholders
+      if (!entryId || /entry\.0+$/.test(entryId) || value === '' || value == null) return;
       const input = document.createElement('input');
       input.type = 'hidden';
       input.name = entryId;
@@ -277,28 +318,36 @@ export class MembershipForm {
     };
 
     add(f.name, name);
-    add(f.role, val('mf-role'));
+    add(f.email, email);
     add(f.city, city);
+    add(f.role, role);
+    add(f.org, val('mf-org'));
     add(f.interests, val('mf-interests'));
     add(f.github, val('mf-github'));
     add(f.linkedin, val('mf-linkedin'));
-    add(f.consent, 'Yes');
+    // Checkboxes submit their EXACT option label as the value.
+    if (featured) add(f.feature, this.cfg.featureOptionText);
+    if (shared) add(f.share, this.cfg.shareOptionText);
 
     document.body.appendChild(gForm);
     gForm.submit();
     document.body.removeChild(gForm);
 
-    this.showSuccess(name, city);
+    this.showSuccess(name, city, featured);
   }
 
-  showSuccess(name, city) {
+  showSuccess(name, city, featured) {
     const body = document.getElementById('cnspk-mf-body');
     if (!body) return;
+    const mapLine = featured
+      ? `Your pin appears on the members map shortly. See you in ${city}.`
+      : `You're a private member — not on the public map. You can ask to be featured any time.`;
     body.innerHTML = `
       <div class="cnspk-mf__success">
         <div class="check" aria-hidden="true">✓</div>
-        <h3>You're on the map.</h3>
-        <p><strong style="color:var(--bone)">${name}</strong> — welcome to CNSPK. Your pin will appear on the members map shortly (after the next refresh). See you in ${city}.</p>
+        <h3>You're registered.</h3>
+        <p><strong style="color:var(--bone)">${name}</strong> — welcome to CNSPK. Your <strong style="color:var(--lime)">membership number</strong> is on its way to your email.</p>
+        <p style="margin-top:10px">${mapLine}</p>
         <p style="margin-top:16px;font-family:var(--font-mono);font-size:12px;color:var(--steel)">kubectl apply -f pakistan.yaml</p>
       </div>`;
   }
