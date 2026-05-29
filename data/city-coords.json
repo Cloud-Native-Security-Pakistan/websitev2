@@ -34,5 +34,6 @@
   "taxila": { "lat": 33.7463, "lng": 72.8397 },
   "pakistan": { "lat": 30.3753, "lng": 69.3451 },
   "other": { "lat": 30.3753, "lng": 69.3451 },
+  "outside pakistan": { "lat": 25.2048, "lng": 55.2708 },
   "diaspora": { "lat": 25.2048, "lng": 55.2708 }
 }

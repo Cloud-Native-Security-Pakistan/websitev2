@@ -134,11 +134,9 @@ export class MembershipForm {
     document.head.appendChild(style);
   }
 
-  /** Pakistani cities for the dropdown (mirrors city-coords.json). */
+  /** Provincial capitals (each province once) + diaspora. Mirrors the Google Form + city-coords.json. */
   cityOptions() {
-    return ['Lahore', 'Karachi', 'Islamabad', 'Rawalpindi', 'Faisalabad', 'Multan',
-      'Peshawar', 'Quetta', 'Sialkot', 'Gujranwala', 'Hyderabad', 'Bahawalpur',
-      'Abbottabad', 'Sargodha', 'Other Pakistan', 'Diaspora'];
+    return ['Islamabad', 'Lahore', 'Karachi', 'Peshawar', 'Quetta', 'Gilgit', 'Muzaffarabad', 'Outside Pakistan'];
   }
 
   /** Career-stage roles (mirrors the Apps Script). */
@@ -164,7 +162,8 @@ export class MembershipForm {
       <h2 class="cnspk-mf__title">Join the chapter.</h2>
       <p class="cnspk-mf__sub">Register once and you get a <strong style="color:var(--bone)">membership number</strong>, emailed to you. Appearing on the public map is optional — your call below. <em>Bharosa.</em></p>`;
 
-    const cityOpts = this.cityOptions().map(c => `<option value="${c}">${c}</option>`).join('');
+    const cityOpts = this.cityOptions().map(c => `<option value="${c}">${c}</option>`).join('')
+      + '<option value="__other__">Other — type my city…</option>';
     const roleOpts = this.roleOptions().map(r => `<option value="${r}">${r}</option>`).join('');
     const featureText = this.cfg.featureOptionText || 'Yes — feature me on the CNSPK website and members map';
     const shareText = this.cfg.shareOptionText || 'Yes — CNSPK may share my details with partner organizations for hiring and internships';
@@ -183,9 +182,12 @@ export class MembershipForm {
         <div class="cnspk-mf__field">
           <label class="cnspk-mf__label" for="mf-city">City <span class="req">*</span></label>
           <select class="cnspk-mf__select" id="mf-city" required>
-            <option value="" disabled selected>Pick your city</option>
+            <option value="" disabled selected>Pick the nearest capital</option>
             ${cityOpts}
           </select>
+          <input class="cnspk-mf__input" id="mf-city-other" type="text"
+            placeholder="Type your city" style="display:none;margin-top:8px;"
+            aria-label="Type your city">
         </div>
         <div class="cnspk-mf__field">
           <label class="cnspk-mf__label" for="mf-role">Role / career stage <span class="req">*</span></label>
@@ -262,6 +264,17 @@ export class MembershipForm {
 
     const form = document.getElementById('cnspk-mf-form');
     if (form) form.addEventListener('submit', (e) => this.handleSubmit(e));
+
+    // City "Other" → reveal the write-in input
+    const citySel = document.getElementById('mf-city');
+    const cityOther = document.getElementById('mf-city-other');
+    if (citySel && cityOther) {
+      citySel.addEventListener('change', () => {
+        const isOther = citySel.value === '__other__';
+        cityOther.style.display = isOther ? 'block' : 'none';
+        if (isOther) cityOther.focus(); else cityOther.value = '';
+      });
+    }
   }
 
   open() {
@@ -290,15 +303,21 @@ export class MembershipForm {
 
     const name = val('mf-name');
     const email = val('mf-email');
-    const city = val('mf-city');
+    let city = val('mf-city');
     const role = val('mf-role');
     const featured = document.getElementById('mf-feature')?.checked;
     const shared = document.getElementById('mf-share')?.checked;
 
+    // Resolve the "Other → type your city" write-in.
+    if (city === '__other__') {
+      city = val('mf-city-other');
+      if (!city) { err.textContent = 'Type your city, or pick one from the list.'; return; }
+    }
+
     // Compulsory core fields
     if (!name) { err.textContent = 'Name is required.'; return; }
     if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { err.textContent = 'A valid email is required — that\'s where your membership number goes.'; return; }
-    if (!city) { err.textContent = 'Please pick your city.'; return; }
+    if (!city) { err.textContent = 'Please pick or type your city.'; return; }
     if (!role) { err.textContent = 'Please pick your role / career stage.'; return; }
 
     // Build the Google Form POST

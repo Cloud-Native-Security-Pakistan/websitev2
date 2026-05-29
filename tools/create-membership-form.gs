@@ -37,10 +37,17 @@ var CNSPK = {
   MEMBER_PAD: 4,                       // CNSPK-0001
   FEATURE_OPT: 'Yes — feature me on the CNSPK website and members map',
   SHARE_OPT: 'Yes — CNSPK may share my details with partner organizations for hiring and internships',
+  // Provincial/territorial capitals (each province once), + diaspora.
+  // "Other" is enabled on the question itself for write-ins (see qCity below).
   CITIES: [
-    'Lahore', 'Karachi', 'Islamabad', 'Rawalpindi', 'Faisalabad', 'Multan',
-    'Peshawar', 'Quetta', 'Sialkot', 'Gujranwala', 'Hyderabad', 'Bahawalpur',
-    'Abbottabad', 'Sargodha', 'Other Pakistan', 'Diaspora'
+    'Islamabad',        // Federal Capital
+    'Lahore',           // Punjab
+    'Karachi',          // Sindh
+    'Peshawar',         // Khyber Pakhtunkhwa
+    'Quetta',           // Balochistan
+    'Gilgit',           // Gilgit-Baltistan
+    'Muzaffarabad',     // Azad Jammu & Kashmir
+    'Outside Pakistan'  // diaspora
   ],
   ROLES: [
     'Student', 'Junior Engineer (0–2 yrs)', 'Engineer (3–5 yrs)',
@@ -84,9 +91,11 @@ function setupCnspkMembership() {
     );
   } catch (e) {}
 
-  var qCity = form.addListItem()
+  var qCity = form.addMultipleChoiceItem()
     .setTitle('City')
+    .setHelpText('Pick the nearest provincial capital, or choose "Other" to type your city.')
     .setChoiceValues(CNSPK.CITIES)
+    .showOtherOption(true)   // native write-in for cities not listed
     .setRequired(true);
 
   var qRole = form.addListItem()
