@@ -28,6 +28,8 @@ export class Footer {
             { name: 'About', href: '/about/' },
             { name: 'Members', href: '/members/' },
             { name: 'Team', href: '/team/' },
+            { name: 'Speakers', href: '/speakers/' },
+            { name: 'Projects', href: '/projects/' },
             { name: 'Brand', href: '/brand/' }
         ];
 
@@ -35,14 +37,18 @@ export class Footer {
             { name: 'Events', href: '/events/' },
             { name: 'Sessions', href: '/sessions/' },
             { name: 'Labs', href: '/labs/' },
-            { name: 'CFP', href: '/cfp/' }
+            { name: 'CFP', href: '/cfp/' },
+            { name: 'Dispatch', href: '/dispatch/' },
+            { name: 'Wins', href: '/wins/' },
+            { name: 'Code of Conduct', href: '/code-of-conduct/' }
         ];
 
-        // Connect column. Real URLs are wired up. Placeholders
-        // are marked with a TODO so they don't leak as fake.
+        // Connect column. All links verified live. Discord points at the /join/
+        // page (where the "coming soon" doorway lives) until the server launches —
+        // never a dead "#" anchor.
         this.connect = [
-            // TODO: wire real Discord invite when the server launches (JOIN_STRATEGY §5).
-            { name: 'Discord', href: '#', external: true, todo: true },
+            // TODO: swap to the real Discord invite when the server launches (JOIN_STRATEGY §5).
+            { name: 'Discord', href: '/join/', external: false },
             // Verified against the official CNCF group page (ocgroups.dev/cncf/group/sxcyqt9).
             { name: 'LinkedIn', href: 'https://www.linkedin.com/company/cloud-native-security-pakistan', external: true },
             { name: 'X / Twitter', href: 'https://x.com/CloudSecPK', external: true },
