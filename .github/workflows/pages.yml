@@ -32,7 +32,7 @@ jobs:
         run: rm -rf tools *.md server.ps1 package.json .gitignore .github/dependabot.yml || true
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: '.'
 
