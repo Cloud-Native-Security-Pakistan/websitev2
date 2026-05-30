@@ -5,10 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
     <title>Events - CNSPK</title>
     <meta name="description"
         content="CNSPK meetups, labs, and panels across Pakistan. Free entry, real demos, run by practitioners. Built. Tested. Pakistani.">
+    <meta name="theme-color" content="#0F1115">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
@@ -17,6 +18,14 @@
         content="CNSPK meetups, labs, and panels across Pakistan. Free entry, real demos, run by practitioners.">
     <meta property="og:url" content="https://cloudnativesecurity.pk/events/">
     <meta property="og:site_name" content="Cloud Native Security Pakistan">
+    <meta property="og:image" content="https://cloudnativesecurity.pk/logo.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Events - Cloud Native Security Pakistan">
+    <meta name="twitter:description"
+        content="CNSPK meetups, labs, and panels across Pakistan. Free entry, real demos, run by practitioners.">
+    <meta name="twitter:image" content="https://cloudnativesecurity.pk/logo.png">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
@@ -25,12 +34,19 @@
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="canonical" href="https://cloudnativesecurity.pk/events/">
 
+    <!-- Performance: preconnect to font + CDN origins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://images.unsplash.com">
+
     <!-- Electric register design tokens — load first -->
     <link rel="stylesheet" href="/css/tokens.css">
 
     <!-- Existing stack: Tailwind + DOMPurify CDN (cards still depend on these) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js" integrity="sha384-cwS6YdhLI7XS60eoDiC+egV0qHp8zI+Cms46R0nbn8JrmoAzV9uFL60etMZhAnSu" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
 
     <style>
         /* ==========================================================

@@ -29,7 +29,7 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Prune internal files
-        run: rm -rf tools *.md server.ps1 package.json .gitignore .github/dependabot.yml || true
+        run: rm -rf tools legacy *.md server.ps1 package.json .gitignore .github/dependabot.yml || true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4

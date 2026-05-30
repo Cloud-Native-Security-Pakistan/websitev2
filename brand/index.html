@@ -13,7 +13,7 @@
       allowances retained so no v2 routing breaks.
     -->
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
 
     <title>Brand · CNSPK · Cloud Native Security Pakistan</title>
     <meta name="description"
@@ -29,8 +29,10 @@
         content="The CNSPK brand book — Electric register. The Shield, the lime-on-dark colour system, italic display type, the voice, and the assets.">
     <meta property="og:url" content="https://cloudnativesecurity.pk/brand/">
     <meta property="og:site_name" content="Cloud Native Security Pakistan">
+    <meta property="og:image" content="https://cloudnativesecurity.pk/logo.png">
 
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://cloudnativesecurity.pk/logo.png">
     <meta name="twitter:title" content="Brand · CNSPK">
     <meta name="twitter:description"
         content="The CNSPK brand book — Electric register. Built. Tested. Pakistani.">
@@ -42,6 +44,8 @@
     <link rel="canonical" href="https://cloudnativesecurity.pk/brand/">
 
     <!-- Design tokens first: colour, type, motion, shared primitives + font @import -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="/css/tokens.css">
     <!-- Brand-book page-specific styles (Electric; no blue, no anti-scrape) -->
     <link rel="stylesheet" href="/brand/styles.css">
@@ -126,27 +130,27 @@
                 <div class="asset-row">
                     <div class="asset-card asset-card--dark">
                         <div class="asset-card__frame">
-                            <img src="/brand/assets/Color Logo with Text (Short Form).png"
+                            <img loading="lazy" decoding="async" src="/brand/assets/Color Logo with Text (Short Form).png"
                                 alt="CNSPK colour logo lockup with wordmark, short form">
                         </div>
                         <span class="asset-card__label">Colour lockup · on dark</span>
                     </div>
                     <div class="asset-card asset-card--light">
                         <div class="asset-card__frame">
-                            <img src="/brand/assets/CNSP Logo Black.png" alt="CNSPK shield logo in black on a light surface">
+                            <img loading="lazy" decoding="async" src="/brand/assets/CNSP Logo Black.png" alt="CNSPK shield logo in black on a light surface">
                         </div>
                         <span class="asset-card__label">Black mark · on light</span>
                     </div>
                     <div class="asset-card asset-card--dark">
                         <div class="asset-card__frame">
-                            <img class="invert-logo" src="/brand/assets/CNSP Logo Black.png"
+                            <img loading="lazy" decoding="async" class="invert-logo" src="/brand/assets/CNSP Logo Black.png"
                                 alt="CNSPK shield logo reversed to white on a dark surface">
                         </div>
                         <span class="asset-card__label">Reversed mark · on dark</span>
                     </div>
                     <div class="asset-card asset-card--light">
                         <div class="asset-card__frame">
-                            <img src="/brand/assets/Group 54.svg" alt="CNSPK full wordmark lockup, vector">
+                            <img loading="lazy" decoding="async" src="/brand/assets/Group 54.svg" alt="CNSPK full wordmark lockup, vector">
                         </div>
                         <span class="asset-card__label">Full wordmark · SVG</span>
                     </div>

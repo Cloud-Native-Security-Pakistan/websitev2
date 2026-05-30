@@ -5,6 +5,7 @@
   <url><loc>https://cloudnativesecurity.pk/brand/</loc></url>
   <url><loc>https://cloudnativesecurity.pk/events/</loc></url>
   <url><loc>https://cloudnativesecurity.pk/sessions/</loc></url>
+  <url><loc>https://cloudnativesecurity.pk/sessions/view/</loc></url>
   <url><loc>https://cloudnativesecurity.pk/members/</loc></url>
   <url><loc>https://cloudnativesecurity.pk/join/</loc></url>
   <url><loc>https://cloudnativesecurity.pk/consultants/</loc></url>
@@ -16,5 +17,4 @@
   <url><loc>https://cloudnativesecurity.pk/labs/</loc></url>
   <url><loc>https://cloudnativesecurity.pk/speakers/</loc></url>
   <url><loc>https://cloudnativesecurity.pk/wins/</loc></url>
-  <url><loc>https://cloudnativesecurity.pk/linktree.cloudnativesecurity.pk/</loc></url>
 </urlset>

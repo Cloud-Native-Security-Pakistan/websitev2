@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'">
+        content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
 
     <!-- SEO Meta Tags -->
     <title>Meet the Team - Cloud Native Security Pakistan | CNSPK Organizers</title>
@@ -20,14 +20,17 @@
     <meta property="og:title" content="Meet the Team - Cloud Native Security Pakistan">
     <meta property="og:description"
         content="Meet the organizers behind CNSPK — the practitioners running the chapter.">
-    <meta property="og:url" content="https://cloudnativesecurity.pk/team">
+    <meta property="og:url" content="https://cloudnativesecurity.pk/team/">
     <meta property="og:site_name" content="Cloud Native Security Pakistan">
+    <meta property="og:image" content="https://cloudnativesecurity.pk/logo.png">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Meet the Team - Cloud Native Security Pakistan">
     <meta name="twitter:description"
         content="Meet the organizers behind CNSPK — the practitioners running the chapter.">
+    <meta name="twitter:image" content="https://cloudnativesecurity.pk/logo.png">
+    <meta name="theme-color" content="#0F1115">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
@@ -36,6 +39,12 @@
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="canonical" href="https://cloudnativesecurity.pk/team/">
 
+    <!-- Performance: preconnect to font + CDN origins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+
     <!-- Electric register tokens (load first) -->
     <link rel="stylesheet" href="/css/tokens.css">
 
@@ -43,7 +52,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- DOMPurify -->
-    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js" integrity="sha384-cwS6YdhLI7XS60eoDiC+egV0qHp8zI+Cms46R0nbn8JrmoAzV9uFL60etMZhAnSu" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
 
     <style>
         /* ==========================================================

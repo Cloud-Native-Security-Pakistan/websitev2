@@ -11,7 +11,7 @@
       are retained from the legacy CSP so no other v2 page routing breaks.
     -->
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
 
     <title>Hire Experts · CNSPK</title>
     <meta name="description"
@@ -28,18 +28,24 @@
         content="Hire cloud-native security practitioners from CNSPK. Kubernetes, DevSecOps, cloud architecture. Vetted by the chapter, no middleman fees.">
     <meta property="og:url" content="https://cloudnativesecurity.pk/consultants/">
     <meta property="og:site_name" content="Cloud Native Security Pakistan">
+    <meta property="og:image" content="https://cloudnativesecurity.pk/logo.png">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Hire Experts · Cloud Native Security Pakistan">
     <meta name="twitter:description"
         content="Hire cloud-native security practitioners from CNSPK. Vetted by the chapter, no middleman fees.">
+    <meta name="twitter:image" content="https://cloudnativesecurity.pk/logo.png">
 
     <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="canonical" href="https://cloudnativesecurity.pk/consultants/">
+
+    <!-- Performance: preconnect to font origins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <!-- Design tokens first -->
     <link rel="stylesheet" href="/css/tokens.css">
