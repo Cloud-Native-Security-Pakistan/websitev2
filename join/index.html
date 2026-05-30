@@ -12,7 +12,7 @@
       allowances retained so v2 routing never breaks.
     -->
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
 
     <title>Join CNSPK · Pick Your Door</title>
     <meta name="description"
@@ -28,8 +28,10 @@
         content="280+ practitioners. CNCF-affiliated. Five doorways, zero gatekeeping. Walk in through whichever door fits today.">
     <meta property="og:url" content="https://cloudnativesecurity.pk/join/">
     <meta property="og:site_name" content="Cloud Native Security Pakistan">
+    <meta property="og:image" content="https://cloudnativesecurity.pk/logo.png">
 
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://cloudnativesecurity.pk/logo.png">
     <meta name="twitter:title" content="Join CNSPK · Pick Your Door">
     <meta name="twitter:description"
         content="280+ practitioners. Five doorways, zero gatekeeping. Bharosa is earned, not asked for.">
@@ -41,6 +43,8 @@
     <link rel="canonical" href="https://cloudnativesecurity.pk/join/">
 
     <!-- Design tokens first -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="/css/tokens.css">
 
     <style>

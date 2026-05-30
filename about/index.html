@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
 
     <title>About · CNSPK · Cloud Native Security Pakistan</title>
     <meta name="description"
@@ -22,17 +22,23 @@
         content="Independent. Run by engineers. CNCF-affiliated. A community of cloud security practitioners in Pakistan.">
     <meta property="og:url" content="https://cloudnativesecurity.pk/about/">
     <meta property="og:site_name" content="Cloud Native Security Pakistan">
+    <meta property="og:image" content="https://cloudnativesecurity.pk/logo.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="About · CNSPK">
     <meta name="twitter:description"
         content="Independent. Run by engineers. CNCF-affiliated. 280+ members. Est. 2023.">
+    <meta name="twitter:image" content="https://cloudnativesecurity.pk/logo.png">
 
     <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="canonical" href="https://cloudnativesecurity.pk/about/">
+
+    <!-- Performance: preconnect to Google Fonts origins (tokens.css @imports fonts) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <!-- Design tokens first -->
     <link rel="stylesheet" href="/css/tokens.css">

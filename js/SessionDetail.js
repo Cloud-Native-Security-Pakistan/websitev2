@@ -430,7 +430,7 @@ export class SessionDetail {
                     <h1 class="cnspk-sd__title">${safeTitle}</h1>
 
                     <div class="cnspk-sd__speaker">
-                        <img src="${safeSpeakerImg}" class="cnspk-sd__speaker-img" alt="${safeSpeakerName}"
+                        <img src="${safeSpeakerImg}" class="cnspk-sd__speaker-img" alt="${safeSpeakerName}" loading="lazy"
                              onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(sp.name || 'CNSPK')}&background=C7FF3E&color=0F1115'">
                         <div>
                             <p class="cnspk-sd__speaker-name">${safeSpeakerName}</p>

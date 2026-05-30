@@ -14,7 +14,7 @@
       Every outbound link is an absolute URL so it resolves from any host.
     -->
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; base-uri 'self'; form-action 'none';">
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'none';">
 
     <title>CNSPK · Links · Cloud Native Security Pakistan</title>
     <meta name="description"
@@ -30,8 +30,10 @@
         content="Every official CNSPK door in one place. 280+ practitioners. CNCF-affiliated. Built. Tested. Pakistani.">
     <meta property="og:url" content="https://linktree.cloudnativesecurity.pk/">
     <meta property="og:site_name" content="Cloud Native Security Pakistan">
+    <meta property="og:image" content="https://cloudnativesecurity.pk/logo.png">
 
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://cloudnativesecurity.pk/logo.png">
     <meta name="twitter:title" content="CNSPK · Links">
     <meta name="twitter:description" content="Every official CNSPK door in one place. Built. Tested. Pakistani.">
 

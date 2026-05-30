@@ -5,17 +5,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
 
     <title>Speakers — CNSPK | The people behind the talks</title>
     <meta name="description"
         content="Every speaker who has taken a CNSPK stage, in one place. Browse by speaker and see all their talks. Want to speak? Submit a talk to the chapter CFP.">
+    <meta name="theme-color" content="#0F1115">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Speakers — CNSPK | The people behind the talks">
+    <meta property="og:description"
+        content="Every speaker who has taken a CNSPK stage, in one place. Browse by speaker and see all their talks. Want to speak? Submit a talk to the chapter CFP.">
+    <meta property="og:url" content="https://cloudnativesecurity.pk/speakers/">
+    <meta property="og:site_name" content="Cloud Native Security Pakistan">
+    <meta property="og:image" content="https://cloudnativesecurity.pk/logo.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Speakers — CNSPK | The people behind the talks">
+    <meta name="twitter:description"
+        content="Every speaker who has taken a CNSPK stage, in one place. Browse by speaker and see all their talks. Want to speak? Submit a talk to the chapter CFP.">
+    <meta name="twitter:image" content="https://cloudnativesecurity.pk/logo.png">
 
     <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="canonical" href="https://cloudnativesecurity.pk/speakers/">
+
+    <!-- Performance: preconnect to font origins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link rel="stylesheet" href="/css/tokens.css">
 
@@ -284,7 +305,7 @@
             const ini = sanitize(initials(s.name));
             const count = `${s.talks} talk${s.talks === 1 ? '' : 's'}`;
             const avatar = s.image
-                ? `<span class="avatar">${ini}<img src="${sanitize(s.image)}" alt="${name} — speaker portrait" loading="lazy"></span>`
+                ? `<span class="avatar">${ini}<img src="${sanitize(s.image)}" alt="${name} — speaker portrait" loading="lazy" decoding="async"></span>`
                 : `<span class="avatar">${ini}</span>`;
             const socials = [
                 s.linkedin && `<a href="${sanitize(s.linkedin)}" target="_blank" rel="noopener noreferrer">// linkedin</a>`,
