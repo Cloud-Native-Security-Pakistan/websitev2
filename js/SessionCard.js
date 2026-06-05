@@ -21,7 +21,7 @@
  * ----------------------------------------------------------
  */
 
-import { sanitize } from './utils.js';
+import { sanitize, escapeAttr, safeUrl } from './utils.js';
 
 export class SessionCard {
     constructor(session) {
@@ -263,17 +263,21 @@ export class SessionCard {
 
         const { id, title, description, date, duration, type, topic, recordingUrl, registrationUrl, thumbnail, speaker } = this.session;
 
-        const safeTitle = sanitize(title);
+        // Attribute contexts (src/alt/href) need entity-escaping or URL
+        // validation — sanitize() (DOMPurify) does not escape quotes, so it is
+        // not safe for attribute interpolation. Use escapeAttr()/safeUrl() here;
+        // the rich-text description body keeps sanitize().
+        const safeTitle = escapeAttr(title);
         const safeDesc = sanitize(description);
-        const safeTopic = sanitize(topic);
-        const safeDuration = sanitize(duration);
-        const safeThumb = sanitize(thumbnail);
+        const safeTopic = escapeAttr(topic);
+        const safeDuration = escapeAttr(duration);
+        const safeThumb = safeUrl(thumbnail);
 
         const sp = speaker || {};
-        const safeSpeakerName = sanitize(sp.name);
-        const safeSpeakerRole = sanitize(sp.role);
-        const safeSpeakerCompany = sanitize(sp.company);
-        const safeSpeakerImg = sanitize(sp.image);
+        const safeSpeakerName = escapeAttr(sp.name);
+        const safeSpeakerRole = escapeAttr(sp.role);
+        const safeSpeakerCompany = escapeAttr(sp.company);
+        const safeSpeakerImg = safeUrl(sp.image);
 
         const isUpcoming = type === 'upcoming';
         // A recorded session may not have its video published yet (recordingUrl
@@ -338,7 +342,7 @@ export class SessionCard {
 
                     <div class="cnspk-session-card__foot">
                         ${isUpcoming ? `
-                            <a href="${sanitize(registrationUrl)}"
+                            <a href="${safeUrl(registrationUrl)}"
                                target="_blank"
                                rel="noopener noreferrer"
                                class="cnspk-session-card__action">
