@@ -17,7 +17,7 @@
  * ----------------------------------------------------------
  */
 
-import { domReady } from './utils.js';
+import { domReady, escapeAttr } from './utils.js';
 
 export class Map {
     constructor(elementId) {
@@ -144,12 +144,16 @@ export class Map {
 
         members.forEach(member => {
             if (member.lat && member.lng) {
+                // Member data may originate from an untrusted remote feed
+                // (Google Sheet / GitHub) — escape before it touches innerHTML.
+                const safeName = escapeAttr(member.name);
+                const safeUsername = escapeAttr(member.username);
                 const marker = L.marker([member.lat, member.lng], { icon: icon })
                     .bindPopup(`
                         <div class="cnspk-map-popup">
-                            <strong class="cnspk-map-popup__name">${member.name}</strong>
-                            <span class="cnspk-map-popup__handle">@${member.username}</span><br/>
-                            <a href="#member-${member.username}" data-view-card="${member.username}" class="cnspk-map-popup__link view-card-link">View Card →</a>
+                            <strong class="cnspk-map-popup__name">${safeName}</strong>
+                            <span class="cnspk-map-popup__handle">@${safeUsername}</span><br/>
+                            <a href="#member-${safeUsername}" data-view-card="${safeUsername}" class="cnspk-map-popup__link view-card-link">View Card →</a>
                         </div>
                     `)
                     .addTo(this.map);
@@ -170,7 +174,8 @@ export class Map {
                     const username = link.dataset.viewCard;
                     const memberCard = document.getElementById(`member-${username}`);
                     if (memberCard) {
-                        memberCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                        memberCard.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
                         // Highlight the card briefly with the lime ring
                         memberCard.classList.add('cnspk-map-highlight');
                         setTimeout(() => {
@@ -201,7 +206,12 @@ export class Map {
      */
     flyTo(lat, lng, zoom = 10) {
         if (this.map) {
-            this.map.flyTo([lat, lng], zoom);
+            const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (reduceMotion) {
+                this.map.setView([lat, lng], zoom);
+            } else {
+                this.map.flyTo([lat, lng], zoom);
+            }
         }
     }
 }

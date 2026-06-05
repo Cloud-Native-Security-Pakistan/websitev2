@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--
+      Custom 404 — GitHub Pages serves /404.html automatically on any
+      unresolved route. CSP is the token-native policy: tokens.css is
+      served from 'self' and @imports the brand fonts from Google Fonts.
+      GitHub Pages cannot set HTTP headers, so this <meta> CSP is the only
+      mechanism (frame-ancestors is intentionally omitted — it is not
+      enforceable via <meta>).
+    -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self';">
+
+    <title>404 — Page not found · CNSPK</title>
+    <meta name="description"
+        content="That route doesn't resolve. Head back to base or jump straight to events, sessions, members, or join the chapter.">
+    <meta name="robots" content="noindex">
+    <meta name="theme-color" content="#0F1115">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <!-- Design tokens first -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="/css/tokens.css">
+
+    <style>
+        /* ==========================================================
+           404 · Electric register · page-specific styles
+           Shared primitives (.section-eyebrow, .btn-primary) come
+           from /css/tokens.css. Only token custom properties used.
+        ========================================================== */
+        .wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+        main { display: block; }
+
+        .nf {
+            position: relative;
+            min-height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            padding: 120px 0 96px;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 18%, rgba(199, 255, 62, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 80% at 92% 84%, rgba(1, 65, 28, 0.40) 0%, transparent 60%),
+                var(--carbon);
+        }
+
+        /* Decorative grid texture — purely visual */
+        .nf::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(199, 255, 62, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(199, 255, 62, 0.04) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none;
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+        }
+
+        .nf-content { position: relative; z-index: 2; max-width: 880px; }
+
+        /* Decorative oversized glyph behind the headline */
+        .nf-ghost {
+            position: absolute;
+            top: 50%;
+            right: -2%;
+            transform: translateY(-50%);
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: clamp(180px, 34vw, 460px);
+            line-height: 1;
+            letter-spacing: -0.04em;
+            color: var(--charcoal);
+            opacity: 0.55;
+            z-index: 1;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .nf h1 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(44px, 8vw, 104px);
+            line-height: 0.92;
+            letter-spacing: -0.04em;
+            color: var(--bone);
+            margin-bottom: 24px;
+        }
+        .nf h1 .lime { color: var(--lime); }
+
+        .nf .lede {
+            font-size: 20px;
+            color: var(--bone-2);
+            line-height: 1.55;
+            max-width: 620px;
+            margin-bottom: 12px;
+            font-weight: 400;
+        }
+        .nf .lede code {
+            font-family: var(--font-mono);
+            color: var(--lime);
+            font-size: 0.9em;
+        }
+
+        .nf .bharosa-line {
+            font-size: 16px;
+            color: var(--steel);
+            font-style: italic;
+            max-width: 620px;
+            margin-bottom: 36px;
+        }
+        .nf .bharosa-line em {
+            color: var(--lime);
+            font-style: italic;
+            font-weight: 500;
+        }
+
+        .nf-cta-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 48px;
+        }
+
+        /* Helpful routes */
+        .nf-routes {
+            border-top: 1px solid var(--slate);
+            padding-top: 28px;
+            max-width: 620px;
+        }
+        .nf-routes__label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--steel);
+            margin-bottom: 16px;
+        }
+        .nf-routes__list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .nf-route {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-pill);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--bone-2);
+            text-decoration: none;
+            transition: border-color var(--dur-hover) var(--ease),
+                        color var(--dur-hover) var(--ease),
+                        transform var(--dur-elevate) var(--ease);
+        }
+        .nf-route::before {
+            content: '→';
+            color: var(--lime);
+            font-size: 13px;
+        }
+        .nf-route:hover, .nf-route:focus-visible {
+            border-color: var(--lime);
+            color: var(--lime);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .nf { padding: 96px 0 64px; }
+            .wrap { padding: 0 20px; }
+            .nf-ghost { opacity: 0.35; right: -8%; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===== Navbar (mounted via /js/Navbar.js) ===== -->
+    <div id="navbar"></div>
+
+    <main>
+        <section class="nf" aria-labelledby="nf-headline">
+            <span class="nf-ghost" aria-hidden="true">404</span>
+            <div class="wrap nf-content">
+                <div class="section-eyebrow">$ HTTP 404</div>
+
+                <h1 id="nf-headline">
+                    This route<br />
+                    <span class="lime">404'd.</span>
+                </h1>
+
+                <p class="lede">
+                    The path you hit doesn't resolve. Maybe it moved, maybe it never shipped, maybe
+                    <code>kubectl</code> pointed at the wrong namespace. Either way — let's get you back on track.
+                </p>
+                <p class="bharosa-line">
+                    Broken links happen. <em>Bharosa</em> means we point you home, not into a wall.
+                </p>
+
+                <div class="nf-cta-row">
+                    <a href="/" class="btn-primary">Back to base</a>
+                </div>
+
+                <nav class="nf-routes" aria-label="Helpful routes">
+                    <div class="nf-routes__label">// try one of these</div>
+                    <div class="nf-routes__list">
+                        <a href="/events/" class="nf-route">/events/</a>
+                        <a href="/sessions/" class="nf-route">/sessions/</a>
+                        <a href="/members/" class="nf-route">/members/</a>
+                        <a href="/join/" class="nf-route">/join/</a>
+                    </div>
+                </nav>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===== Footer (mounted via /js/Footer.js) ===== -->
+    <div id="footer"></div>
+
+    <script type="module">
+        import { Navbar } from '/js/Navbar.js';
+        import { Footer } from '/js/Footer.js';
+        new Navbar().init();
+        new Footer().init();
+    </script>
+
+</body>
+
+</html>

@@ -50,6 +50,47 @@ export function sanitize(dirty) {
 }
 
 /**
+ * Escapes a string for safe interpolation into an HTML *attribute* or as text.
+ * Use this (not sanitize) when injecting values into href/src/alt/title/aria-*
+ * inside a template literal — DOMPurify.sanitize() does NOT escape quotes, so a
+ * value like `" onerror="alert(1)` can break out of an attribute. This always
+ * entity-escapes, which is the correct behaviour for attribute contexts.
+ * @param {string} str
+ * @returns {string}
+ */
+export function escapeAttr(str) {
+    if (str == null) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+/**
+ * Validates a URL for use in an href/src and returns a safe, escaped value.
+ * Blocks dangerous schemes (javascript:, data:, vbscript:, file:) and any
+ * unknown scheme; allows http(s), mailto, tel, protocol-/root-relative and
+ * anchors. Returns '#' for anything rejected.
+ * @param {string} url
+ * @returns {string}
+ */
+export function safeUrl(url) {
+    if (!url) return '#';
+    const str = String(url).trim();
+    // Reject control chars that could obfuscate a scheme.
+    const stripped = str.replace(/[\u0000-\u001F\u007F\s]/g, '');
+    if (/^(javascript|data|vbscript|file):/i.test(stripped)) return '#';
+    // Allow explicit safe schemes, protocol-relative, root-relative, anchors, dot-paths.
+    if (/^(https?:\/\/|mailto:|tel:|\/\/|\/|#|\.\.?\/)/i.test(str)) return escapeAttr(str);
+    // Bare relative reference with no scheme (e.g. "events/" or "card.html").
+    if (!/^[a-z][a-z0-9+.-]*:/i.test(str)) return escapeAttr(str);
+    // Unknown/blocked scheme.
+    return '#';
+}
+
+/**
  * Wait for DOM to be ready
  * @param {Function} fn - Callback function
  */

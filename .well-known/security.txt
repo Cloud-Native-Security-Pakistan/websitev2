@@ -1,0 +1,10 @@
+# Security contact for Cloud Native Security Pakistan (CNSPK)
+# cloudnativesecurity.pk — static site on GitHub Pages
+# Report vulnerabilities to the Contact below. Please do not open public issues.
+# Format: RFC 9116 (https://www.rfc-editor.org/rfc/rfc9116)
+
+Contact: mailto:security@cloudnativesecurity.pk
+Expires: 2027-06-05T00:00:00.000Z
+Preferred-Languages: en, ur
+Canonical: https://cloudnativesecurity.pk/.well-known/security.txt
+Policy: https://cloudnativesecurity.pk/SECURITY.md

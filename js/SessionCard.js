@@ -276,6 +276,10 @@ export class SessionCard {
         const safeSpeakerImg = sanitize(sp.image);
 
         const isUpcoming = type === 'upcoming';
+        // A recorded session may not have its video published yet (recordingUrl
+        // null) — in that case it still links to the detail page for the
+        // transcript/summary, but we don't promise a video that isn't there.
+        const hasRecording = !isUpcoming && recordingUrl && !String(recordingUrl).includes('dQw4w9WgXcQ');
         const parsed = new Date(date);
         const formattedDate = isNaN(parsed.getTime())
             ? ''
@@ -301,7 +305,7 @@ export class SessionCard {
                          loading="lazy"
                          onerror="this.src='https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80'">
                     <div class="cnspk-session-card__scrim"></div>
-                    ${!isUpcoming ? `
+                    ${hasRecording ? `
                     <div class="cnspk-session-card__play" aria-hidden="true">
                         <span class="cnspk-session-card__play-btn">${playIcon}</span>
                     </div>` : ''}
@@ -340,8 +344,10 @@ export class SessionCard {
                                class="cnspk-session-card__action">
                                 Register Now →
                             </a>
-                        ` : `
+                        ` : hasRecording ? `
                             <span class="cnspk-session-card__action">▶ Watch Recording</span>
+                        ` : `
+                            <span class="cnspk-session-card__action">Read transcript →</span>
                         `}
                     </div>
                 </div>

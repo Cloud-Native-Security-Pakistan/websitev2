@@ -30,6 +30,7 @@ export class Footer {
             { name: 'Team', href: '/team/' },
             { name: 'Speakers', href: '/speakers/' },
             { name: 'Projects', href: '/projects/' },
+            { name: 'Consultants', href: '/consultants/' },
             { name: 'Brand', href: '/brand/' }
         ];
 

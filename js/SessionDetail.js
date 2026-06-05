@@ -376,7 +376,15 @@ export class SessionDetail {
             : parsed.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
         const isRecorded = type === 'recorded';
-        const embedId = isRecorded && recordingUrl ? recordingUrl.split('/').pop() : null;
+        // Guard the embed: only ever build an iframe from a plausible YouTube ID,
+        // and never from the known placeholder. A recorded session whose video
+        // isn't published yet (recordingUrl null) falls back to a "coming soon"
+        // panel — the transcript/summary below is the real value either way.
+        const rawEmbedId = isRecorded && recordingUrl ? String(recordingUrl).split('/').pop().split('?')[0] : null;
+        const embedId = (rawEmbedId && /^[A-Za-z0-9_-]{11}$/.test(rawEmbedId) && rawEmbedId !== 'dQw4w9WgXcQ')
+            ? rawEmbedId
+            : null;
+        const safeRegistrationUrl = sanitize(this.session.registrationUrl);
 
         // Share URLs — preserved from the original moat behaviour.
         const shareUrl = window.location.href;
@@ -404,17 +412,26 @@ export class SessionDetail {
                     </div>
                 </div>
 
-                <!-- Hero: embed or upcoming-registration -->
+                <!-- Hero: embed · recording-pending · or upcoming-registration -->
                 <div class="cnspk-sd__hero">
-                    ${isRecorded && embedId ? `
-                        <iframe src="https://www.youtube.com/embed/${embedId}?autoplay=1&mute=1" title="${safeTitle}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    ${embedId ? `
+                        <iframe src="https://www.youtube.com/embed/${embedId}?rel=0" title="${safeTitle}" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    ` : isRecorded ? `
+                        <img src="${safeThumb}" class="cnspk-sd__hero-img" alt="${safeTitle}">
+                        <div class="cnspk-sd__hero-overlay">
+                            <div class="cnspk-sd__upcoming-card">
+                                <div class="cnspk-sd__upcoming-eyebrow">// recording</div>
+                                <h3 class="cnspk-sd__upcoming-title">Recording coming soon</h3>
+                                <p style="font-size:14px;color:var(--bone-2);line-height:1.55;margin:0;">The video is still in post. The AI summary, key takeaways, and full transcript are below.</p>
+                            </div>
+                        </div>
                     ` : `
                         <img src="${safeThumb}" class="cnspk-sd__hero-img" alt="${safeTitle}">
                         <div class="cnspk-sd__hero-overlay">
                             <div class="cnspk-sd__upcoming-card">
                                 <div class="cnspk-sd__upcoming-eyebrow">// upcoming-session</div>
                                 <h3 class="cnspk-sd__upcoming-title">Registration Open</h3>
-                                <a href="${sanitize(this.session.registrationUrl)}" target="_blank" rel="noopener noreferrer" class="btn-primary btn-primary--sm">Register Here</a>
+                                <a href="${safeRegistrationUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary btn-primary--sm">Register Here</a>
                             </div>
                         </div>
                     `}

@@ -35,7 +35,8 @@
   --carbon: #0F1115;         /* page bg */
   --charcoal: #1A1D24;       /* card surfaces */
   --slate: #2A2E37;          /* borders, dividers */
-  --steel: #6B7280;          /* secondary text */
+  --steel: #9CA3AF;          /* secondary text — WCAG AA on carbon (7.4:1) & charcoal (6.6:1) */
+  --steel-deep: #6B7280;     /* legacy muted steel — decorative / large text only, not body copy */
   --bone: #F4F1EA;           /* primary text on dark; primary surface on light */
   --bone-2: #E8E3D6;         /* subtler bone */
 
@@ -268,13 +269,22 @@ summary:focus-visible,
     color var(--dur-hover) var(--ease);
 }
 
-.btn-primary:hover,
+.btn-primary:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-cta-hover);
+  background: var(--lime-glow);
+  color: var(--carbon);
+}
+
+/* Keyboard focus keeps the lift AND shows a clear ring (the old rule
+   set outline:none, leaving keyboard users with no focus indicator). */
 .btn-primary:focus-visible {
   transform: translate(-2px, -2px);
   box-shadow: var(--shadow-cta-hover);
   background: var(--lime-glow);
   color: var(--carbon);
-  outline: none;
+  outline: 3px solid var(--bone);
+  outline-offset: 3px;
 }
 
 .btn-primary:active {
