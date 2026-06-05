@@ -1,0 +1,68 @@
+[
+    {
+        "id": 1,
+        "title": "CVE-2026-31431: 'Copy Fail' lets one pod poison another on the same node",
+        "date": "2026-05-04",
+        "category": "CVE Watch",
+        "readTime": "5 min",
+        "summary": "A newly disclosed Kubernetes flaw lets an attacker sitting in one pod inject malicious code into binaries that other pods on the same node execute — with no elevated privileges, no container escape, and nothing left on the filesystem. If you pack untrusted workloads onto shared nodes, read this before your next scheduling decision.",
+        "source": "Stream Security",
+        "sourceUrl": "https://www.stream.security/post/cve-2026-31431-how-copy-fail-behaves-in-kubernetes",
+        "tags": ["Kubernetes", "CVE", "Runtime", "Multi-tenancy"]
+    },
+    {
+        "id": 2,
+        "title": "TeamPCP turned your security tools into the attack",
+        "date": "2026-03-31",
+        "category": "Threat Intel",
+        "readTime": "6 min",
+        "summary": "Between late February and March 2026, the TeamPCP group ran an escalating supply-chain campaign that compromised widely trusted open-source security tooling — including the scanners Trivy and KICS and the LiteLLM AI gateway. The uncomfortable lesson: the tools you trust to find risk are themselves part of your attack surface.",
+        "source": "Unit 42 — Palo Alto Networks",
+        "sourceUrl": "https://unit42.paloaltonetworks.com/teampcp-supply-chain-attacks/",
+        "tags": ["Supply Chain", "Open Source", "Threat Actor"]
+    },
+    {
+        "id": 3,
+        "title": "When Trivy got weaponised: 75 of 76 tags poisoned",
+        "date": "2026-04-22",
+        "category": "Supply Chain",
+        "readTime": "4 min",
+        "summary": "In March 2026 attackers compromised the repository behind Trivy — one of the most widely used scanners in the Kubernetes world — force-pushed malicious binaries, and poisoned 75 of 76 version tags. Pinning by tag was not enough. Verify signatures and pin images by digest, not by a tag someone else can move.",
+        "source": "Fairwinds",
+        "sourceUrl": "https://www.fairwinds.com/blog/supply-chain-attacks-getting-worse-shrink-your-exposure",
+        "tags": ["Supply Chain", "Trivy", "Signing"]
+    },
+    {
+        "id": 4,
+        "title": "Kubernetes token theft is up 282% — and IT is the target",
+        "date": "2026-04-06",
+        "category": "Threat Intel",
+        "readTime": "5 min",
+        "summary": "Unit 42 telemetry shows Kubernetes-focused attacker activity — including stealing service-account tokens — jumped 282% over the past year, with the IT sector absorbing the large majority of observed activity. Short-lived credentials and tight RBAC stopped being optional a while ago.",
+        "source": "Unit 42 — Palo Alto Networks",
+        "sourceUrl": "https://unit42.paloaltonetworks.com/modern-kubernetes-threats/",
+        "tags": ["Kubernetes", "RBAC", "Identity"]
+    },
+    {
+        "id": 5,
+        "title": "Securing AI workloads on Kubernetes after the LiteLLM breach",
+        "date": "2026-05-14",
+        "category": "AI Security",
+        "readTime": "7 min",
+        "summary": "The March 2026 LiteLLM supply-chain attack harvested LLM API keys, Kubernetes configs, and cloud credentials from every environment it reached. Pod Security Standards cover container hygiene — they say nothing about prompt injection, model integrity, or RAG retrieval abuse. AI on Kubernetes needs its own threat model.",
+        "source": "BeyondScale",
+        "sourceUrl": "https://beyondscale.tech/blog/kubernetes-ai-workload-security",
+        "tags": ["AI Security", "LLM", "Kubernetes"]
+    },
+    {
+        "id": 6,
+        "title": "82% run Kubernetes in production — so the image is the front line",
+        "date": "2026-03-04",
+        "category": "Ecosystem",
+        "readTime": "4 min",
+        "summary": "The CNCF Annual Survey 2025 puts Kubernetes in production for 82% of container users. At that scale the container image supply chain becomes the primary attack vector — which is exactly why provenance, SBOMs, and admission policy keep climbing every team's roadmap.",
+        "source": "SFEIR Institute",
+        "sourceUrl": "https://institute.sfeir.com/en/kubernetes-training/supply-chain-security-images-kubernetes/",
+        "tags": ["CNCF", "Supply Chain", "Images"]
+    }
+]

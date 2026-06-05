@@ -1,16 +1,37 @@
+/* ==========================================================
+   Tailwind v4 entry (build source).
+
+   NOTE: The live pages do NOT link this file's compiled output.
+   They ship `css/compat.css` — a small, hand-authored static subset
+   of the Tailwind utilities the HTML actually uses — because the
+   Tailwind CLI can't run in the offline sandbox. If you wire up the
+   real build in CI (`npm run build:css` -> css/output.css) and link
+   that on the pages, you can delete compat.css.
+
+   This file is kept brand-correct so that build is never wrong.
+   ========================================================== */
 @import "tailwindcss";
 
+/* Content sources. Scan the page HTML and the inline scripts that emit
+   utility classes (team TeamCard, members spinner). Exclude the archived,
+   Tailwind-heavy /legacy tree so it doesn't bloat the output. */
+@source "../**/*.html";
+@source "../js/**/*.js";
+@source not "../legacy/**";
+
 @theme {
-  --color-brand-50: #ecfdf5;
-  --color-brand-100: #d1fae5;
-  --color-brand-200: #a7f3d0;
-  --color-brand-300: #6ee7b7;
-  --color-brand-400: #34d399;
-  --color-brand-500: #10b981;
-  --color-brand-600: #059669;
-  --color-brand-700: #047857;
-  --color-brand-800: #065f46;
-  --color-brand-900: #064e3b;
-  --color-dark-800: #1f2937;
-  --color-dark-900: #111827;
+  /* Electric register — mirror of css/tokens.css. Lime is for dark
+     surfaces only; use brand-600 for text/CTAs on light. */
+  --color-brand-50: #f5ffdf;
+  --color-brand-100: #e8ff8a;
+  --color-brand-200: #ddff66;
+  --color-brand-300: #d2ff4d;
+  --color-brand-400: #cdff44;
+  --color-brand-500: #c7ff3e; /* Electric Lime */
+  --color-brand-600: #9bd11a; /* Lime 600 — AA on light */
+  --color-brand-700: #7ba514;
+  --color-brand-800: #5b780f;
+  --color-brand-900: #3f5b00;
+  --color-dark-800: #1a1d24; /* charcoal */
+  --color-dark-900: #0f1115; /* carbon */
 }

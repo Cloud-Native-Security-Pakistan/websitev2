@@ -27,6 +27,7 @@ export class Navbar {
             { name: 'About', path: '/about/' },
             { name: 'Events', path: '/events/' },
             { name: 'Sessions', path: '/sessions/' },
+            { name: 'Blog', path: '/blog/' },
             { name: 'Members', path: '/members/' },
             { name: 'Team', path: '/team/' },
             { name: 'Brand', path: '/brand/' }
@@ -37,8 +38,23 @@ export class Navbar {
     init() {
         this.injectStyles();
         this.render();
+        this.ensureMainLandmark();
         this.bindMobileMenu();
         this.bindScrollState();
+    }
+
+    /**
+     * Make the skip link land somewhere: ensure the page's <main> has an id
+     * and is focusable, then point the skip link at it. Runs once on init.
+     */
+    ensureMainLandmark() {
+        const main = document.querySelector('main');
+        if (!main) return;
+        const id = main.id || 'main-content';
+        main.id = id;
+        if (!main.hasAttribute('tabindex')) main.setAttribute('tabindex', '-1');
+        const skip = document.getElementById('cnspk-skip');
+        if (skip) skip.setAttribute('href', `#${id}`);
     }
 
     /** Component-scoped styles. Tokens come from tokens.css. */
@@ -48,6 +64,34 @@ export class Navbar {
         const style = document.createElement('style');
         style.id = 'cnspk-navbar-styles';
         style.textContent = `
+            /* Skip-to-content — first focusable element on every page (WCAG 2.4.1) */
+            .cnspk-skip-link {
+                position: fixed;
+                left: 12px;
+                top: -64px;
+                z-index: 100;
+                padding: 10px 16px;
+                background: var(--lime);
+                color: var(--carbon);
+                font-family: var(--font-mono);
+                font-size: 13px;
+                font-weight: 700;
+                letter-spacing: 0.04em;
+                border-radius: var(--r-sm);
+                text-decoration: none;
+                transition: top var(--dur-hover) var(--ease);
+            }
+            .cnspk-skip-link:focus,
+            .cnspk-skip-link:focus-visible {
+                top: 12px;
+                color: var(--carbon);
+                outline: 2px solid var(--carbon);
+                outline-offset: 2px;
+            }
+            @media (prefers-reduced-motion: reduce) {
+                .cnspk-skip-link { transition: none; }
+            }
+
             .cnspk-nav {
                 position: sticky;
                 top: 0;
@@ -170,15 +214,21 @@ export class Navbar {
                 padding: 24px 32px 32px;
                 transform: translateY(-12px);
                 opacity: 0;
+                visibility: hidden;
                 pointer-events: none;
                 transition: transform var(--dur-elevate) var(--ease),
-                            opacity var(--dur-elevate) var(--ease);
+                            opacity var(--dur-elevate) var(--ease),
+                            visibility 0s linear var(--dur-elevate);
                 z-index: 49;
             }
             .cnspk-nav__panel[data-open="true"] {
                 transform: translateY(0);
                 opacity: 1;
+                visibility: visible;
                 pointer-events: auto;
+                transition: transform var(--dur-elevate) var(--ease),
+                            opacity var(--dur-elevate) var(--ease),
+                            visibility 0s;
             }
 
             .cnspk-nav__panel-list {

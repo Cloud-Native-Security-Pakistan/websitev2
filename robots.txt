@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /legacy/
+Disallow: /tools/
+Disallow: /linktree.cloudnativesecurity.pk/
 
 Sitemap: https://cloudnativesecurity.pk/sitemap.xml

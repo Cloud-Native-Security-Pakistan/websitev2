@@ -1,106 +1,105 @@
 # Security Policy
 
-## Security Practices
+Cloud Native Security Pakistan (CNSPK) runs this site as a **static website** —
+plain HTML, vanilla ES6 modules, and JSON data — deployed to **GitHub Pages**
+from the repository root. There is no backend, no database, and no server-side
+code. This document describes the controls that are *actually* in place and how
+to report a vulnerability. We keep it honest: if a control isn't configured, we
+don't claim it.
 
-This repository follows DevSecOps best practices with security integrated at every stage.
+## How to Report a Vulnerability
 
-### Pre-Commit Security Checks
+If you discover a security vulnerability, please **do not** open a public issue.
 
-- **Linting**: ESLint and HTMLHint validate code quality
-- **Secrets Scanning**: Checks for exposed credentials before commit
-- **Build Validation**: Ensures CSS is built correctly
+Email **security@cloudnativesecurity.pk** with:
 
-### Pre-Push Security Checks
-
-- **Security Audit**: npm audit for dependency vulnerabilities
-- **Build Validation**: Full build verification before push
-
-### CI/CD Security Pipeline
-
-1. **Build & Validate** (`.github/workflows/ci.yml`)
-   - HTML structure validation
-   - JavaScript syntax checking
-   - Security headers validation
-   - CSP policy validation
-   - Secrets scanning
-
-2. **Security Scan** (`.github/workflows/security-scan.yml`)
-   - Gitleaks for secrets detection
-   - Trivy for vulnerability scanning
-   - Dependency vulnerability checks
-   - Security best practices validation
-
-3. **CodeQL Analysis** (`.github/workflows/codeql.yml`)
-   - Static Application Security Testing (SAST)
-   - Weekly automated scans
-   - Code vulnerability detection
-
-4. **E2E Tests** (`.github/workflows/e2e-tests.yml`)
-   - End-to-end security testing
-   - Cross-browser testing
-   - Functionality validation
-
-### Security Headers
-
-All pages include:
-- Content-Security-Policy (CSP)
-- X-Content-Type-Options: nosniff
-- HTTPS-only enforcement
-
-### Dependency Management
-
-- **Dependabot**: Automated dependency updates
-- **Weekly Security Scans**: Automated vulnerability detection
-- **npm audit**: Integrated into CI pipeline
-
-## Reporting Security Issues
-
-If you discover a security vulnerability, please **DO NOT** open a public issue.
-
-Instead, please email: **security@cloudnativesecurity.pk**
-
-Include:
-- Description of the vulnerability
+- A description of the vulnerability
 - Steps to reproduce
 - Potential impact
-- Suggested fix (if any)
+- A suggested fix, if you have one
 
-We will respond within 48 hours and work with you to resolve the issue.
+We aim to acknowledge reports within **48 hours** and will work with you on a
+fix and coordinated disclosure. A machine-readable contact is published at
+[`/.well-known/security.txt`](/.well-known/security.txt) per RFC 9116.
 
-## Security Best Practices
+## What's Actually in Place
 
-### For Contributors
+### Content Security Policy (per-page `<meta>`)
 
-1. **Never commit secrets**: Use environment variables or GitHub Secrets
-2. **Sanitize user input**: All external data is sanitized with DOMPurify
-3. **Use HTTPS only**: All external links must use HTTPS
-4. **Validate CSP**: Ensure Content Security Policy is properly configured
-5. **Keep dependencies updated**: Run `npm audit` regularly
+GitHub Pages **cannot set custom HTTP response headers**. As a result, the site
+**cannot** send header-based controls such as `Content-Security-Policy`,
+`Strict-Transport-Security` (HSTS), `X-Content-Type-Options`, or
+`X-Frame-Options`. Any such header would have to come from a reverse proxy or a
+different host, and we do not run one.
 
-### For Maintainers
+Instead, each page declares a Content Security Policy via a
+`<meta http-equiv="Content-Security-Policy">` tag in its `<head>`. The policy
+restricts `default-src` to `'self'` and explicitly allowlists only the origins
+the site genuinely uses (Google Fonts, and on data-driven pages the CDNs and
+image hosts those pages load from).
 
-1. **Review security scans**: Check CodeQL and Trivy results
-2. **Update dependencies**: Address Dependabot PRs promptly
-3. **Monitor security alerts**: Review GitHub Security tab regularly
-4. **Rotate secrets**: Update API keys and tokens periodically
+**Known limitation:** the `frame-ancestors` directive is **not enforceable via a
+`<meta>` tag** — browsers only honour it when delivered as an HTTP header. On
+GitHub Pages we therefore cannot enforce clickjacking protection through CSP.
+This is a documented constraint of the hosting platform, not an oversight.
 
-## Security Checklist
+HTTPS itself is provided and enforced by GitHub Pages for the
+`cloudnativesecurity.pk` custom domain (the "Enforce HTTPS" setting), not by
+anything in this repository.
 
-Before merging PRs:
-- [ ] All CI checks pass
-- [ ] Security scans pass
-- [ ] No secrets exposed
-- [ ] CSP headers validated
-- [ ] Dependencies audited
-- [ ] E2E tests pass
+### Client-Side Input Handling
 
-## Security Updates
+Pages render content from the JSON files in `data/`. Where dynamic or
+externally-sourced strings are injected into the DOM, they are sanitized with
+**DOMPurify** before insertion. External links open with
+`rel="noopener noreferrer"` and use HTTPS.
 
-- **Weekly**: Automated security scans
-- **On PR**: Full security pipeline
-- **On Release**: Deep security audit
+### Automation in this Repository
+
+This repository contains exactly **two** GitHub Actions workflows:
+
+1. **`.github/workflows/pages.yml`** — builds and deploys the site to GitHub
+   Pages on pushes to `main`. Before publishing, it prunes repository-internal
+   files (for example `tools/`, Markdown docs, and `package.json`) from the
+   deployed artifact so they are not served.
+2. **`.github/workflows/pr-checks.yml`** — runs on pull requests against `main`.
+   It installs dependencies, runs the linter (`npm run lint`), builds CSS
+   (`npm run build:css`), and runs `npm test`. The test step is currently a
+   placeholder that passes; it exists so the job is wired up for real tests
+   later.
+
+**Dependency updates** are automated with **Dependabot**
+(`.github/dependabot.yml`), which opens weekly update PRs for the `npm` and
+`github-actions` ecosystems.
+
+### What We Do *Not* Run
+
+To set expectations accurately, the following are **not** configured in this
+repository, despite being common in larger projects:
+
+- No secrets-scanning workflow (e.g. Gitleaks)
+- No container/dependency vulnerability scanner (e.g. Trivy)
+- No static analysis / SAST (e.g. CodeQL)
+- No end-to-end or cross-browser test suite
+- No pre-commit or pre-push git hooks enforced by this repo
+- No header-based security controls (see the CSP section above for why)
+
+If any of these are added later, this document will be updated to match.
+
+## Guidance for Contributors
+
+1. **Never commit secrets.** The site is fully static and client-side; anything
+   committed is public. There is no server to hold a secret.
+2. **Sanitize injected content.** Run dynamic strings through DOMPurify before
+   writing them into the DOM.
+3. **Keep external resources HTTPS-only** and add `rel="noopener noreferrer"` to
+   links that open in a new tab.
+4. **Update the page CSP when you add an origin.** If a page starts loading from
+   a new host (font, image, script, or style), add that origin to that page's
+   `<meta>` CSP — and nothing broader.
+5. **Review Dependabot PRs** promptly and check the GitHub Security tab for any
+   advisories.
 
 ---
 
-**Last Updated**: 2026-01-07
-
+**Last Updated:** 2026-06-05

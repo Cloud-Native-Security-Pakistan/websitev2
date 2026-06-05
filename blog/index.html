@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self';">
+
+    <title>Blog — Latest in Cloud-Native Security · CNSPK</title>
+    <meta name="description"
+        content="The CVEs, supply-chain breaks, and threat intel that actually matter for cloud-native security teams in Pakistan — curated, summarized in five minutes, and linked straight to the source.">
+    <meta name="theme-color" content="#0F1115">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Blog — Latest in Cloud-Native Security · CNSPK">
+    <meta property="og:description"
+        content="The CVEs, supply-chain breaks, and threat intel that actually matter for cloud-native security teams in Pakistan — curated, summarized, and linked to the source.">
+    <meta property="og:url" content="https://cloudnativesecurity.pk/blog/">
+    <meta property="og:site_name" content="Cloud Native Security Pakistan">
+    <meta property="og:image" content="https://cloudnativesecurity.pk/logo.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Blog — Latest in Cloud-Native Security · CNSPK">
+    <meta name="twitter:description"
+        content="The CVEs, supply-chain breaks, and threat intel that actually matter for cloud-native security teams in Pakistan — curated, summarized, and linked to the source.">
+    <meta name="twitter:image" content="https://cloudnativesecurity.pk/logo.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="canonical" href="https://cloudnativesecurity.pk/blog/">
+
+    <!-- Performance: preconnect to font origins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Electric register design tokens — load first -->
+    <link rel="stylesheet" href="/css/tokens.css">
+
+    <style>
+        /* ==========================================================
+           Blog · Electric register · page-specific styles
+           Tokens come from /css/tokens.css. No Tailwind, no CDN.
+        ========================================================== */
+        body { min-height: 100vh; display: flex; flex-direction: column; }
+        main { flex: 1 0 auto; }
+
+        .wrap { max-width: 1280px; margin: 0 auto; padding: 0 var(--space-8); }
+        .hidden { display: none !important; }
+
+        /* ---- Hero ---- */
+        .page-hero {
+            position: relative;
+            padding: 140px 0 80px;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse 80% 60% at 18% 20%, rgba(199, 255, 62, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 80% at 92% 90%, rgba(1, 65, 28, 0.35) 0%, transparent 60%),
+                var(--carbon);
+        }
+        .page-hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(199, 255, 62, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(199, 255, 62, 0.04) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none;
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+        }
+        .page-hero__content { position: relative; z-index: 2; max-width: 780px; }
+
+        .page-hero h1 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: clamp(44px, 8vw, 104px);
+            line-height: 0.92;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            color: var(--bone);
+            margin-bottom: 28px;
+        }
+        .page-hero h1 .accent { color: var(--lime); }
+
+        .lede {
+            font-size: clamp(18px, 2.4vw, 22px);
+            color: var(--bone-2);
+            max-width: 660px;
+            line-height: 1.55;
+            margin-bottom: 28px;
+        }
+        .lede strong { color: var(--lime); font-weight: 600; }
+
+        .urdu-accent {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--steel);
+            letter-spacing: 0.04em;
+            margin-top: 8px;
+        }
+        .urdu-accent em { color: var(--lime); font-style: normal; }
+
+        /* ---- Feed section ---- */
+        .feed {
+            padding: 72px 0 96px;
+            border-top: 1px solid var(--slate);
+        }
+        .feed__head { margin-bottom: var(--space-10); max-width: 720px; }
+        .feed__head h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: clamp(28px, 4.4vw, 48px);
+            text-transform: uppercase;
+            line-height: 0.96;
+            letter-spacing: -0.03em;
+            color: var(--bone);
+            margin-bottom: 16px;
+        }
+        .feed__head p { font-size: 16px; color: var(--bone-2); line-height: 1.6; }
+
+        /* ---- Grid (BlogCard owns its own internals) ---- */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: var(--space-6);
+        }
+
+        /* ---- Loading / empty / error states ---- */
+        .state-panel {
+            border: 1px solid var(--slate);
+            border-radius: var(--r-lg);
+            background: var(--charcoal);
+            padding: var(--space-16) var(--space-8);
+            text-align: center;
+        }
+        .spinner {
+            width: 36px; height: 36px;
+            border: 3px solid rgba(199, 255, 62, 0.25);
+            border-top-color: var(--lime);
+            border-radius: 50%;
+            margin: 0 auto var(--space-4);
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @media (prefers-reduced-motion: reduce) {
+            .spinner { animation-duration: 0.001ms; }
+        }
+        .state-mono {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--steel);
+            letter-spacing: 0.04em;
+        }
+        .state-empty {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--steel);
+        }
+        .error-panel {
+            border: 1px solid rgba(244, 63, 94, 0.30);
+            background: rgba(244, 63, 94, 0.08);
+            border-radius: var(--r-lg);
+            padding: var(--space-10);
+            text-align: center;
+        }
+        .error-panel p {
+            color: var(--breach);
+            margin-bottom: var(--space-5);
+            font-family: var(--font-mono);
+            font-size: 14px;
+        }
+        .btn-retry {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--breach);
+            border: 1px solid rgba(244, 63, 94, 0.5);
+            border-radius: var(--r-sm);
+            padding: 10px 18px;
+            transition: background var(--dur-hover) var(--ease), color var(--dur-hover) var(--ease);
+        }
+        .btn-retry:hover { background: var(--breach); color: var(--bone); }
+
+        @media (max-width: 600px) {
+            .wrap { padding: 0 var(--space-5); }
+            .page-hero { padding: 112px 0 64px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="navbar"></div>
+
+    <main>
+        <!-- ===== Hero ===== -->
+        <section class="page-hero">
+            <div class="wrap page-hero__content">
+                <div class="section-eyebrow">// field-notes</div>
+                <h1>Latest from the<br><span class="accent">cloud-native front.</span></h1>
+                <p class="lede">
+                    The CVEs, supply-chain breaks, and threat intel actually worth your terminal time —
+                    <strong>curated from across the ecosystem</strong>, summarized in five minutes, and
+                    linked straight to the source. Read by practitioners, for practitioners.
+                </p>
+                <!-- Roman Urdu accent (one per page): khabar = news -->
+                <p class="urdu-accent">$ this week's <em>khabar</em> — read it before it reads you.</p>
+            </div>
+        </section>
+
+        <!-- ===== Feed ===== -->
+        <section class="feed" aria-labelledby="feed-heading">
+            <div class="wrap">
+                <div class="feed__head">
+                    <div class="section-eyebrow">// the-feed</div>
+                    <h2 id="feed-heading">Straight from the source.</h2>
+                    <p>Every card links out to the original write-up. No reposts, no scraping — just the
+                        signal, sorted newest first.</p>
+                </div>
+
+                <!-- Loading state -->
+                <div id="loading" class="state-panel">
+                    <div class="spinner" aria-hidden="true"></div>
+                    <span class="state-mono">$ fetching posts.json &hellip;</span>
+                </div>
+
+                <!-- Cards container (BlogCard rendering — do not restyle card internals here) -->
+                <div id="blog-grid" class="blog-grid"></div>
+
+                <!-- Empty state -->
+                <div id="no-results" class="state-panel hidden">
+                    <p class="state-empty">No posts in the feed yet — check back soon.</p>
+                </div>
+
+                <!-- Error state -->
+                <div id="error" class="hidden">
+                    <div class="error-panel">
+                        <p>// error · unable to load the feed</p>
+                        <button onclick="window.location.reload()" class="btn-retry">Retry</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer"></div>
+
+    <script type="module">
+        import { BlogCard } from '/js/BlogCard.js';
+        import { Navbar } from '/js/Navbar.js';
+        import { Footer } from '/js/Footer.js';
+        import { fetchData, domReady } from '/js/utils.js';
+
+        new Navbar().init();
+        new Footer().init();
+
+        async function loadPosts() {
+            const loading = document.getElementById('loading');
+            const grid = document.getElementById('blog-grid');
+            const noResults = document.getElementById('no-results');
+            const error = document.getElementById('error');
+
+            try {
+                const posts = await fetchData('/data/posts.json');
+                loading.classList.add('hidden');
+
+                if (!posts || posts.length === 0) {
+                    noResults.classList.remove('hidden');
+                    return;
+                }
+
+                // Newest-first by date (descending).
+                const sorted = posts.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                grid.innerHTML = sorted.map(post => new BlogCard(post).render()).join('');
+
+            } catch (err) {
+                console.error('Blog Error:', err);
+                loading.classList.add('hidden');
+                error.classList.remove('hidden');
+            }
+        }
+
+        domReady(loadPosts);
+    </script>
+</body>
+
+</html>

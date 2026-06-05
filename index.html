@@ -13,7 +13,7 @@
       retained from the legacy CSP so no other v2 page routing breaks.
     -->
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
+        content="default-src 'self' https://cdn.jsdelivr.net https://images.unsplash.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
 
     <!-- SEO Meta Tags — CNSPK is its own thing; CNCF affiliation is a credential, not the headline -->
     <title>CNSPK · Cloud Native Security Pakistan</title>
@@ -601,16 +601,17 @@
             </div>
         </section>
 
-        <!-- ===== Threat advisory ribbon (editorial register) ===== -->
+        <!-- ===== Editorial field note (illustrative of the register) ===== -->
         <!--
-          TODO: This advisory is illustrative of the editorial register, not a
-          live CVE. Wire to a real /threat-of-week writeup (or remove) before
-          launch so the byline never reads as fabricated security reporting.
+          NOTE: This is an editorial *field note* that demonstrates the voice we
+          write in — it is NOT a live CVE or official security advisory. The tag
+          and landmark are labelled "Field note" so it never reads as fabricated
+          security reporting. Wire to a real /threat-of-week writeup when one exists.
         -->
-        <section class="advisory reveal" id="advisory" aria-label="Threat advisory">
+        <section class="advisory reveal" id="advisory" aria-label="Editorial field note">
             <div class="wrap">
                 <div class="advisory-flex">
-                    <div class="advisory-tag">Advisory&nbsp;·&nbsp;Register</div>
+                    <div class="advisory-tag">Field note&nbsp;·&nbsp;How we write</div>
                     <div class="advisory-body">
                         <h2>The IAM role nobody owns just shipped to prod.</h2>
                         <p>

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://api.github.com https://sheets.googleapis.com https://docs.google.com https://unpkg.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com https://*.basemaps.cartocdn.com; connect-src 'self' https://api.github.com https://sheets.googleapis.com https://docs.google.com https://*.googleusercontent.com; frame-src https://docs.google.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
+        content="default-src 'self' https://cdn.jsdelivr.net https://api.github.com https://sheets.googleapis.com https://docs.google.com https://unpkg.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com https://*.basemaps.cartocdn.com; connect-src 'self' https://api.github.com https://sheets.googleapis.com https://docs.google.com https://*.googleusercontent.com; frame-src https://docs.google.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
     <title>Members - Cloud Native Security Pakistan</title>
     <meta name="description"
         content="The CNSPK member directory — security practitioners across Pakistan, mapped. Find your people.">
@@ -37,43 +37,13 @@
     <!-- Performance: preconnect to font + CDN origins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdn.tailwindcss.com">
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="preconnect" href="https://unpkg.com">
 
     <!-- Electric register tokens (load first) -->
     <link rel="stylesheet" href="/css/tokens.css">
-
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        // Map the components' Tailwind palette onto the Electric register.
-        // MemberCard.js / FilterPanel.js (other stream) render with brand-*/dark-*
-        // utility classes — these only ever sit on dark surfaces here, so lime is safe.
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#F5FFDF',
-                            100: '#E8FF8A',
-                            500: '#C7FF3E', // lime — accent on dark only
-                            600: '#9BD11A',
-                            900: '#3F5B00',
-                        },
-                        dark: {
-                            900: '#0F1115', // carbon
-                            800: '#1A1D24', // charcoal
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Static Tailwind-utility shim (replaces the old Tailwind Play CDN) -->
+    <link rel="stylesheet" href="/css/compat.css">
 
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -320,7 +290,10 @@
                 loading.classList.add('hidden');
 
                 if (!allMembers || allMembers.length === 0) {
-                    // Handle empty
+                    // No members at all — surface the empty state instead of a
+                    // silently blank sidebar.
+                    if (noResults) noResults.classList.remove('hidden');
+                    updateCount(0);
                     return;
                 }
 
@@ -362,7 +335,16 @@
 
             } catch (err) {
                 console.error('Error loading members:', err);
-                loading.innerHTML = '<p class="text-red-500">CONNECTION LOST</p>';
+                loading.classList.add('hidden');
+                // Brand-consistent error panel (replaces the off-register
+                // "CONNECTION LOST" text-red-500 message).
+                if (container) {
+                    container.innerHTML = `
+                        <div role="alert" style="border:1px solid rgba(244,63,94,0.3);background:rgba(244,63,94,0.08);border-radius:var(--r-lg);padding:24px;text-align:center;">
+                            <p style="color:var(--breach);font-family:var(--font-mono);font-size:13px;letter-spacing:0.04em;margin-bottom:16px;">// error · unable to load the directory</p>
+                            <button type="button" onclick="window.location.reload()" style="font-family:var(--font-mono);font-size:13px;text-transform:uppercase;letter-spacing:0.04em;color:var(--breach);background:transparent;border:1px solid rgba(244,63,94,0.5);border-radius:var(--r-sm);padding:10px 18px;cursor:pointer;">Retry</button>
+                        </div>`;
+                }
             }
         }
 

@@ -25,7 +25,7 @@
  * ----------------------------------------------------------
  */
 
-import { sanitize } from './utils.js';
+import { sanitize, safeUrl, escapeAttr } from './utils.js';
 
 export class MemberCard {
     constructor(member) {
@@ -217,10 +217,12 @@ export class MemberCard {
 
         const { name, username, location, team, interests, github, linkedin, twitter, role, link } = this.member;
 
-        const safeName = sanitize(name || username);
-        const safeUser = sanitize(username);
-        const safeRole = sanitize(role || 'Community Member');
-        const safeLocation = sanitize(location || 'Pakistan');
+        // Short scalar fields: entity-escape (correct for both text and attribute
+        // contexts — DOMPurify does not escape quotes).
+        const safeName = escapeAttr(name || username);
+        const safeUser = escapeAttr(username);
+        const safeRole = escapeAttr(role || 'Community Member');
+        const safeLocation = escapeAttr(location || 'Pakistan');
 
         // Monogram: up to two initials from the display name.
         const monogram = safeName
@@ -238,11 +240,11 @@ export class MemberCard {
         const xIcon = `<svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`;
 
         const githubHref = github
-            ? (github.startsWith('http') ? sanitize(github) : `https://github.com/${sanitize(github)}`)
+            ? (/^https?:\/\//i.test(github) ? safeUrl(github) : safeUrl(`https://github.com/${github}`))
             : '';
 
         const interestTags = (interests && interests.length)
-            ? interests.slice(0, 3).map(i => `<span class="cnspk-member-card__tag">${sanitize(i)}</span>`).join('')
+            ? interests.slice(0, 3).map(i => `<span class="cnspk-member-card__tag">${escapeAttr(i)}</span>`).join('')
             : '';
 
         return `
@@ -255,7 +257,7 @@ export class MemberCard {
                             <p class="cnspk-member-card__handle">@${safeUser}</p>
                         </div>
                     </div>
-                    ${team ? `<span class="cnspk-member-card__team ${this.getTeamColor(team)}">${sanitize(team)}</span>` : ''}
+                    ${team ? `<span class="cnspk-member-card__team ${this.getTeamColor(team)}">${escapeAttr(team)}</span>` : ''}
                 </div>
 
                 <p class="cnspk-member-card__role">${safeRole}</p>
@@ -268,10 +270,10 @@ export class MemberCard {
                 ${interestTags ? `<div class="cnspk-member-card__tags">${interestTags}</div>` : ''}
 
                 <div class="cnspk-member-card__socials">
-                    ${link ? `<a href="${sanitize(link)}" target="_blank" rel="noopener noreferrer" class="cnspk-member-card__social" title="CNCF Profile" aria-label="${safeName} on CNCF Community">${globeIcon}</a>` : ''}
+                    ${link ? `<a href="${safeUrl(link)}" target="_blank" rel="noopener noreferrer" class="cnspk-member-card__social" title="CNCF Profile" aria-label="${safeName} on CNCF Community">${globeIcon}</a>` : ''}
                     ${github ? `<a href="${githubHref}" target="_blank" rel="noopener noreferrer" class="cnspk-member-card__social" title="GitHub" aria-label="${safeName} on GitHub">${githubIcon}</a>` : ''}
-                    ${linkedin ? `<a href="${sanitize(linkedin)}" target="_blank" rel="noopener noreferrer" class="cnspk-member-card__social" title="LinkedIn" aria-label="${safeName} on LinkedIn">${linkedinIcon}</a>` : ''}
-                    ${twitter ? `<a href="${sanitize(twitter)}" target="_blank" rel="noopener noreferrer" class="cnspk-member-card__social" title="X / Twitter" aria-label="${safeName} on X">${xIcon}</a>` : ''}
+                    ${linkedin ? `<a href="${safeUrl(linkedin)}" target="_blank" rel="noopener noreferrer" class="cnspk-member-card__social" title="LinkedIn" aria-label="${safeName} on LinkedIn">${linkedinIcon}</a>` : ''}
+                    ${twitter ? `<a href="${safeUrl(twitter)}" target="_blank" rel="noopener noreferrer" class="cnspk-member-card__social" title="X / Twitter" aria-label="${safeName} on X">${xIcon}</a>` : ''}
                 </div>
             </article>
         `;

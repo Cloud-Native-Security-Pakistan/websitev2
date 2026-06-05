@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com https://avatars.githubusercontent.com https://ui-avatars.com https://www.youtube.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com; frame-src https://www.youtube.com;">
+        content="default-src 'self' https://cdn.jsdelivr.net https://images.unsplash.com https://avatars.githubusercontent.com https://ui-avatars.com https://www.youtube.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com https://ui-avatars.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com; frame-src https://www.youtube.com;">
 
     <!-- Dynamic SEO — updated by JS on load -->
     <title>Session — CNSPK · Cloud Native Security Pakistan</title>
@@ -37,14 +37,14 @@
     <!-- Performance: preconnect to font + CDN origins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdn.tailwindcss.com">
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="preconnect" href="https://images.unsplash.com">
 
     <!-- Design tokens first -->
     <link rel="stylesheet" href="/css/tokens.css">
+    <!-- Static Tailwind-utility shim (replaces the old Tailwind Play CDN) -->
+    <link rel="stylesheet" href="/css/compat.css">
 
-    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js" integrity="sha384-cwS6YdhLI7XS60eoDiC+egV0qHp8zI+Cms46R0nbn8JrmoAzV9uFL60etMZhAnSu" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
 
     <style>
@@ -267,10 +267,32 @@
                     return;
                 }
 
-                // Update page meta dynamically
+                // Update page meta dynamically — per-session title, description,
+                // canonical, OG + Twitter so each permalink is distinct for
+                // (JS-executing) crawlers and social scrapers.
+                const permalink = `https://cloudnativesecurity.pk/sessions/view/?id=${sessionId}`;
+                const metaDesc = session.summary || session.description
+                    || 'Watch cloud-native security sessions from CNSPK speakers.';
+                const ogImage = (typeof session.thumbnail === 'string' && /^https?:\/\//.test(session.thumbnail))
+                    ? session.thumbnail
+                    : 'https://cloudnativesecurity.pk/logo.png';
+
                 document.title = `${session.title} — CNSPK Session`;
-                document.getElementById('og-title').content = session.title;
-                document.getElementById('og-description').content = session.summary || session.description;
+
+                const setMeta = (selector, value) => {
+                    const el = document.querySelector(selector);
+                    if (el) el.setAttribute('content', value);
+                };
+                setMeta('meta[name="description"]', metaDesc);
+                setMeta('#og-title', session.title);
+                setMeta('#og-description', metaDesc);
+                setMeta('meta[property="og:url"]', permalink);
+                setMeta('meta[property="og:image"]', ogImage);
+                setMeta('meta[name="twitter:title"]', session.title);
+                setMeta('meta[name="twitter:description"]', metaDesc);
+                setMeta('meta[name="twitter:image"]', ogImage);
+                const canonical = document.querySelector('link[rel="canonical"]');
+                if (canonical) canonical.setAttribute('href', permalink);
 
                 // Render the session detail component
                 const detail = new SessionDetail(session);
