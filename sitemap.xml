@@ -37,6 +37,12 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://cloudnativesecurity.pk/blog/</loc>
+    <lastmod>2026-06-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://cloudnativesecurity.pk/members/</loc>
     <lastmod>2026-06-05</lastmod>
     <changefreq>weekly</changefreq>

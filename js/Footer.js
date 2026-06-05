@@ -37,6 +37,7 @@ export class Footer {
         this.programs = [
             { name: 'Events', href: '/events/' },
             { name: 'Sessions', href: '/sessions/' },
+            { name: 'Blog', href: '/blog/' },
             { name: 'Labs', href: '/labs/' },
             { name: 'CFP', href: '/cfp/' },
             { name: 'Dispatch', href: '/dispatch/' },
@@ -273,7 +274,7 @@ export class Footer {
                             &middot; <a class="cnspk-footer__link" href="/legacy/" style="font-size:12px;">Site archive</a>
                         </p>
                         <code class="cnspk-footer__cmd" aria-label="signature">
-                            $ ./made-with-bharosa --in=Lahore --by=community
+                            $ ./made-with-bharosa --in=Pakistan --by=community
                         </code>
                     </div>
                 </div>

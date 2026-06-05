@@ -27,6 +27,7 @@ export class Navbar {
             { name: 'About', path: '/about/' },
             { name: 'Events', path: '/events/' },
             { name: 'Sessions', path: '/sessions/' },
+            { name: 'Blog', path: '/blog/' },
             { name: 'Members', path: '/members/' },
             { name: 'Team', path: '/team/' },
             { name: 'Brand', path: '/brand/' }
