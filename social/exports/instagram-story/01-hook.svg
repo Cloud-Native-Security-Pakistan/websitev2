@@ -22,10 +22,9 @@
 <text x="96" y="900" font-size="120" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#F4F1EA" font-weight="800" font-style="italic" letter-spacing="-3">OPEN SOURCE</text>
 <text x="96" y="1034" font-size="120" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#F4F1EA" font-weight="800" font-style="italic" letter-spacing="-3">IS THE</text>
 <text x="96" y="1168" font-size="120" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#C7FF3E" font-weight="800" font-style="italic" letter-spacing="-3">STRATEGY NOW.</text>
-<text x="96" y="1340" font-size="32" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#E8E3D6">Europe just made open source critical</text>
-<text x="96" y="1386" font-size="32" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#E8E3D6">infrastructure - not a nice-to-have. The</text>
-<text x="96" y="1432" font-size="32" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#E8E3D6">EU's Tech Sovereignty Package puts it at</text>
-<text x="96" y="1478" font-size="32" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#E8E3D6">the center of the bloc's digital future.</text>
+<text x="96" y="1340" font-size="32" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#E8E3D6">Big news for open source. Europe's new</text>
+<text x="96" y="1386" font-size="32" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#E8E3D6">Tech Sovereignty Package puts it right at</text>
+<text x="96" y="1432" font-size="32" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#E8E3D6">the heart of the region's digital future.</text>
 <line x1="96" y1="1566" x2="984" y2="1566" stroke="#2A2E37" stroke-width="1"/>
 <text x="96" y="1600" font-size="20" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#F4F1EA">cloudnativesecurity.pk</text>
 <text x="984" y="1600" font-size="17" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#6B7280" text-anchor="end">@CloudSecPK</text>

@@ -22,8 +22,8 @@
 <text x="96" y="800" font-size="124" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#F4F1EA" font-weight="800" font-style="italic" letter-spacing="-3">OPEN SOURCE</text>
 <text x="96" y="938" font-size="124" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#F4F1EA" font-weight="800" font-style="italic" letter-spacing="-3">IS THE</text>
 <text x="96" y="1076" font-size="124" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#C7FF3E" font-weight="800" font-style="italic" letter-spacing="-3">STRATEGY NOW.</text>
-<text x="96" y="1300" font-size="46" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#E8E3D6" font-weight="700" font-style="italic" letter-spacing="-1">Europe just made open source</text>
-<text x="96" y="1358" font-size="46" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#C7FF3E" font-weight="700" font-style="italic" letter-spacing="-1">critical infrastructure.</text>
+<text x="96" y="1300" font-size="46" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#E8E3D6" font-weight="700" font-style="italic" letter-spacing="-1">Big news for open source.</text>
+<text x="96" y="1358" font-size="46" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#C7FF3E" font-weight="700" font-style="italic" letter-spacing="-1">Europe just made it the plan.</text>
 <line x1="96" y1="1526" x2="984" y2="1526" stroke="#2A2E37" stroke-width="1"/>
 <text x="96" y="1560" font-size="20" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#F4F1EA">cloudnativesecurity.pk</text>
 <text x="984" y="1560" font-size="17" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#6B7280" text-anchor="end">@CloudSecPK</text>

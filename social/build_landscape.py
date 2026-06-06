@@ -17,7 +17,7 @@ C = CONTENT
 
 # Short, one-line lede (derived from the validated CONTENT copy) that fits the
 # narrow left column on a short canvas without wrapping.
-LEDE = "Europe just made open source the strategy - not a nice-to-have."
+LEDE = "Big news for open source - Europe just made it the plan."
 
 
 def landscape(h):

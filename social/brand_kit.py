@@ -53,9 +53,8 @@ CONTENT = {
     "x": "@CloudSecPK",
     "ig": "@cloudnativesecuritypk",
     "headline": [("OPEN SOURCE", BONE), ("IS THE", BONE), ("STRATEGY NOW.", LIME)],
-    "lede": ("Europe just made open source critical infrastructure - not a "
-             "nice-to-have. The EU's Tech Sovereignty Package puts it at the "
-             "center of the bloc's digital future."),
+    "lede": ("Big news for open source. Europe's new Tech Sovereignty Package "
+             "puts it right at the heart of the region's digital future."),
     "stats": [
         ("80%+",      ["of the EU's digital products,", "services & IP come from", "non-EU providers"]),
         ("~70%",      ["of Europe's cloud market =", "three US giants: AWS,", "Azure, Google Cloud"]),

@@ -35,8 +35,8 @@ def frame_headline():
     p.display(C["headline"], 800, 124, 138)
 
     # One punchy line — no paragraph, status is read in a blink.
-    p.text(96, 1300, "Europe just made open source", 46, fill=BONE2, weight=700, italic=True, ls=-1)
-    p.text(96, 1358, "critical infrastructure.", 46, fill=LIME, weight=700, italic=True, ls=-1)
+    p.text(96, 1300, "Big news for open source.", 46, fill=BONE2, weight=700, italic=True, ls=-1)
+    p.text(96, 1358, "Europe just made it the plan.", 46, fill=LIME, weight=700, italic=True, ls=-1)
 
     # Footer kept above the bottom reply-bar safe zone.
     p.footer(C["site"], C["x"], y=1560)
