@@ -28,6 +28,24 @@ def esc(s):
     return (str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
 
 
+# Real CNSPK shield mark, embedded as a base64 data URI so each SVG is fully
+# self-contained (relative/external refs don't load when an SVG is used as an
+# <img>, so we inline the bytes). Cached after first read.
+_SHIELD_URI = None
+
+
+def _shield_uri():
+    global _SHIELD_URI
+    if _SHIELD_URI is None:
+        import base64, os
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            "..", "brand", "assets", "cnspk-shield.png")
+        with open(path, "rb") as f:
+            b64 = base64.b64encode(f.read()).decode("ascii")
+        _SHIELD_URI = "data:image/png;base64," + b64
+    return _SHIELD_URI
+
+
 def wrap(text, maxchars):
     """Greedy word wrap to a max character count per line."""
     words, lines, cur = text.split(), [], ""
@@ -115,11 +133,10 @@ class Post:
     def shield(self, x=None, y=None, s=1.0):
         x = self.pad if x is None else x
         y = self.pad if y is None else y
+        box = int(64 * s)
         self.parts.append(
-            f'<g transform="translate({x},{y}) scale({s})">'
-            f'<path d="M4 8 L31 0 L58 8 L53 40 Q31 62 31 62 Q9 40 9 40 Z" '
-            f'fill="none" stroke="{LIME}" stroke-width="3.5"/>'
-            f'<circle cx="31" cy="30" r="7" fill="{LIME}"/></g>')
+            f'<image x="{x}" y="{y}" width="{box}" height="{box}" '
+            f'preserveAspectRatio="xMidYMid meet" href="{_shield_uri()}"/>')
         return self
 
     def brandblock(self, sub, x=None, y=None, scale=1.0):
