@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif">
+<defs>
+  <pattern id="grid" width="72" height="72" patternUnits="userSpaceOnUse">
+    <path d="M72 0H0V72" fill="none" stroke="#C7FF3E" stroke-width="1" stroke-opacity="0.05"/>
+  </pattern>
+  <radialGradient id="fade" cx="50%" cy="34%" r="78%">
+    <stop offset="0%" stop-color="#fff" stop-opacity="1"/>
+    <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+  </radialGradient>
+  <mask id="fademask"><rect width="1080" height="1080" fill="url(#fade)"/></mask>
+</defs>
+<rect width="1080" height="1080" fill="#0F1115"/>
+<rect width="1080" height="1080" fill="url(#grid)" mask="url(#fademask)"/>
+<g transform="translate(84,84) scale(1.0)"><path d="M4 8 L31 0 L58 8 L53 40 Q31 62 31 62 Q9 40 9 40 Z" fill="none" stroke="#C7FF3E" stroke-width="3.5"/><circle cx="31" cy="30" r="7" fill="#C7FF3E"/></g>
+<text x="166" y="118" font-size="34" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#F4F1EA" font-weight="800" font-style="italic" letter-spacing="-1">CNSPK</text>
+<text x="168" y="142" font-size="14" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#6B7280" letter-spacing="3">DISPATCH</text>
+<rect x="805" y="88" width="191" height="46" rx="23" fill="#C7FF3E" fill-opacity="0.10" stroke="#C7FF3E" stroke-opacity="0.30" stroke-width="1.5"/>
+<circle cx="831" cy="111" r="7" fill="#C7FF3E"/>
+<text x="849" y="117" font-size="17" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#C7FF3E" letter-spacing="1">03 JUN 2026</text>
+<line x1="84" y1="293" x2="120" y2="293" stroke="#C7FF3E" stroke-width="2"/>
+<text x="134" y="300" font-size="20" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#C7FF3E" letter-spacing="2">// EU-TECH-SOVEREIGNTY-PACKAGE</text>
+<text x="84" y="384" font-size="84" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#F4F1EA" font-weight="800" font-style="italic" letter-spacing="-2">OPEN SOURCE</text>
+<text x="84" y="474" font-size="84" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#F4F1EA" font-weight="800" font-style="italic" letter-spacing="-2">IS THE</text>
+<text x="84" y="564" font-size="84" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#C7FF3E" font-weight="800" font-style="italic" letter-spacing="-2">STRATEGY NOW.</text>
+<text x="84" y="668" font-size="24" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#E8E3D6">Europe just made open source critical infrastructure - not a</text>
+<text x="84" y="704" font-size="24" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#E8E3D6">nice-to-have. The EU's Tech Sovereignty Package puts it at the</text>
+<text x="84" y="740" font-size="24" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#E8E3D6">center of the bloc's digital future.</text>
+<text x="84" y="784" font-size="15" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#6B7280" letter-spacing="2">// THE-NUMBERS</text>
+<line x1="84" y1="800" x2="996" y2="800" stroke="#2A2E37" stroke-width="1"/>
+<text x="84" y="868" font-size="60" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#C7FF3E" font-weight="800" font-style="italic" letter-spacing="-3">80%+</text>
+<text x="84" y="897" font-size="15" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#E8E3D6" letter-spacing="0">of the EU's digital products,</text>
+<text x="84" y="919" font-size="15" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#E8E3D6" letter-spacing="0">services &amp; IP come from</text>
+<text x="84" y="941" font-size="15" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#E8E3D6" letter-spacing="0">non-EU providers</text>
+<line x1="364" y1="822" x2="364" y2="934" stroke="#2A2E37" stroke-width="1"/>
+<text x="388" y="868" font-size="60" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#C7FF3E" font-weight="800" font-style="italic" letter-spacing="-3">~70%</text>
+<text x="388" y="897" font-size="15" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#E8E3D6" letter-spacing="0">of Europe's cloud market =</text>
+<text x="388" y="919" font-size="15" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#E8E3D6" letter-spacing="0">three US giants: AWS,</text>
+<text x="388" y="941" font-size="15" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#E8E3D6" letter-spacing="0">Azure, Google Cloud</text>
+<line x1="668" y1="822" x2="668" y2="934" stroke="#2A2E37" stroke-width="1"/>
+<text x="692" y="868" font-size="60" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#C7FF3E" font-weight="800" font-style="italic" letter-spacing="-3">€264B</text>
+<text x="692" y="897" font-size="15" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#E8E3D6" letter-spacing="0">spent every year on US</text>
+<text x="692" y="919" font-size="15" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#E8E3D6" letter-spacing="0">cloud software</text>
+<text x="692" y="941" font-size="15" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#E8E3D6" letter-spacing="0">(Asteres, 2025)</text>
+<line x1="84" y1="958" x2="996" y2="958" stroke="#2A2E37" stroke-width="1"/>
+<text x="84" y="992" font-size="20" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#F4F1EA">cloudnativesecurity.pk</text>
+<text x="996" y="992" font-size="17" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#6B7280" text-anchor="end">@CloudSecPK</text>
+</svg>

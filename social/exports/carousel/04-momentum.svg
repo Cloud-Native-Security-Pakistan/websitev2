@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif">
+<defs>
+  <pattern id="grid" width="72" height="72" patternUnits="userSpaceOnUse">
+    <path d="M72 0H0V72" fill="none" stroke="#C7FF3E" stroke-width="1" stroke-opacity="0.05"/>
+  </pattern>
+  <radialGradient id="fade" cx="50%" cy="34%" r="78%">
+    <stop offset="0%" stop-color="#fff" stop-opacity="1"/>
+    <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+  </radialGradient>
+  <mask id="fademask"><rect width="1080" height="1080" fill="url(#fade)"/></mask>
+</defs>
+<rect width="1080" height="1080" fill="#0F1115"/>
+<rect width="1080" height="1080" fill="url(#grid)" mask="url(#fademask)"/>
+<g transform="translate(84,84) scale(1.0)"><path d="M4 8 L31 0 L58 8 L53 40 Q31 62 31 62 Q9 40 9 40 Z" fill="none" stroke="#C7FF3E" stroke-width="3.5"/><circle cx="31" cy="30" r="7" fill="#C7FF3E"/></g>
+<text x="166" y="118" font-size="34" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#F4F1EA" font-weight="800" font-style="italic" letter-spacing="-1">CNSPK</text>
+<text x="168" y="142" font-size="14" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#6B7280" letter-spacing="3">THE SIGNALS</text>
+<rect x="739" y="88" width="257" height="46" rx="23" fill="#C7FF3E" fill-opacity="0.10" stroke="#C7FF3E" stroke-opacity="0.30" stroke-width="1.5"/>
+<circle cx="765" cy="111" r="7" fill="#C7FF3E"/>
+<text x="783" y="117" font-size="17" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#C7FF3E" letter-spacing="1">NOT A COINCIDENCE</text>
+<line x1="84" y1="353" x2="120" y2="353" stroke="#C7FF3E" stroke-width="2"/>
+<text x="134" y="360" font-size="20" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#C7FF3E" letter-spacing="2">// A-DECADE-GOING-OFFICIAL</text>
+<text x="84" y="470" font-size="34" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#C7FF3E" font-weight="700">-&gt;</text>
+<text x="150" y="468" font-size="38" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#F4F1EA" font-weight="800" font-style="italic" letter-spacing="-1">QWANT &gt; GOOGLE</text>
+<text x="150" y="502" font-size="21" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#6B7280">EU Parliament default search, from 4 Jun 2026.</text>
+<text x="84" y="608" font-size="34" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#C7FF3E" font-weight="700">-&gt;</text>
+<text x="150" y="606" font-size="38" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#F4F1EA" font-weight="800" font-style="italic" letter-spacing="-1">LINUX ON DESKTOPS</text>
+<text x="150" y="640" font-size="21" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#6B7280">Government offices across Europe migrating off Windows.</text>
+<text x="84" y="746" font-size="34" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#C7FF3E" font-weight="700">-&gt;</text>
+<text x="150" y="744" font-size="38" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#F4F1EA" font-weight="800" font-style="italic" letter-spacing="-1">OPEN SOURCE STRATEGY</text>
+<text x="150" y="778" font-size="21" font-family="'Bricolage Grotesque', Arial, 'Helvetica Neue', Helvetica, sans-serif" fill="#6B7280">Quiet momentum is now written into EU policy.</text>
+<line x1="84" y1="958" x2="996" y2="958" stroke="#2A2E37" stroke-width="1"/>
+<text x="84" y="992" font-size="20" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#F4F1EA">cloudnativesecurity.pk</text>
+<text x="996" y="992" font-size="17" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#6B7280" text-anchor="end">@CloudSecPK</text>
+<text x="996" y="470" font-size="16" font-family="'JetBrains Mono', 'Courier New', monospace" fill="#6B7280" text-anchor="end">04 / 06</text>
+</svg>
