@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
+
+    <title>Social Kit · EU Tech Sovereignty · CNSPK</title>
+    <meta name="description"
+        content="On-brand CNSPK social posts announcing the EU Tech Sovereignty Package and its Open Source Strategy. Electric register, lime on carbon, ready to screenshot at 1080x1080.">
+    <meta name="robots" content="noindex">
+    <meta name="theme-color" content="#0F1115">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="/css/tokens.css">
+
+    <style>
+        /* ==========================================================
+           Social Kit — gallery chrome (NOT part of the posts)
+           ========================================================== */
+        body { background: #07080A; }
+
+        .kit-wrap { max-width: 1180px; margin: 0 auto; padding: 64px 24px 120px; }
+
+        .kit-head { max-width: 820px; margin-bottom: 48px; }
+        .kit-head .section-eyebrow { margin-bottom: 18px; }
+        .kit-head h1 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(36px, 6vw, 68px);
+            line-height: 0.92;
+            letter-spacing: -0.04em;
+            color: var(--bone);
+            margin-bottom: 20px;
+        }
+        .kit-head h1 em { color: var(--lime); font-style: italic; }
+        .kit-head p { font-size: 17px; color: var(--bone-2); line-height: 1.6; max-width: 680px; }
+        .kit-head .note {
+            margin-top: 18px;
+            font-family: var(--font-mono);
+            font-size: 12.5px;
+            color: var(--steel);
+            line-height: 1.7;
+            border-left: 2px solid var(--slate);
+            padding-left: 16px;
+        }
+        .kit-head .note b { color: var(--lime); font-weight: 500; }
+
+        .kit-toolbar {
+            display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+            margin: 28px 0 8px;
+        }
+        .kit-toggle {
+            font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em;
+            text-transform: uppercase; color: var(--bone);
+            background: var(--charcoal); border: 1px solid var(--slate);
+            border-radius: var(--r-sm); padding: 10px 16px; cursor: pointer;
+            transition: border-color var(--dur-hover) var(--ease), color var(--dur-hover) var(--ease);
+        }
+        .kit-toggle:hover { border-color: var(--lime); color: var(--lime); }
+
+        /* gallery layout */
+        .kit-grid { display: flex; flex-direction: column; gap: 64px; margin-top: 40px; }
+        .kit-item { }
+        .kit-item__meta {
+            display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .kit-item__no {
+            font-family: var(--font-mono); font-size: 12px; color: var(--lime);
+            letter-spacing: 0.1em;
+        }
+        .kit-item__title {
+            font-family: var(--font-display); font-style: italic; font-weight: 800;
+            text-transform: uppercase; font-size: 18px; letter-spacing: -0.01em;
+            color: var(--bone);
+        }
+        .kit-item__spec { font-family: var(--font-mono); font-size: 11px; color: var(--steel); letter-spacing: 0.06em; }
+
+        .kit-layout { display: grid; grid-template-columns: 480px 1fr; gap: 32px; align-items: start; }
+        @media (max-width: 980px) { .kit-layout { grid-template-columns: 1fr; } }
+
+        /* The scaled preview frame. Each .post is exactly 1080x1080. */
+        .frame {
+            width: 480px; height: 480px; overflow: hidden;
+            border: 1px solid var(--slate); border-radius: var(--r-md);
+            background: var(--carbon); flex-shrink: 0;
+        }
+        .frame .post { transform: scale(0.44444); transform-origin: top left; }
+
+        /* Actual-size mode: render posts at full 1080 for crisp screenshots */
+        body.actual-size .frame { width: 1080px; height: 1080px; max-width: 100%; }
+        body.actual-size .frame .post { transform: none; }
+        body.actual-size .kit-layout { grid-template-columns: 1fr; }
+
+        /* Caption block */
+        .caption {
+            background: var(--charcoal); border: 1px solid var(--slate);
+            border-radius: var(--r-md); padding: 22px 24px;
+        }
+        .caption h3 {
+            font-family: var(--font-mono); font-size: 11px; color: var(--lime);
+            text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px;
+        }
+        .caption pre {
+            font-family: var(--font-body); font-size: 14.5px; color: var(--bone-2);
+            line-height: 1.65; white-space: pre-wrap; word-wrap: break-word; margin: 0;
+        }
+        .caption .tags { margin-top: 14px; color: var(--lime-600); font-size: 13.5px; word-wrap: break-word; }
+        .caption .copy-btn {
+            margin-top: 16px; font-family: var(--font-mono); font-size: 11px;
+            text-transform: uppercase; letter-spacing: 0.06em; color: var(--carbon);
+            background: var(--lime); border: 0; border-radius: var(--r-sm);
+            padding: 8px 14px; cursor: pointer; font-weight: 600;
+        }
+        .caption .copy-btn:hover { background: var(--lime-glow); }
+
+        /* ==========================================================
+           THE POSTS — each .post is a 1080x1080 canvas, Electric register
+           ========================================================== */
+        .post {
+            width: 1080px; height: 1080px; position: relative; overflow: hidden;
+            background: var(--carbon); color: var(--bone);
+            display: flex; flex-direction: column; justify-content: space-between;
+            padding: 84px 84px 72px;
+        }
+        /* faint lime grid texture */
+        .post::before {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background-image:
+                linear-gradient(rgba(199, 255, 62, 0.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(199, 255, 62, 0.045) 1px, transparent 1px);
+            background-size: 72px 72px;
+            mask-image: radial-gradient(ellipse 90% 80% at 50% 35%, black 0%, transparent 90%);
+            -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 35%, black 0%, transparent 90%);
+        }
+        .post > * { position: relative; z-index: 1; }
+
+        /* shared post header */
+        .p-head { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+        .p-brand { display: inline-flex; align-items: center; gap: 18px; }
+        .p-brand .brand-shield { width: 62px; height: 62px; }
+        .p-brand .p-name {
+            font-family: var(--font-display); font-style: italic; font-weight: 800;
+            text-transform: uppercase; font-size: 30px; letter-spacing: -0.02em; color: var(--bone);
+            line-height: 1;
+        }
+        .p-brand .p-sub {
+            font-family: var(--font-mono); font-size: 13px; color: var(--steel);
+            letter-spacing: 0.1em; text-transform: uppercase; margin-top: 6px;
+        }
+        .p-pill {
+            display: inline-flex; align-items: center; gap: 12px;
+            padding: 12px 20px; border-radius: var(--r-pill);
+            background: rgba(199, 255, 62, 0.10); border: 1px solid rgba(199, 255, 62, 0.28);
+            font-family: var(--font-mono); font-size: 16px; color: var(--lime); letter-spacing: 0.04em;
+        }
+        .p-pill .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 16px var(--lime); }
+
+        .p-eyebrow {
+            font-family: var(--font-mono); font-size: 19px; color: var(--lime);
+            letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 26px;
+            display: inline-flex; align-items: center; gap: 14px;
+        }
+        .p-eyebrow::before { content: ''; width: 36px; height: 2px; background: var(--lime); }
+
+        .p-display {
+            font-family: var(--font-display); font-style: italic; font-weight: 800;
+            text-transform: uppercase; letter-spacing: -0.04em; line-height: 0.9;
+            color: var(--bone); font-size: 104px;
+        }
+        .p-display .lime { color: var(--lime); }
+
+        .p-lede { font-size: 27px; color: var(--bone-2); line-height: 1.5; max-width: 820px; margin-top: 34px; }
+        .p-lede b { color: var(--lime); font-weight: 600; }
+
+        /* footer strip shared */
+        .p-foot {
+            display: flex; align-items: center; justify-content: space-between; gap: 24px;
+            border-top: 1px solid var(--slate); padding-top: 30px;
+        }
+        .p-foot .url { font-family: var(--font-mono); font-size: 20px; color: var(--bone); letter-spacing: 0.02em; }
+        .p-foot .handle { font-family: var(--font-mono); font-size: 17px; color: var(--steel); letter-spacing: 0.04em; }
+
+        /* kubectl stamp */
+        .p-stamp {
+            font-family: var(--font-mono); font-weight: 700; font-size: 30px;
+            color: var(--carbon); display: inline-block; padding: 16px 28px;
+            background: var(--lime); box-shadow: 10px 10px 0 var(--carbon);
+            border: 3px solid var(--carbon); transform: rotate(-1.2deg);
+        }
+
+        /* stats post */
+        .p-stats { display: flex; flex-direction: column; gap: 30px; }
+        .p-stat { display: flex; align-items: baseline; gap: 28px; border-bottom: 1px dashed var(--slate); padding-bottom: 28px; }
+        .p-stat:last-child { border-bottom: 0; }
+        .p-stat .num {
+            font-family: var(--font-display); font-style: italic; font-weight: 800;
+            color: var(--lime); font-size: 96px; line-height: 0.85; letter-spacing: -0.04em;
+            min-width: 320px;
+        }
+        .p-stat .txt { font-size: 25px; color: var(--bone-2); line-height: 1.4; }
+        .p-stat .txt b { color: var(--bone); font-weight: 600; }
+
+        /* checklist / package post */
+        .p-list { display: flex; flex-direction: column; gap: 26px; margin-top: 8px; }
+        .p-list .row { display: flex; align-items: flex-start; gap: 24px; }
+        .p-list .row .tick {
+            font-family: var(--font-mono); font-weight: 700; font-size: 34px; color: var(--lime);
+            line-height: 1; flex-shrink: 0; width: 44px;
+        }
+        .p-list .row .body .t {
+            font-family: var(--font-display); font-style: italic; font-weight: 800; text-transform: uppercase;
+            font-size: 40px; letter-spacing: -0.02em; color: var(--bone); line-height: 1;
+        }
+        .p-list .row .body .d { font-size: 21px; color: var(--steel); margin-top: 8px; line-height: 1.4; }
+
+        .p-source { font-family: var(--font-mono); font-size: 14px; color: var(--steel); letter-spacing: 0.02em; line-height: 1.6; }
+    </style>
+</head>
+
+<body>
+    <main class="kit-wrap">
+        <header class="kit-head">
+            <div class="section-eyebrow">// social-kit · dispatch</div>
+            <h1>Open source is now <em>EU policy.</em></h1>
+            <p>
+                A ready-to-post set announcing the EU's <strong>Tech Sovereignty Package</strong> and its Open Source
+                Strategy, in the Electric register. Every canvas below is exactly <strong>1080&times;1080</strong> —
+                Instagram / LinkedIn square. Captions sit beside each post; copy and paste.
+            </p>
+            <p class="note">
+                <b>// fact-checked</b> — Package adopted by the European Commission on 3 June 2026. Components:
+                EU Open Source Strategy, Cloud and AI Development Act (CADA), Chips Act 2.0, and an Energy/AI roadmap.
+                &gt;80% of the EU's digital products/services come from non-EU providers (Commission, 2023 report).
+                AWS + Azure + Google Cloud hold ~70% of the EU cloud market. The ~&euro;264bn/year figure is annual
+                spend on <b>US cloud software</b> (Asteres, 2025) — worded that way on the posts, not "all IT".
+            </p>
+            <div class="kit-toolbar">
+                <button class="kit-toggle" id="sizeToggle">Toggle actual size (1080px)</button>
+                <span class="kit-item__spec">tip: switch to actual size, then screenshot a single post for full resolution</span>
+            </div>
+        </header>
+
+        <div class="kit-grid">
+
+            <!-- ============ POST 1 — ANNOUNCEMENT ============ -->
+            <section class="kit-item">
+                <div class="kit-item__meta">
+                    <span class="kit-item__no">post 01</span>
+                    <span class="kit-item__title">The headline</span>
+                    <span class="kit-item__spec">// 1080&times;1080 · feed</span>
+                </div>
+                <div class="kit-layout">
+                    <div class="frame">
+                        <div class="post">
+                            <div class="p-head">
+                                <div class="p-brand">
+                                    <span class="brand-shield" aria-hidden="true">CN</span>
+                                    <div>
+                                        <div class="p-name">CNSPK</div>
+                                        <div class="p-sub">dispatch</div>
+                                    </div>
+                                </div>
+                                <span class="p-pill"><span class="dot"></span> 03 JUN 2026</span>
+                            </div>
+
+                            <div>
+                                <div class="p-eyebrow">// eu-tech-sovereignty-package</div>
+                                <h2 class="p-display">Open source<br>is the<br><span class="lime">strategy</span> now.</h2>
+                                <p class="p-lede">
+                                    Europe just made open source <b>critical infrastructure</b> — not a nice-to-have.
+                                    The EU's Tech Sovereignty Package puts it at the center of the bloc's digital future.
+                                </p>
+                            </div>
+
+                            <div class="p-foot">
+                                <span class="url">cloudnativesecurity.pk</span>
+                                <span class="handle">@CloudSecPK</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="caption">
+                        <h3>// caption</h3>
+                        <pre>Open source just became official EU strategy.
+
+On 3 June 2026 the European Commission adopted its Tech Sovereignty Package — and open source sits at the center of it. Not charity. Not a nice-to-have. Strategy.
+
+The reality they're responding to: non-EU providers supply 80%+ of Europe's digital products, services and IP, and three US clouds hold ~70% of the market. The package answers with an EU Open Source Strategy, the Cloud and AI Development Act, and Chips Act 2.0.
+
+This is one of the world's largest economies treating open infrastructure as a national-security question. We've been here the whole time — building it. Read the CVE. Drink the chai.</pre>
+                        <div class="tags">#OpenSource #CloudNative #DigitalSovereignty #EU #CNSPK #CloudSecurity #Kubernetes</div>
+                        <button class="copy-btn" data-copy>Copy caption</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ POST 2 — THE NUMBERS ============ -->
+            <section class="kit-item">
+                <div class="kit-item__meta">
+                    <span class="kit-item__no">post 02</span>
+                    <span class="kit-item__title">The numbers</span>
+                    <span class="kit-item__spec">// 1080&times;1080 · carousel slide</span>
+                </div>
+                <div class="kit-layout">
+                    <div class="frame">
+                        <div class="post">
+                            <div class="p-head">
+                                <div class="p-brand">
+                                    <span class="brand-shield" aria-hidden="true">CN</span>
+                                    <div>
+                                        <div class="p-name">CNSPK</div>
+                                        <div class="p-sub">the numbers</div>
+                                    </div>
+                                </div>
+                                <span class="p-pill"><span class="dot"></span> WHY IT MATTERS</span>
+                            </div>
+
+                            <div>
+                                <div class="p-eyebrow">// europe-by-the-numbers</div>
+                                <div class="p-stats">
+                                    <div class="p-stat">
+                                        <span class="num">80%+</span>
+                                        <span class="txt">of the EU's digital products, services &amp; IP come from <b>non-EU providers</b></span>
+                                    </div>
+                                    <div class="p-stat">
+                                        <span class="num">~70%</span>
+                                        <span class="txt">of Europe's cloud market is held by <b>three US giants</b> — AWS, Azure, Google Cloud</span>
+                                    </div>
+                                    <div class="p-stat">
+                                        <span class="num">&euro;264B</span>
+                                        <span class="txt">spent every year on <b>US cloud software</b> (Asteres, 2025)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-foot">
+                                <span class="url">cloudnativesecurity.pk</span>
+                                <span class="handle">// source: EU Commission · AFP</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="caption">
+                        <h3>// caption</h3>
+                        <pre>The dependency Europe is done with.
+
+80%+ of the EU's digital products, services and IP come from outside the bloc. Three US clouds — AWS, Azure, Google Cloud — control ~70% of the market. And roughly €264 billion a year goes to US cloud software.
+
+That's the structural lock-in the new Tech Sovereignty Package is built to break — with open, interoperable infrastructure as the lever.
+
+Numbers per the European Commission and reporting by AFP; €264bn figure from Asteres (2025).</pre>
+                        <div class="tags">#DigitalSovereignty #OpenSource #CloudNative #EU #VendorLockIn #CNSPK</div>
+                        <button class="copy-btn" data-copy>Copy caption</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ POST 3 — WHAT'S IN THE PACKAGE ============ -->
+            <section class="kit-item">
+                <div class="kit-item__meta">
+                    <span class="kit-item__no">post 03</span>
+                    <span class="kit-item__title">What's in the box</span>
+                    <span class="kit-item__spec">// 1080&times;1080 · carousel slide</span>
+                </div>
+                <div class="kit-layout">
+                    <div class="frame">
+                        <div class="post">
+                            <div class="p-head">
+                                <div class="p-brand">
+                                    <span class="brand-shield" aria-hidden="true">CN</span>
+                                    <div>
+                                        <div class="p-name">CNSPK</div>
+                                        <div class="p-sub">breakdown</div>
+                                    </div>
+                                </div>
+                                <span class="p-pill"><span class="dot"></span> THE PACKAGE</span>
+                            </div>
+
+                            <div>
+                                <div class="p-eyebrow">// whats-in-the-box</div>
+                                <div class="p-list">
+                                    <div class="row">
+                                        <span class="tick">+</span>
+                                        <div class="body">
+                                            <div class="t">EU Open Source Strategy</div>
+                                            <div class="d">Open digital assets — easier to discover, reuse, maintain.</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <span class="tick">+</span>
+                                        <div class="body">
+                                            <div class="t">Cloud &amp; AI Development Act</div>
+                                            <div class="d">CADA — triple EU cloud capacity, keep critical sectors sovereign.</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <span class="tick">+</span>
+                                        <div class="body">
+                                            <div class="t">Chips Act 2.0</div>
+                                            <div class="d">Boost demand for European-made semiconductors.</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <span class="tick">+</span>
+                                        <div class="body">
+                                            <div class="t">Energy + AI Roadmap</div>
+                                            <div class="d">A strategy for digitalisation and AI in the energy sector.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-foot">
+                                <span class="url">cloudnativesecurity.pk</span>
+                                <span class="handle">@CloudSecPK</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="caption">
+                        <h3>// caption</h3>
+                        <pre>What's actually inside the EU Tech Sovereignty Package:
+
+→ EU Open Source Strategy — make open digital assets easy to discover, reuse and maintain, with a push for the public sector to adopt open source.
+→ Cloud and AI Development Act (CADA) — aims to roughly triple EU cloud capacity over 5–7 years and keep critical sectors sovereign.
+→ Chips Act 2.0 — drive demand for European-made semiconductors.
+→ Strategic Roadmap for Digitalisation and AI in Energy.
+
+Four moves, one goal: reduce structural dependency and build open, interoperable infrastructure.</pre>
+                        <div class="tags">#OpenSource #CADA #ChipsAct #CloudNative #EU #CNSPK #AI</div>
+                        <button class="copy-btn" data-copy>Copy caption</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ POST 4 — THE QUOTE ============ -->
+            <section class="kit-item">
+                <div class="kit-item__meta">
+                    <span class="kit-item__no">post 04</span>
+                    <span class="kit-item__title">The statement</span>
+                    <span class="kit-item__spec">// 1080&times;1080 · feed</span>
+                </div>
+                <div class="kit-layout">
+                    <div class="frame">
+                        <div class="post">
+                            <div class="p-head">
+                                <div class="p-brand">
+                                    <span class="brand-shield" aria-hidden="true">CN</span>
+                                    <div>
+                                        <div class="p-name">CNSPK</div>
+                                        <div class="p-sub">the take</div>
+                                    </div>
+                                </div>
+                                <span class="p-pill"><span class="dot"></span> // the-take</span>
+                            </div>
+
+                            <div>
+                                <h2 class="p-display" style="font-size:118px;">Open source<br>isn't <span class="lime">charity.</span><br>It's<br>infrastructure.</h2>
+                            </div>
+
+                            <div class="p-foot" style="border-top:0; padding-top:0; align-items:flex-end;">
+                                <span class="p-stamp">kubectl apply -f sovereignty.yaml</span>
+                                <span class="handle">cloudnativesecurity.pk</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="caption">
+                        <h3>// caption</h3>
+                        <pre>For years open source was treated as goodwill. The EU just reclassified it as infrastructure.
+
+When the largest political bloc on Earth writes open source into its sovereignty strategy, the message is plain: software that respects users — that you can read, audit and run yourself — is now a strategic asset, not a side project.
+
+To everyone who's been maintaining, contributing, advocating: this is what the long game looks like.
+
+kubectl apply -f sovereignty.yaml</pre>
+                        <div class="tags">#OpenSource #DigitalSovereignty #CloudNative #DevSecOps #CNSPK #Kubernetes</div>
+                        <button class="copy-btn" data-copy>Copy caption</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ POST 5 — WHAT IT MEANS / CTA ============ -->
+            <section class="kit-item">
+                <div class="kit-item__meta">
+                    <span class="kit-item__no">post 05</span>
+                    <span class="kit-item__title">What it means for us</span>
+                    <span class="kit-item__spec">// 1080&times;1080 · closing slide</span>
+                </div>
+                <div class="kit-layout">
+                    <div class="frame">
+                        <div class="post">
+                            <div class="p-head">
+                                <div class="p-brand">
+                                    <span class="brand-shield" aria-hidden="true">CN</span>
+                                    <div>
+                                        <div class="p-name">CNSPK</div>
+                                        <div class="p-sub">why we care</div>
+                                    </div>
+                                </div>
+                                <span class="p-pill"><span class="dot"></span> JOIN US</span>
+                            </div>
+
+                            <div>
+                                <div class="p-eyebrow">// from-lahore-to-brussels</div>
+                                <h2 class="p-display" style="font-size:92px;">Read the CVE.<br><span class="lime">Drink the chai.</span></h2>
+                                <p class="p-lede">
+                                    Sovereign, open, interoperable infrastructure is exactly what we build and break
+                                    in this chapter. The world is catching up. <b>Come build it with us.</b>
+                                </p>
+                            </div>
+
+                            <div class="p-foot">
+                                <span class="url">cloudnativesecurity.pk/join</span>
+                                <span class="handle">@cloudnativesecuritypk</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="caption">
+                        <h3>// caption</h3>
+                        <pre>Why a Pakistani cloud-native security community cares about an EU policy:
+
+Because the principle travels. Open, auditable, interoperable infrastructure isn't a European idea — it's how you build systems you can actually trust, anywhere. Sovereignty, supply-chain integrity, software you can read and run yourself: that's the work.
+
+The EU just made it official policy. We've been doing the hands-on version — meetups, labs, talks — from Lahore, Karachi and Islamabad.
+
+Come build it with us → cloudnativesecurity.pk/join</pre>
+                        <div class="tags">#CloudNative #OpenSource #CloudSecurity #Pakistan #DevSecOps #CNSPK #CNCF</div>
+                        <button class="copy-btn" data-copy>Copy caption</button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // Toggle full-resolution rendering for clean screenshots
+        document.getElementById('sizeToggle').addEventListener('click', function () {
+            document.body.classList.toggle('actual-size');
+            this.textContent = document.body.classList.contains('actual-size')
+                ? 'Back to preview size'
+                : 'Toggle actual size (1080px)';
+        });
+
+        // Copy caption text to clipboard
+        document.querySelectorAll('[data-copy]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var caption = btn.closest('.caption');
+                var text = caption.querySelector('pre').innerText + '\n\n' + caption.querySelector('.tags').innerText;
+                navigator.clipboard.writeText(text).then(function () {
+                    var original = btn.textContent;
+                    btn.textContent = 'Copied ✓';
+                    setTimeout(function () { btn.textContent = original; }, 1600);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
