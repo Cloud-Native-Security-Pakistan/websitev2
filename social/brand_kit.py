@@ -30,7 +30,9 @@ def esc(s):
 
 # Real CNSPK shield mark, embedded as a base64 data URI so each SVG is fully
 # self-contained (relative/external refs don't load when an SVG is used as an
-# <img>, so we inline the bytes). Cached after first read.
+# <img>, so we inline the bytes). We use logo.png (the tightly-framed shield)
+# rather than brand/assets/cnspk-shield.png, whose large transparent padding
+# made the mark sit low ("dropped") inside its box. Cached after first read.
 _SHIELD_URI = None
 
 
@@ -39,7 +41,7 @@ def _shield_uri():
     if _SHIELD_URI is None:
         import base64, os
         path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                            "..", "brand", "assets", "cnspk-shield.png")
+                            "..", "logo.png")
         with open(path, "rb") as f:
             b64 = base64.b64encode(f.read()).decode("ascii")
         _SHIELD_URI = "data:image/png;base64," + b64
@@ -130,10 +132,10 @@ class Post:
         return self
 
     # ---- brand furniture ----
-    def shield(self, x=None, y=None, s=1.0):
+    def shield(self, x=None, y=None, s=1.0, box=None):
         x = self.pad if x is None else x
         y = self.pad if y is None else y
-        box = int(64 * s)
+        box = int(64 * s) if box is None else box
         self.parts.append(
             f'<image x="{x}" y="{y}" width="{box}" height="{box}" '
             f'preserveAspectRatio="xMidYMid meet" href="{_shield_uri()}"/>')
@@ -142,11 +144,18 @@ class Post:
     def brandblock(self, sub, x=None, y=None, scale=1.0):
         x = self.pad if x is None else x
         y = self.pad if y is None else y
-        self.shield(x, y, scale)
-        nx = x + int(82 * scale)
-        self.text(nx, y + int(34 * scale), "CNSPK", int(34 * scale), fill=BONE,
+        box = int(60 * scale)
+        # text baselines
+        cnspk_baseline = y + int(34 * scale)
+        sub_baseline = y + int(56 * scale)
+        # vertically center the shield against the two-line wordmark block
+        text_center = y + int(33 * scale)
+        shield_y = text_center - box // 2
+        self.shield(x, shield_y, box=box)
+        nx = x + box + int(20 * scale)
+        self.text(nx, cnspk_baseline, "CNSPK", int(34 * scale), fill=BONE,
                   weight=800, italic=True, ls=-1)
-        self.text(nx + 2, y + int(58 * scale), sub.upper(), int(14 * scale), fill=STEEL,
+        self.text(nx + 2, sub_baseline, sub.upper(), int(14 * scale), fill=STEEL,
                   font=MONO, ls=3)
         return self
 
