@@ -120,6 +120,7 @@ def check(path):
 
 def main():
     files = sorted(glob.glob(os.path.join(EXPORTS, "**", "*.svg"), recursive=True))
+    files = [f for f in files if os.path.basename(f) != "figma-board.svg"]  # composite board
     if not files:
         print("no SVGs found"); return 1
     total_err = 0

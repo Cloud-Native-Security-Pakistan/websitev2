@@ -311,6 +311,25 @@ class Post:
             f'<rect width="{self.w}" height="{self.h}" fill="url(#grid)" mask="url(#fademask)"/>\n'
             + "\n".join(self.parts) + "\n</svg>\n")
 
+    def fragment(self, uid, x, y):
+        """Render this post as a positioned nested <svg> with namespaced IDs so
+        many posts can be composed into a single board file without id clashes."""
+        g, fd, fm = f"grid{uid}", f"fade{uid}", f"fademask{uid}"
+        return (
+            f'<svg x="{x}" y="{y}" width="{self.w}" height="{self.h}" '
+            f'viewBox="0 0 {self.w} {self.h}" overflow="hidden" font-family="{DISP}">\n<defs>\n'
+            f'  <pattern id="{g}" width="{self.grid}" height="{self.grid}" patternUnits="userSpaceOnUse">\n'
+            f'    <path d="M{self.grid} 0H0V{self.grid}" fill="none" stroke="{LIME}" '
+            f'stroke-width="1" stroke-opacity="0.05"/>\n  </pattern>\n'
+            f'  <radialGradient id="{fd}" cx="50%" cy="{int(self.fade_cy*100)}%" r="78%">\n'
+            f'    <stop offset="0%" stop-color="#fff" stop-opacity="1"/>\n'
+            f'    <stop offset="100%" stop-color="#fff" stop-opacity="0"/>\n  </radialGradient>\n'
+            f'  <mask id="{fm}"><rect width="{self.w}" height="{self.h}" fill="url(#{fd})"/></mask>\n'
+            f'</defs>\n'
+            f'<rect width="{self.w}" height="{self.h}" fill="{CARBON}"/>\n'
+            f'<rect width="{self.w}" height="{self.h}" fill="url(#{g})" mask="url(#{fm})"/>\n'
+            + "\n".join(self.parts) + "\n</svg>\n")
+
 
 def save(post, path):
     import os
