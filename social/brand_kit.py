@@ -30,21 +30,106 @@ def esc(s):
 
 # Real CNSPK shield mark, embedded as a base64 data URI so each SVG is fully
 # self-contained (relative/external refs don't load when an SVG is used as an
-# <img>, so we inline the bytes). We use logo.png (the tightly-framed shield)
-# rather than brand/assets/cnspk-shield.png, whose large transparent padding
-# made the mark sit low ("dropped") inside its box. Cached after first read.
+# <img>, so we inline the bytes).
+#
+# logo.png is a 512x512 file whose actual shield artwork only fills a small,
+# off-centre region (large asymmetric transparent margins). Embedded as-is the
+# shield looked tiny, "dropped" and cropped at the bottom. So at load time we
+# decode the PNG, find the artwork's alpha bounding box, crop to it, and re-pad
+# into a clean centred square with a small even margin. The result fills the
+# logo box correctly and is vertically centred. Cached after first build.
 _SHIELD_URI = None
+LOGO_FILE = "logo.png"  # source mark; swap here to change the logo everywhere
+
+
+def _decode_rgba(path):
+    """Minimal pure-Python PNG -> (w, h, channels, rgba_bytes). 8-bit only."""
+    import struct, zlib
+    data = open(path, "rb").read()
+    assert data[:8] == b"\x89PNG\r\n\x1a\n", "not a PNG"
+    pos, w, h, colort, idat = 8, None, None, None, b""
+    while pos < len(data):
+        ln = struct.unpack(">I", data[pos:pos + 4])[0]
+        typ = data[pos + 4:pos + 8]
+        chunk = data[pos + 8:pos + 8 + ln]
+        pos += 12 + ln
+        if typ == b"IHDR":
+            w, h, _bd, colort, _c, _f, _i = struct.unpack(">IIBBBBB", chunk)
+        elif typ == b"IDAT":
+            idat += chunk
+        elif typ == b"IEND":
+            break
+    raw = zlib.decompress(idat)
+    ch = {0: 1, 2: 3, 3: 1, 4: 2, 6: 4}[colort]
+    stride, bpp = w * ch, ch
+    out, prev, i = bytearray(), bytearray(stride), 0
+
+    def paeth(a, b, c):
+        p = a + b - c
+        pa, pb, pc = abs(p - a), abs(p - b), abs(p - c)
+        return a if pa <= pb and pa <= pc else (b if pb <= pc else c)
+
+    for _y in range(h):
+        f = raw[i]; i += 1
+        line = bytearray(raw[i:i + stride]); i += stride
+        for x in range(stride):
+            a = line[x - bpp] if x >= bpp else 0
+            b = prev[x]
+            c = prev[x - bpp] if x >= bpp else 0
+            if f == 1:   line[x] = (line[x] + a) & 255
+            elif f == 2: line[x] = (line[x] + b) & 255
+            elif f == 3: line[x] = (line[x] + ((a + b) >> 1)) & 255
+            elif f == 4: line[x] = (line[x] + paeth(a, b, c)) & 255
+        out += line; prev = line
+    return w, h, ch, bytes(out)
+
+
+def _encode_png(w, h, rgba):
+    """Encode RGBA8 bytes to a PNG byte string (filter 0 scanlines)."""
+    import struct, zlib
+    def chunk(typ, payload):
+        return (struct.pack(">I", len(payload)) + typ + payload +
+                struct.pack(">I", zlib.crc32(typ + payload) & 0xffffffff))
+    ihdr = struct.pack(">IIBBBBB", w, h, 8, 6, 0, 0, 0)
+    raw = bytearray()
+    for y in range(h):
+        raw.append(0)
+        raw += rgba[y * w * 4:(y + 1) * w * 4]
+    idat = zlib.compress(bytes(raw), 9)
+    return (b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", ihdr) +
+            chunk(b"IDAT", idat) + chunk(b"IEND", b""))
 
 
 def _shield_uri():
     global _SHIELD_URI
     if _SHIELD_URI is None:
         import base64, os
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                            "..", "logo.png")
-        with open(path, "rb") as f:
-            b64 = base64.b64encode(f.read()).decode("ascii")
-        _SHIELD_URI = "data:image/png;base64," + b64
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", LOGO_FILE)
+        w, h, ch, px = _decode_rgba(path)
+        # find alpha bounding box of the actual artwork
+        if ch == 4:
+            minx = miny = 10 ** 9; maxx = maxy = -1
+            for y in range(h):
+                base = y * w * 4
+                for x in range(w):
+                    if px[base + x * 4 + 3] > 16:
+                        if x < minx: minx = x
+                        if x > maxx: maxx = x
+                        if y < miny: miny = y
+                        if y > maxy: maxy = y
+        else:
+            minx, miny, maxx, maxy = 0, 0, w - 1, h - 1
+        cw, chh = maxx - minx + 1, maxy - miny + 1
+        # square canvas with an even ~9% margin, artwork centred
+        side = int(max(cw, chh) * 1.18)
+        ox, oy = (side - cw) // 2, (side - chh) // 2
+        canvas = bytearray(side * side * 4)  # transparent
+        for y in range(chh):
+            src = ((miny + y) * w + minx) * 4
+            dst = ((oy + y) * side + ox) * 4
+            canvas[dst:dst + cw * 4] = px[src:src + cw * 4]
+        png = _encode_png(side, side, bytes(canvas))
+        _SHIELD_URI = "data:image/png;base64," + base64.b64encode(png).decode("ascii")
     return _SHIELD_URI
 
 
