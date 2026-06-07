@@ -26,3 +26,7 @@ desktop.ini
 
 # Logs
 *.log
+
+# Python build artifacts
+social/__pycache__/
+*.pyc

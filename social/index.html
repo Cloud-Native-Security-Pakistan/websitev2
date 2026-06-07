@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'self';">
+
+    <title>Social Kit · EU Tech Sovereignty · CNSPK</title>
+    <meta name="description"
+        content="On-brand CNSPK social posts announcing the EU Tech Sovereignty Package - carousel, Instagram post, story, WhatsApp status and landscape cards, in the Electric register.">
+    <meta name="robots" content="noindex">
+    <meta name="theme-color" content="#0F1115">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="/css/tokens.css">
+
+    <style>
+        body { background: #07080A; }
+
+        .kit-wrap { max-width: 1240px; margin: 0 auto; padding: 64px 24px 120px; }
+
+        .kit-head { max-width: 860px; margin-bottom: 40px; }
+        .kit-head .section-eyebrow { margin-bottom: 18px; }
+        .kit-head h1 {
+            font-family: var(--font-display); font-style: italic; font-weight: 800;
+            text-transform: uppercase; font-size: clamp(36px, 6vw, 68px); line-height: 0.92;
+            letter-spacing: -0.04em; color: var(--bone); margin-bottom: 20px;
+        }
+        .kit-head h1 em { color: var(--lime); font-style: italic; }
+        .kit-head p { font-size: 17px; color: var(--bone-2); line-height: 1.6; max-width: 720px; }
+        .kit-head .note {
+            margin-top: 18px; font-family: var(--font-mono); font-size: 12.5px; color: var(--steel);
+            line-height: 1.7; border-left: 2px solid var(--slate); padding-left: 16px;
+        }
+        .kit-head .note b { color: var(--lime); font-weight: 500; }
+
+        /* index / jump nav */
+        .kit-nav { display: flex; flex-wrap: wrap; gap: 10px; margin: 28px 0 8px; }
+        .kit-nav a {
+            font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase;
+            color: var(--bone); background: var(--charcoal); border: 1px solid var(--slate);
+            border-radius: var(--r-sm); padding: 9px 14px; text-decoration: none;
+            transition: border-color var(--dur-hover) var(--ease), color var(--dur-hover) var(--ease);
+        }
+        .kit-nav a:hover { border-color: var(--lime); color: var(--lime); }
+
+        /* format section */
+        .fmt { margin-top: 64px; scroll-margin-top: 24px; }
+        .fmt__head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 6px; }
+        .fmt__head h2 {
+            font-family: var(--font-display); font-style: italic; font-weight: 800; text-transform: uppercase;
+            font-size: 26px; letter-spacing: -0.02em; color: var(--bone);
+        }
+        .fmt__head .dims { font-family: var(--font-mono); font-size: 12px; color: var(--lime); letter-spacing: 0.06em; }
+        .fmt__desc { font-size: 14.5px; color: var(--steel); margin-bottom: 22px; max-width: 720px; line-height: 1.55; }
+
+        .shots { display: flex; flex-wrap: wrap; gap: 20px; }
+        .shot { display: flex; flex-direction: column; gap: 8px; }
+        .shot img {
+            display: block; background: var(--carbon); border: 1px solid var(--slate);
+            border-radius: var(--r-md);
+        }
+        /* per-format preview sizes (keep aspect ratio of the source SVG) */
+        .sq img    { width: 300px; height: 300px; }
+        .por img   { width: 264px; height: 330px; }
+        .ver img   { width: 220px; height: 391px; }
+        .land img  { width: 420px; height: auto; }
+
+        .shot a {
+            font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--steel);
+            text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .shot a:hover { color: var(--lime); }
+        .shot .cap { font-family: var(--font-mono); font-size: 11px; color: var(--bone-2); letter-spacing: 0.04em; }
+
+        /* caption copy blocks */
+        .captions { margin-top: 80px; }
+        .caption {
+            background: var(--charcoal); border: 1px solid var(--slate); border-radius: var(--r-md);
+            padding: 20px 22px; margin-bottom: 16px;
+        }
+        .caption h3 { font-family: var(--font-mono); font-size: 11px; color: var(--lime); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
+        .caption pre { font-family: var(--font-body); font-size: 14px; color: var(--bone-2); line-height: 1.6; white-space: pre-wrap; word-wrap: break-word; margin: 0; }
+        .caption .tags { margin-top: 12px; color: var(--lime-600); font-size: 13px; word-wrap: break-word; }
+        .caption .copy-btn {
+            margin-top: 14px; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase;
+            letter-spacing: 0.06em; color: var(--carbon); background: var(--lime); border: 0;
+            border-radius: var(--r-sm); padding: 8px 14px; cursor: pointer; font-weight: 600;
+        }
+        .caption .copy-btn:hover { background: var(--lime-glow); }
+    </style>
+</head>
+
+<body>
+    <main class="kit-wrap">
+        <header class="kit-head">
+            <div class="section-eyebrow">// social-kit · dispatch</div>
+            <h1>Open source is now <em>EU policy.</em></h1>
+            <p>
+                A full multi-format social kit announcing the EU's <strong>Tech Sovereignty Package</strong> and
+                its Open Source Strategy, in the CNSPK Electric register. Every asset is a vector SVG generated
+                from one shared design system, so the brand stays identical across channels.
+            </p>
+            <p class="note">
+                <b>// fact-checked</b> — Package adopted by the European Commission on 3 June 2026 (EU Open Source
+                Strategy, Cloud and AI Development Act, Chips Act 2.0, Energy/AI roadmap). &gt;80% of EU digital
+                products/services come from non-EU providers; AWS+Azure+Google Cloud hold ~70% of the EU cloud
+                market; the ~&euro;264bn/year figure is annual spend on <b>US cloud software</b> (Asteres, 2025).
+                <br><b>// fonts</b> — SVGs preview with fallback fonts here; the real Bricolage Grotesque + JetBrains
+                Mono render once the brand fonts load on the deployed site.
+            </p>
+
+            <nav class="kit-nav">
+                <a href="/social/exports/figma-board.svg" target="_blank">⬇ Figma board (all 15)</a>
+                <a href="#carousel">Carousel (6)</a>
+                <a href="#post">IG Post</a>
+                <a href="#story">IG Story (3)</a>
+                <a href="#whatsapp">WhatsApp Status (2)</a>
+                <a href="#landscape">LinkedIn / X</a>
+                <a href="#captions">Captions</a>
+            </nav>
+        </header>
+
+        <!-- ===================== CAROUSEL ===================== -->
+        <section class="fmt" id="carousel">
+            <div class="fmt__head"><h2>Carousel</h2><span class="dims">// 1080&times;1080 · 6 slides</span></div>
+            <p class="fmt__desc">The full narrative: hook &rarr; the numbers &rarr; what's in the package &rarr; the signals &rarr; the take &rarr; join. Post slides in order.</p>
+            <div class="shots">
+                <div class="shot sq"><img src="/social/exports/carousel/01-cover.svg" alt="Carousel slide 1 - headline" loading="lazy" width="300" height="300"><span class="cap">01 · cover</span><a href="/social/exports/carousel/01-cover.svg" target="_blank">open svg &rarr;</a></div>
+                <div class="shot sq"><img src="/social/exports/carousel/02-numbers.svg" alt="Carousel slide 2 - the numbers" loading="lazy" width="300" height="300"><span class="cap">02 · numbers</span><a href="/social/exports/carousel/02-numbers.svg" target="_blank">open svg &rarr;</a></div>
+                <div class="shot sq"><img src="/social/exports/carousel/03-package.svg" alt="Carousel slide 3 - the package" loading="lazy" width="300" height="300"><span class="cap">03 · package</span><a href="/social/exports/carousel/03-package.svg" target="_blank">open svg &rarr;</a></div>
+                <div class="shot sq"><img src="/social/exports/carousel/04-momentum.svg" alt="Carousel slide 4 - the signals" loading="lazy" width="300" height="300"><span class="cap">04 · momentum</span><a href="/social/exports/carousel/04-momentum.svg" target="_blank">open svg &rarr;</a></div>
+                <div class="shot sq"><img src="/social/exports/carousel/05-statement.svg" alt="Carousel slide 5 - the take" loading="lazy" width="300" height="300"><span class="cap">05 · statement</span><a href="/social/exports/carousel/05-statement.svg" target="_blank">open svg &rarr;</a></div>
+                <div class="shot sq"><img src="/social/exports/carousel/06-cta.svg" alt="Carousel slide 6 - join" loading="lazy" width="300" height="300"><span class="cap">06 · cta</span><a href="/social/exports/carousel/06-cta.svg" target="_blank">open svg &rarr;</a></div>
+            </div>
+        </section>
+
+        <!-- ===================== IG POST ===================== -->
+        <section class="fmt" id="post">
+            <div class="fmt__head"><h2>Instagram Post</h2><span class="dims">// 1080&times;1080 + 1080&times;1350</span></div>
+            <p class="fmt__desc">Self-contained single post (square + portrait) that carries the whole announcement on one canvas - headline, lede and the three key stats.</p>
+            <div class="shots">
+                <div class="shot sq"><img src="/social/exports/instagram-post/post.svg" alt="Instagram square post" loading="lazy" width="300" height="300"><span class="cap">square 1:1</span><a href="/social/exports/instagram-post/post.svg" target="_blank">open svg &rarr;</a></div>
+                <div class="shot por"><img src="/social/exports/instagram-post/portrait.svg" alt="Instagram portrait post" loading="lazy" width="264" height="330"><span class="cap">portrait 4:5</span><a href="/social/exports/instagram-post/portrait.svg" target="_blank">open svg &rarr;</a></div>
+            </div>
+        </section>
+
+        <!-- ===================== IG STORY ===================== -->
+        <section class="fmt" id="story">
+            <div class="fmt__head"><h2>Instagram Story</h2><span class="dims">// 1080&times;1920 · 3 frames</span></div>
+            <p class="fmt__desc">Vertical 9:16 sequence with content kept inside the story safe zones (clear of the username strip and reply bar).</p>
+            <div class="shots">
+                <div class="shot ver"><img src="/social/exports/instagram-story/01-hook.svg" alt="Story frame 1 - hook" loading="lazy" width="220" height="391"><span class="cap">01 · hook</span><a href="/social/exports/instagram-story/01-hook.svg" target="_blank">open svg &rarr;</a></div>
+                <div class="shot ver"><img src="/social/exports/instagram-story/02-numbers.svg" alt="Story frame 2 - numbers" loading="lazy" width="220" height="391"><span class="cap">02 · numbers</span><a href="/social/exports/instagram-story/02-numbers.svg" target="_blank">open svg &rarr;</a></div>
+                <div class="shot ver"><img src="/social/exports/instagram-story/03-cta.svg" alt="Story frame 3 - cta" loading="lazy" width="220" height="391"><span class="cap">03 · cta</span><a href="/social/exports/instagram-story/03-cta.svg" target="_blank">open svg &rarr;</a></div>
+            </div>
+        </section>
+
+        <!-- ===================== WHATSAPP ===================== -->
+        <section class="fmt" id="whatsapp">
+            <div class="fmt__head"><h2>WhatsApp Status</h2><span class="dims">// 1080&times;1920 · 2 frames</span></div>
+            <p class="fmt__desc">Glanceable 9:16 status. Since WhatsApp has no clickable link, the CTA is a large, readable URL.</p>
+            <div class="shots">
+                <div class="shot ver"><img src="/social/exports/whatsapp-status/01-headline.svg" alt="WhatsApp status 1 - headline" loading="lazy" width="220" height="391"><span class="cap">01 · headline</span><a href="/social/exports/whatsapp-status/01-headline.svg" target="_blank">open svg &rarr;</a></div>
+                <div class="shot ver"><img src="/social/exports/whatsapp-status/02-cta.svg" alt="WhatsApp status 2 - cta" loading="lazy" width="220" height="391"><span class="cap">02 · cta</span><a href="/social/exports/whatsapp-status/02-cta.svg" target="_blank">open svg &rarr;</a></div>
+            </div>
+        </section>
+
+        <!-- ===================== LANDSCAPE ===================== -->
+        <section class="fmt" id="landscape">
+            <div class="fmt__head"><h2>LinkedIn / X</h2><span class="dims">// 1200&times;630 + 1200&times;675</span></div>
+            <p class="fmt__desc">Wide share cards for LinkedIn / Facebook / Open Graph (1.91:1) and X/Twitter (16:9).</p>
+            <div class="shots">
+                <div class="shot land"><img src="/social/exports/landscape/linkedin.svg" alt="LinkedIn share card" loading="lazy" width="420" height="221"><span class="cap">linkedin / og · 1.91:1</span><a href="/social/exports/landscape/linkedin.svg" target="_blank">open svg &rarr;</a></div>
+                <div class="shot land"><img src="/social/exports/landscape/twitter.svg" alt="Twitter share card" loading="lazy" width="420" height="236"><span class="cap">x / twitter · 16:9</span><a href="/social/exports/landscape/twitter.svg" target="_blank">open svg &rarr;</a></div>
+            </div>
+        </section>
+
+        <!-- ===================== CAPTIONS ===================== -->
+        <section class="captions" id="captions">
+            <div class="fmt__head"><h2>Captions</h2><span class="dims">// copy &amp; paste</span></div>
+            <p class="fmt__desc">Ready-to-post copy. Pair the feed/carousel caption with the post, and the short one with stories/status.</p>
+
+            <div class="caption">
+                <h3>// feed + carousel</h3>
+                <pre>Big news for open source.
+
+On 3 June 2026 the European Commission adopted its Tech Sovereignty Package - and open source sits right at the heart of it. This is the plan now.
+
+Here's what they're working with: 80%+ of Europe's digital stack comes from outside the EU, and three US clouds run ~70% of the market. The answer? An EU Open Source Strategy, a Cloud and AI Development Act, and Chips Act 2.0.
+
+One of the world's biggest economies just called open source critical infrastructure. We've been building it all along. Read the CVE. Drink the chai.</pre>
+                <div class="tags">#OpenSource #CloudNative #DigitalSovereignty #EU #CNSPK #CloudSecurity #Kubernetes</div>
+                <button class="copy-btn" data-copy>Copy caption</button>
+            </div>
+
+            <div class="caption">
+                <h3>// story / status (short)</h3>
+                <pre>Big news for open source.
+
+The EU's new Tech Sovereignty Package makes it the plan for Europe's digital future. 80%+ of Europe's stack is non-EU. Three US clouds run ~70% of the market. Time to build open.
+
+We've been on it from here. Come build with us -> cloudnativesecurity.pk</pre>
+                <div class="tags">#OpenSource #DigitalSovereignty #CloudNative #CNSPK</div>
+                <button class="copy-btn" data-copy>Copy caption</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.querySelectorAll('[data-copy]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var c = btn.closest('.caption');
+                var text = c.querySelector('pre').innerText + '\n\n' + c.querySelector('.tags').innerText;
+                navigator.clipboard.writeText(text).then(function () {
+                    var o = btn.textContent; btn.textContent = 'Copied ✓';
+                    setTimeout(function () { btn.textContent = o; }, 1600);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
