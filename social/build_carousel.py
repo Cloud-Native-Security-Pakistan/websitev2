@@ -76,7 +76,7 @@ def momentum():
 def statement():
     p = Post(S, S)
     p.brandblock("the take").pill("// THE-TAKE")
-    p.display(C["statement"], 430, 116, 118)
+    p.display(C["statement"], 430, 104, 116)
     p.stamp(84, 905, C["stamp"])
     p.text(S - 84, 952, C["site"], 17, fill=STEEL, font=MONO, anchor="end")
     p.text(S - 84, 200, "05 / 06", 16, fill=STEEL, font=MONO, anchor="end")

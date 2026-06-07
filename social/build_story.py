@@ -58,7 +58,7 @@ def cta():
     p.brandblock("why we care", y=TOP_SAFE)
     p.pill("JOIN US", y=TOP_SAFE)
     p.eyebrow("// FROM-LAHORE-TO-BRUSSELS", 760)
-    p.display(C["cta_head"], 920, 116, 130)
+    p.display(C["cta_head"], 920, 100, 116)
     p.body(C["cta_lede"], 1230, size=32, lh=46, maxchars=42)
     # tap-the-link CTA near the bottom safe zone (above the link sticker line)
     p.stamp(96, 1480, C["join"])
