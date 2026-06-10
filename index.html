@@ -7,13 +7,12 @@
 
     <!--
       CSP: tokens.css is loaded from 'self' and @imports the four brand fonts
-      (Bricolage Grotesque, Inter, JetBrains Mono, Noto Nastaliq Urdu) from
-      fonts.googleapis.com — covered by style-src; the font files come from
-      fonts.gstatic.com — covered by font-src. jsdelivr/tailwind allowances are
-      retained from the legacy CSP so no other v2 page routing breaks.
+      from fonts.googleapis.com (style-src) / fonts.gstatic.com (font-src).
+      The immersive homepage loads three.js, GSAP + ScrollTrigger and Lenis as
+      ES modules from jsDelivr, so cdn.jsdelivr.net is added to script-src.
     -->
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com; connect-src 'self' https://cdn.jsdelivr.net; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
 
     <!-- SEO Meta Tags — CNSPK is its own thing; CNCF affiliation is a credential, not the headline -->
     <title>CNSPK · Cloud Native Security Pakistan</title>
@@ -64,507 +63,413 @@
     }
     </script>
 
-    <!-- Performance: preconnect to Google Fonts origins (tokens.css @imports fonts) -->
+    <!-- Performance: preconnect to font + CDN origins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 
     <!-- Design tokens first: colour, type, motion, shared primitives + font @import -->
     <link rel="stylesheet" href="/css/tokens.css">
 
+    <!-- three.js / GSAP / Lenis resolved through an import map -->
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "gsap": "https://cdn.jsdelivr.net/npm/gsap@3.12.5/+esm",
+        "gsap/ScrollTrigger": "https://cdn.jsdelivr.net/npm/gsap@3.12.5/ScrollTrigger/+esm",
+        "lenis": "https://cdn.jsdelivr.net/npm/lenis@1.1.13/+esm"
+      }
+    }
+    </script>
+
     <style>
         /* ==========================================================
-           Homepage · Electric register · page-specific styles
-           Shared primitives (.brand-shield, .btn-primary,
-           .btn-secondary, .status-pill, .status-dot, .section-eyebrow,
-           .glass-panel) come from /css/tokens.css.
+           Homepage · "kubectl apply -f pakistan.yaml"
+           A scroll-driven, seven-chapter story. The painted texture
+           background lives in #paint (three.js); chapters float over
+           it as translucent scrim panels with cinematic reveals.
+           Shared primitives come from /css/tokens.css.
         ========================================================== */
 
-        .wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+        html, body { background: var(--carbon); }
 
-        main { display: block; }
+        /* Lenis smooth-scroll wiring */
+        html.lenis, html.lenis body { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto !important; }
+        .lenis.lenis-stopped { overflow: hidden; }
 
-        /* ---- Scroll reveal ----------------------------------- */
-        .reveal {
-            opacity: 0;
-            transform: translateY(24px);
-            transition: opacity var(--dur-reveal) var(--ease-out),
-                        transform var(--dur-reveal) var(--ease-out);
-            will-change: opacity, transform;
+        /* ---- Painted texture background (three.js canvas) ---- */
+        #paint {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            display: block;
         }
-        .reveal.is-visible { opacity: 1; transform: none; }
-
-        /* ==========================================================
-           Hero — operator hero
-        ========================================================== */
-        .hero {
-            position: relative;
-            padding: 120px 0 100px;
-            overflow: hidden;
+        /* CSS fallback when WebGL is unavailable or motion is reduced */
+        body.static-bg::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -2;
             background:
-                radial-gradient(ellipse 80% 60% at 20% 20%, rgba(199, 255, 62, 0.08) 0%, transparent 60%),
-                radial-gradient(ellipse 60% 80% at 90% 80%, rgba(1, 65, 28, 0.40) 0%, transparent 60%),
+                radial-gradient(ellipse 70% 50% at 20% 15%, rgba(199,255,62,0.12), transparent 60%),
+                radial-gradient(ellipse 60% 60% at 85% 80%, rgba(1,65,28,0.55), transparent 65%),
                 var(--carbon);
         }
-        .hero::before {
+        /* Grain veil so text always sits on a legible field */
+        #veil {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background:
+                linear-gradient(180deg, rgba(15,17,21,0.55) 0%, rgba(15,17,21,0.12) 18%, rgba(15,17,21,0.12) 82%, rgba(15,17,21,0.65) 100%);
+        }
+
+        .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; width: 100%; }
+
+        main { display: block; position: relative; z-index: 1; }
+
+        /* ==========================================================
+           Chapter scaffolding
+        ========================================================== */
+        .chapter {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 0;
+        }
+        .chapter-inner { position: relative; z-index: 2; width: 100%; }
+
+        /* Local readability scrim — feathered, lets the paint bleed through */
+        .chapter::before {
             content: '';
             position: absolute;
             inset: 0;
-            background-image:
-                linear-gradient(rgba(199, 255, 62, 0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(199, 255, 62, 0.04) 1px, transparent 1px);
-            background-size: 64px 64px;
+            z-index: 1;
             pointer-events: none;
-            mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
-            -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+            background: radial-gradient(ellipse 90% 75% at 50% 50%, rgba(10,12,16,0.62) 0%, rgba(10,12,16,0.28) 55%, transparent 100%);
         }
 
-        .hero-landmark {
+        .ch-label {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--lime);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+        .ch-label::before {
+            content: '';
+            width: 36px;
+            height: 1px;
+            background: var(--lime);
+        }
+
+        /* Masked line-reveal headlines */
+        .line { display: block; overflow: hidden; }
+        .line > span { display: block; will-change: transform; }
+
+        /* Generic "rise" reveal element (driven by GSAP; visible by default
+           so no-JS / reduced-motion users still see everything) */
+        .rise { will-change: transform, opacity; }
+
+        h1.ch-title, h2.ch-title {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -0.04em;
+            color: var(--bone);
+            margin: 0;
+        }
+
+        /* ==========================================================
+           Chapter 00 — Prologue (hero)
+        ========================================================== */
+        #ch-prologue .ch-title {
+            font-size: clamp(56px, 12vw, 168px);
+            line-height: 0.86;
+            margin-bottom: 30px;
+        }
+        #ch-prologue .ch-title .lime { color: var(--lime); }
+        #ch-prologue .ch-title .accent { position: relative; }
+        #ch-prologue .ch-title .accent::after {
+            content: '';
             position: absolute;
-            right: -40px;
-            top: 60px;
-            width: 320px;
-            opacity: 0.18;
-            pointer-events: none;
+            left: -1%; bottom: 0.12em;
+            width: 102%; height: 0.14em;
+            background: var(--lime);
+            opacity: 0.32;
+            transform: skew(-6deg);
+            z-index: -1;
         }
-
-        .hero-content { position: relative; z-index: 2; max-width: 920px; }
-
+        .hero-lede {
+            font-size: clamp(18px, 2.4vw, 23px);
+            color: var(--bone-2);
+            max-width: 660px;
+            line-height: 1.6;
+            margin-bottom: 36px;
+        }
+        .hero-lede strong { color: var(--lime); font-weight: 600; }
         .hero-meta {
             font-family: var(--font-mono);
             font-size: 12px;
             color: var(--steel);
-            letter-spacing: 0.08em;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
+            letter-spacing: 0.06em;
+            margin-bottom: 26px;
+            display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
         }
         .hero-meta .cmd { color: var(--lime); }
-
-        .hero h1 {
-            font-family: var(--font-display);
-            font-style: italic;
-            font-weight: 800;
-            font-size: clamp(48px, 9vw, 128px);
-            line-height: 0.92;
-            letter-spacing: -0.04em;
-            text-transform: uppercase;
-            margin-bottom: 28px;
-            color: var(--bone);
-        }
-        .hero h1 .lime-line { color: var(--lime); display: inline-block; }
-        .hero h1 .underline { display: inline-block; position: relative; }
-        .hero h1 .underline::after {
-            content: '';
-            position: absolute;
-            bottom: 6px;
-            left: -2%;
-            width: 104%;
-            height: 14px;
-            background: var(--lime);
-            opacity: 0.35;
-            z-index: -1;
-            transform: skew(-4deg) rotate(-1deg);
-        }
-
-        .hero .lede {
-            font-size: 22px;
-            color: var(--bone-2);
-            max-width: 720px;
-            line-height: 1.55;
-            margin-bottom: 40px;
-            font-weight: 400;
-        }
-        .hero .lede strong { color: var(--lime); font-weight: 600; }
-
-        .hero-cta-row {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            align-items: center;
-            margin-bottom: 40px;
-        }
-        .hero-cta-row .btn-secondary { gap: 10px; }
-        .hero-cta-row .btn-secondary .mono { color: var(--lime); }
-
-        .hero-tagline-urdu {
+        .cta-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; margin-bottom: 34px; }
+        .cta-row .btn-secondary .mono { color: var(--lime); }
+        .hero-urdu {
             font-family: var(--font-urdu);
-            font-size: 28px;
+            font-size: 30px;
             color: var(--gold);
-            direction: rtl;
-            text-align: left;
-            line-height: 2.2;
-            opacity: 0.7;
-            margin-top: 8px;
-            max-width: 600px;
+            direction: rtl; text-align: left;
+            line-height: 2.4; opacity: 0.7; max-width: 600px;
         }
 
-        /* Chapter ID stamp */
-        .chapter-stamp {
+        /* Scroll cue */
+        .scroll-cue {
             position: absolute;
-            top: 96px;
-            right: 64px;
-            transform: rotate(-6deg);
-            padding: 12px 18px 10px;
-            border: 2px solid var(--lime);
-            border-radius: 6px;
-            pointer-events: none;
-            user-select: none;
-            opacity: 0.55;
-            z-index: 2;
-        }
-        .chapter-stamp .l1 {
-            display: block;
+            left: 50%; bottom: 36px;
+            transform: translateX(-50%);
+            z-index: 3;
             font-family: var(--font-mono);
-            font-size: 10px;
-            color: var(--lime);
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            margin-bottom: 2px;
+            font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+            color: var(--steel);
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
         }
-        .chapter-stamp .l2 {
-            display: block;
-            font-family: var(--font-display);
-            font-style: italic;
-            font-weight: 800;
-            font-size: 22px;
-            color: var(--lime);
-            letter-spacing: -0.01em;
-            line-height: 1;
-            text-transform: uppercase;
+        .scroll-cue .bar {
+            width: 1px; height: 48px;
+            background: linear-gradient(to bottom, var(--lime), transparent);
+            animation: cueDrop 2.2s var(--ease) infinite;
+            transform-origin: top;
         }
-        @media (max-width: 900px) { .chapter-stamp { display: none; } }
+        @keyframes cueDrop {
+            0% { transform: scaleY(0); opacity: 0; }
+            40% { transform: scaleY(1); opacity: 1; }
+            100% { transform: scaleY(1) translateY(20px); opacity: 0; }
+        }
 
         /* ==========================================================
-           Stat strip
+           Chapter 01 — Origin (the numbers)
         ========================================================== */
-        .stats {
-            border-top: 1px solid var(--slate);
-            border-bottom: 1px solid var(--slate);
-            background: var(--charcoal);
-            padding: 40px 0;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 32px;
-        }
-        .stat { display: flex; flex-direction: column; gap: 6px; }
+        #ch-origin .ch-title { font-size: clamp(34px, 6vw, 76px); line-height: 0.95; margin-bottom: 22px; }
+        #ch-origin .ch-title em { color: var(--lime); font-style: italic; }
+        .origin-lede { font-size: 18px; color: var(--bone-2); max-width: 620px; line-height: 1.6; margin-bottom: 64px; }
+        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
+        .stat { border-top: 1px solid var(--slate); padding-top: 18px; }
         .stat-num {
-            font-family: var(--font-display);
-            font-style: italic;
-            font-weight: 800;
-            font-size: 56px;
-            line-height: 1;
-            color: var(--lime);
-            letter-spacing: -0.03em;
+            font-family: var(--font-display); font-style: italic; font-weight: 800;
+            font-size: clamp(44px, 6vw, 72px); line-height: 1; color: var(--lime); letter-spacing: -0.03em;
         }
-        .stat-label {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            color: var(--steel);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-        @media (max-width: 768px) { .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 28px; } }
+        .stat-label { font-family: var(--font-mono); font-size: 11px; color: var(--steel); text-transform: uppercase; letter-spacing: 0.12em; margin-top: 10px; }
+        @media (max-width: 720px) { .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; } }
 
         /* ==========================================================
-           Section primitives
+           Chapter 02 — Practice (manifesto)
         ========================================================== */
-        .section { padding: 100px 0; }
-
-        /* ==========================================================
-           Threat advisory ribbon — editorial register (bone block)
-        ========================================================== */
-        .advisory {
-            background: var(--bone);
-            color: var(--carbon);
-            padding: 60px 0;
-            position: relative;
-            overflow: hidden;
-        }
-        .advisory::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 6px;
-            background: var(--breach);
-        }
-        .advisory-flex { display: flex; gap: 48px; align-items: flex-start; flex-wrap: wrap; }
-        .advisory-tag {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            letter-spacing: 0.12em;
-            color: var(--breach);
-            text-transform: uppercase;
-            padding: 6px 12px;
-            border: 2px solid var(--breach);
-            border-radius: 4px;
-            align-self: flex-start;
-            flex-shrink: 0;
-            font-weight: 700;
-        }
-        .advisory-body { flex: 1; min-width: 280px; }
-        .advisory-body h2 {
-            font-family: var(--font-display);
-            font-style: italic;
-            font-weight: 800;
-            text-transform: uppercase;
-            font-size: clamp(26px, 4vw, 34px);
-            letter-spacing: -0.02em;
-            color: var(--carbon);
-            margin-bottom: 12px;
-            line-height: 1.05;
-        }
-        .advisory-body p {
-            font-size: 17px;
-            color: #2A2E37;
-            line-height: 1.55;
-            margin-bottom: 16px;
-            max-width: 760px;
-        }
-        .advisory-cta {
-            font-family: var(--font-mono);
-            font-size: 13px;
-            color: var(--carbon);
-            border-bottom: 2px solid var(--carbon);
-            padding-bottom: 2px;
-        }
-        .advisory-cta:hover { color: var(--carbon); border-bottom-color: var(--lime-600); }
-
-        /* ==========================================================
-           Manifesto block
-        ========================================================== */
-        .manifesto {
-            background: var(--carbon);
-            padding: 120px 0;
-            position: relative;
-            overflow: hidden;
-        }
-        .manifesto::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: radial-gradient(circle at 1px 1px, rgba(199, 255, 62, 0.06) 1px, transparent 0);
-            background-size: 40px 40px;
-            mask-image: linear-gradient(to bottom, black, transparent);
-            -webkit-mask-image: linear-gradient(to bottom, black, transparent);
-            pointer-events: none;
-        }
-        .manifesto-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 80px;
-            align-items: start;
-            position: relative;
-        }
-        @media (max-width: 880px) { .manifesto-grid { grid-template-columns: 1fr; gap: 40px; } }
-        .manifesto-left h2 {
-            font-family: var(--font-display);
-            font-style: italic;
-            font-weight: 800;
-            text-transform: uppercase;
-            font-size: clamp(36px, 6vw, 72px);
-            line-height: 0.92;
-            letter-spacing: -0.04em;
-            color: var(--bone);
-            margin-bottom: 28px;
-        }
-        .manifesto-left h2 em { color: var(--lime); font-style: italic; }
-        .manifesto-lede {
-            font-size: 18px;
-            color: var(--bone-2);
-            line-height: 1.6;
-            max-width: 520px;
-            margin-bottom: 20px;
-        }
-        .manifesto-subline {
-            font-size: 14px;
-            color: var(--steel);
-            line-height: 1.6;
-            max-width: 520px;
-            font-family: var(--font-mono);
-            letter-spacing: 0.02em;
-        }
-        .pillar { padding: 24px 0; border-bottom: 1px solid var(--slate); }
-        .pillar:first-child { padding-top: 0; }
-        .pillar:last-child { border-bottom: 0; }
-        .pillar-num {
-            font-family: var(--font-mono);
-            font-size: 12px;
-            color: var(--lime);
-            letter-spacing: 0.1em;
-            margin-bottom: 8px;
-        }
-        .pillar h3 {
-            font-family: var(--font-display);
-            font-style: italic;
-            font-weight: 800;
-            text-transform: uppercase;
-            font-size: 24px;
-            letter-spacing: -0.02em;
-            color: var(--bone);
-            margin-bottom: 8px;
-        }
-        .pillar p { font-size: 15px; color: var(--bone-2); line-height: 1.55; }
-
-        /* ==========================================================
-           Tagline mark — the kubectl stamp (bone block)
-        ========================================================== */
-        .tag-block {
-            background: var(--bone);
-            padding: 100px 0;
-            color: var(--carbon);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .tag-block::before, .tag-block::after {
-            content: '';
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            background-image: radial-gradient(circle at 1px 1px, var(--carbon) 1px, transparent 0);
-            background-size: 8px 8px;
-            opacity: 0.15;
-            pointer-events: none;
-        }
-        .tag-block::before { top: 40px; left: 40px; }
-        .tag-block::after { bottom: 40px; right: 40px; }
-        .tag-mark {
-            font-family: var(--font-mono);
-            font-weight: 700;
-            font-size: clamp(20px, 4vw, 48px);
-            color: var(--carbon);
-            display: inline-block;
-            padding: 16px 32px;
-            background: var(--lime);
-            box-shadow: 8px 8px 0 var(--carbon);
-            border: 3px solid var(--carbon);
-            margin-bottom: 32px;
-            transform: rotate(-1deg);
-        }
-        .tag-block h2 {
-            font-family: var(--font-display);
-            font-style: italic;
-            font-weight: 800;
-            font-size: clamp(32px, 5vw, 56px);
-            text-transform: uppercase;
-            line-height: 1;
-            letter-spacing: -0.03em;
-            color: var(--carbon);
-            margin: 0 auto 16px;
-            max-width: 18ch;
-        }
-        .tag-block p {
-            font-size: 18px;
-            color: #2A2E37;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* ==========================================================
-           Hire experts CTA — charcoal panel, lime offset accent
-        ========================================================== */
-        .hire { padding: 100px 0; background: var(--carbon); }
-        .hire-panel {
-            position: relative;
-            background: var(--charcoal);
+        .manifesto-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 72px; align-items: center; }
+        @media (max-width: 900px) { .manifesto-grid { grid-template-columns: 1fr; gap: 40px; } }
+        #ch-practice .ch-title { font-size: clamp(32px, 5vw, 60px); line-height: 0.96; margin-bottom: 26px; }
+        #ch-practice .ch-title em { color: var(--lime); font-style: italic; }
+        .manifesto-lede { font-size: 18px; color: var(--bone-2); line-height: 1.65; margin-bottom: 18px; max-width: 540px; }
+        .manifesto-sub { font-family: var(--font-mono); font-size: 13px; color: var(--steel); line-height: 1.7; max-width: 520px; letter-spacing: 0.02em; }
+        .terminal {
+            background: rgba(10, 12, 16, 0.72);
             border: 1px solid var(--slate);
             border-radius: var(--r-lg);
-            padding: 56px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 40px;
-            flex-wrap: wrap;
+            font-family: var(--font-mono);
+            font-size: 13.5px;
             overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
         }
-        .hire-panel::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 4px; height: 100%;
-            background: var(--grad-stamp-glow);
+        .terminal-bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--slate); }
+        .terminal-bar .dot { width: 11px; height: 11px; border-radius: 50%; background: var(--slate); }
+        .terminal-bar .t { margin-left: 10px; color: var(--steel); font-size: 11px; letter-spacing: 0.08em; }
+        .terminal-body { padding: 20px 18px; line-height: 1.85; color: var(--bone-2); }
+        .terminal-body .pr { color: var(--lime); }
+        .terminal-body .ok { color: var(--lime); }
+        .terminal-body .cm { color: var(--steel); }
+
+        /* ==========================================================
+           Chapter 03 — Pillars (the code)
+        ========================================================== */
+        #ch-pillars .ch-title { font-size: clamp(30px, 5vw, 56px); line-height: 0.96; margin-bottom: 12px; }
+        .pillars-lede { font-size: 16px; color: var(--bone-2); max-width: 560px; line-height: 1.6; margin-bottom: 56px; }
+        .pillar-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+        @media (max-width: 760px) { .pillar-grid { grid-template-columns: 1fr; } }
+        .pillar {
+            position: relative;
+            background: rgba(20, 23, 30, 0.62);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-lg);
+            padding: 28px 26px;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            transition: border-color var(--dur-elevate) var(--ease), transform var(--dur-elevate) var(--ease);
         }
-        .hire-copy { max-width: 560px; }
-        .hire-copy .section-eyebrow { margin-bottom: 16px; }
-        .hire-copy h2 {
-            font-family: var(--font-display);
-            font-style: italic;
-            font-weight: 800;
-            text-transform: uppercase;
-            font-size: clamp(28px, 4.5vw, 44px);
-            line-height: 0.98;
-            letter-spacing: -0.03em;
-            color: var(--bone);
-            margin-bottom: 16px;
+        .pillar:hover { border-color: rgba(199,255,62,0.4); transform: translateY(-4px); }
+        .pillar-num { font-family: var(--font-mono); font-size: 12px; color: var(--lime); letter-spacing: 0.12em; margin-bottom: 12px; }
+        .pillar h3 { font-family: var(--font-display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: 26px; letter-spacing: -0.02em; color: var(--bone); margin-bottom: 10px; }
+        .pillar p { font-size: 14.5px; color: var(--bone-2); line-height: 1.6; }
+
+        /* ==========================================================
+           Chapter 04 — The Field (events + topics)
+        ========================================================== */
+        #ch-field .ch-title { font-size: clamp(30px, 5vw, 60px); line-height: 0.96; margin-bottom: 14px; }
+        #ch-field .ch-title em { color: var(--signal); font-style: italic; }
+        .field-lede { font-size: 17px; color: var(--bone-2); max-width: 600px; line-height: 1.6; margin-bottom: 48px; }
+        .topic-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 52px; }
+        .topic-chip {
+            font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em;
+            color: var(--bone-2); padding: 8px 14px;
+            border: 1px solid var(--slate); border-radius: var(--r-pill);
+            background: rgba(15,17,21,0.5);
         }
-        .hire-copy p { font-size: 17px; color: var(--bone-2); line-height: 1.6; }
-        .hire-panel .btn-primary { flex-shrink: 0; }
+        .topic-chip .hash { color: var(--signal); }
+        .field-list { display: flex; flex-direction: column; }
+        .field-item {
+            display: flex; align-items: baseline; gap: 20px;
+            padding: 18px 4px; border-top: 1px solid var(--slate);
+            text-decoration: none; transition: padding var(--dur-hover) var(--ease);
+        }
+        .field-item:last-child { border-bottom: 1px solid var(--slate); }
+        .field-item:hover { padding-left: 14px; }
+        .field-item .fi-date { font-family: var(--font-mono); font-size: 12px; color: var(--steel); flex-shrink: 0; width: 96px; }
+        .field-item .fi-title { font-size: 17px; color: var(--bone); font-weight: 500; flex: 1; transition: color var(--dur-hover) var(--ease); }
+        .field-item:hover .fi-title { color: var(--lime); }
+        .field-item .fi-city { font-family: var(--font-mono); font-size: 11px; color: var(--steel); text-transform: uppercase; letter-spacing: 0.08em; flex-shrink: 0; }
+        .field-cta { margin-top: 36px; }
+
+        /* ==========================================================
+           Chapter 05 — The Creed (tagline)
+        ========================================================== */
+        #ch-creed { text-align: center; }
+        .creed-mark {
+            font-family: var(--font-mono); font-weight: 700;
+            font-size: clamp(15px, 3vw, 30px); color: var(--carbon);
+            display: inline-block; padding: 14px 28px;
+            background: var(--lime); border: 3px solid var(--carbon);
+            box-shadow: 8px 8px 0 rgba(15,17,21,0.85);
+            transform: rotate(-1.5deg); margin-bottom: 40px;
+        }
+        #ch-creed .ch-title { font-size: clamp(40px, 8vw, 104px); line-height: 0.9; margin: 0 auto 24px; }
+        #ch-creed .ch-title .gold { color: var(--gold); }
+        .creed-sub { font-size: clamp(16px, 2.2vw, 20px); color: var(--bone-2); max-width: 540px; margin: 0 auto; line-height: 1.6; }
+
+        /* ==========================================================
+           Chapter 06 — The Door (CTA)
+        ========================================================== */
+        #ch-door .ch-title { font-size: clamp(34px, 6vw, 80px); line-height: 0.92; margin-bottom: 24px; }
+        #ch-door .ch-title .lime { color: var(--lime); }
+        .door-lede { font-size: 18px; color: var(--bone-2); max-width: 560px; line-height: 1.6; margin-bottom: 40px; }
+        .door-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 8px; }
+        @media (max-width: 760px) { .door-panels { grid-template-columns: 1fr; } }
+        .door-panel {
+            display: block; text-decoration: none;
+            background: rgba(20, 23, 30, 0.66);
+            border: 1px solid var(--slate); border-radius: var(--r-lg);
+            padding: 28px 26px;
+            backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+            transition: border-color var(--dur-elevate) var(--ease), transform var(--dur-elevate) var(--ease);
+        }
+        .door-panel:hover { border-color: rgba(199,255,62,0.45); transform: translateY(-4px); }
+        .door-panel .dp-eyebrow { font-family: var(--font-mono); font-size: 11px; color: var(--lime); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 14px; }
+        .door-panel h3 { font-family: var(--font-display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: 24px; letter-spacing: -0.02em; color: var(--bone); margin-bottom: 8px; }
+        .door-panel p { font-size: 14.5px; color: var(--bone-2); line-height: 1.55; }
+        .door-panel .dp-arrow { color: var(--lime); font-family: var(--font-mono); margin-top: 16px; display: inline-block; }
+
+        /* ==========================================================
+           Fixed cinematic chapter counter (top-right)
+        ========================================================== */
+        .chapter-counter {
+            position: fixed;
+            top: 50%; right: 26px;
+            transform: translateY(-50%);
+            z-index: 40;
+            font-family: var(--font-mono);
+            text-align: right;
+            pointer-events: none;
+            mix-blend-mode: difference;
+        }
+        .chapter-counter .cc-index { font-size: 13px; color: var(--bone); letter-spacing: 0.1em; }
+        .chapter-counter .cc-index b { color: var(--lime); font-weight: 700; }
+        .chapter-counter .cc-name { font-size: 9px; color: var(--bone-2); letter-spacing: 0.24em; text-transform: uppercase; margin-top: 6px; opacity: 0.7; }
+        .chapter-counter .cc-rail { width: 2px; height: 120px; background: var(--slate); margin: 14px 0 0 auto; position: relative; border-radius: 2px; }
+        .chapter-counter .cc-fill { position: absolute; top: 0; left: 0; width: 100%; height: 0%; background: var(--lime); border-radius: 2px; }
+        @media (max-width: 820px) { .chapter-counter { display: none; } }
 
         @media (max-width: 768px) {
-            .hero { padding: 88px 0 72px; }
-            .section, .manifesto, .hire, .tag-block { padding: 72px 0; }
-            .hire-panel { padding: 36px 28px; }
             .wrap { padding: 0 20px; }
+            .chapter { padding: 96px 0; min-height: auto; }
+            #ch-prologue { min-height: 100vh; }
+        }
+
+        /* Reduced motion: kill the cue animation, reveal everything */
+        @media (prefers-reduced-motion: reduce) {
+            .scroll-cue .bar { animation: none; }
         }
     </style>
 </head>
 
 <body>
 
+    <!-- Painted texture background (three.js) -->
+    <canvas id="paint" aria-hidden="true"></canvas>
+    <div id="veil" aria-hidden="true"></div>
+
+    <!-- Cinematic chapter counter -->
+    <aside class="chapter-counter" aria-hidden="true">
+        <div class="cc-index"><b id="ccCur">00</b> / 06</div>
+        <div class="cc-name" id="ccName">Prologue</div>
+        <div class="cc-rail"><div class="cc-fill" id="ccFill"></div></div>
+    </aside>
+
     <!-- ===== Navbar (mounted via /js/Navbar.js) ===== -->
     <div id="navbar"></div>
 
     <main>
 
-        <!-- ===== Hero ===== -->
-        <section id="top" class="hero">
-            <!-- Faint Pakistani landmark silhouette (Minar-e-Pakistan, abstracted) -->
-            <svg class="hero-landmark" viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <g fill="none" stroke="#C7FF3E" stroke-width="1.5">
-                    <rect x="40" y="280" width="120" height="20" />
-                    <rect x="55" y="260" width="90" height="20" />
-                    <rect x="80" y="180" width="40" height="80" />
-                    <rect x="86" y="120" width="28" height="60" />
-                    <rect x="92" y="60" width="16" height="60" />
-                    <circle cx="100" cy="40" r="14" />
-                    <circle cx="105" cy="38" r="10" fill="#0F1115" />
-                    <line x1="100" y1="56" x2="100" y2="60" />
-                </g>
-            </svg>
-
-            <!-- Chapter ID stamp — CNCF affiliation as a credential, not the headline -->
-            <div class="chapter-stamp" aria-hidden="true">
-                <span class="l1">CNCF Chapter · est. 2023</span>
-                <span class="l2">Pakistan</span>
-            </div>
-
-            <div class="wrap hero-content">
-                <div class="hero-meta">
+        <!-- ============================================================
+             CHAPTER 00 — PROLOGUE
+        ============================================================ -->
+        <section class="chapter" id="ch-prologue" data-chapter="0" data-name="Prologue" aria-label="Prologue">
+            <div class="wrap chapter-inner">
+                <div class="hero-meta rise">
                     <span class="status-pill">
                         <span class="status-dot"></span>
                         <span>chapter / live / lhe-khi-isb</span>
                     </span>
-                    <span style="opacity:0.6">·</span>
+                    <span style="opacity:0.5">·</span>
                     <span class="cmd">$ ./join.sh --no-gatekeeping</span>
                 </div>
 
-                <h1>
-                    Built.<br />
-                    <span class="underline">Tested.</span><br />
-                    <span class="lime-line">Pakistani.</span>
+                <h1 class="ch-title">
+                    <span class="line"><span>Built.</span></span>
+                    <span class="line"><span class="accent">Tested.</span></span>
+                    <span class="line"><span class="lime">Pakistani.</span></span>
                 </h1>
 
-                <p class="lede">
-                    <strong>280+ engineers</strong> shipping cloud-native infrastructure across Pakistan, breaking it
-                    on purpose, and writing it back better. Independent. Run by practitioners. Free to join.
-                    <strong>No gatekeeping.</strong>
+                <p class="hero-lede rise">
+                    <strong>280+ engineers</strong> shipping cloud-native infrastructure across Pakistan,
+                    breaking it on purpose, and writing it back better. Independent. Run by practitioners.
+                    Free to join. <strong>No gatekeeping.</strong>
                 </p>
 
-                <div class="hero-cta-row">
+                <div class="cta-row rise">
                     <a href="/join/" class="btn-primary">
                         Join the Chapter
                         <span style="font-family:var(--font-mono);">↗</span>
@@ -575,131 +480,231 @@
                     </a>
                 </div>
 
-                <p class="hero-tagline-urdu" lang="ur" dir="rtl">کلاؤڈ نیٹو سیکیورٹی پاکستان</p>
+                <p class="hero-urdu rise" lang="ur" dir="rtl">کلاؤڈ نیٹو سیکیورٹی پاکستان</p>
+            </div>
+
+            <div class="scroll-cue" aria-hidden="true">
+                <span>scroll</span>
+                <span class="bar"></span>
             </div>
         </section>
 
-        <!-- ===== Stat strip ===== -->
-        <section class="stats" aria-label="Chapter by the numbers">
-            <div class="wrap stats-grid">
-                <div class="stat">
-                    <div class="stat-num">280+</div>
-                    <div class="stat-label">Engineers</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-num">11</div>
-                    <div class="stat-label">Events shipped</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-num">3</div>
-                    <div class="stat-label">Cities</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-num">∞</div>
-                    <div class="stat-label">Bharosa</div>
-                </div>
-            </div>
-        </section>
+        <!-- ============================================================
+             CHAPTER 01 — ORIGIN (the numbers)
+        ============================================================ -->
+        <section class="chapter" id="ch-origin" data-chapter="1" data-name="Origin" aria-label="Origin">
+            <div class="wrap chapter-inner">
+                <div class="ch-label rise">Chapter 01 — Origin</div>
+                <h2 class="ch-title">
+                    <span class="line"><span>It didn't exist here.</span></span>
+                    <span class="line"><span>So we <em>wrote it</em>.</span></span>
+                </h2>
+                <p class="origin-lede rise">
+                    No playbook, no local body of practice, no room where the first question was welcome.
+                    We started one — online and in person — and kept the receipts.
+                </p>
 
-        <!-- ===== Threat advisory ribbon (editorial register) ===== -->
-        <!--
-          TODO: This advisory is illustrative of the editorial register, not a
-          live CVE. Wire to a real /threat-of-week writeup (or remove) before
-          launch so the byline never reads as fabricated security reporting.
-        -->
-        <section class="advisory reveal" id="advisory" aria-label="Threat advisory">
-            <div class="wrap">
-                <div class="advisory-flex">
-                    <div class="advisory-tag">Advisory&nbsp;·&nbsp;Register</div>
-                    <div class="advisory-body">
-                        <h2>The IAM role nobody owns just shipped to prod.</h2>
-                        <p>
-                            Over-permissioned default service accounts are the quiet default across cloud-native
-                            stacks. This is the register we write in: read the misconfig, ship the five-line fix,
-                            keep it dead with policy-as-code. Practitioners, not press releases.
-                        </p>
-                        <a href="/sessions/" class="advisory-cta">Browse the sessions →</a>
+                <div class="stat-grid">
+                    <div class="stat rise">
+                        <div class="stat-num" data-count="280" data-suffix="+">280+</div>
+                        <div class="stat-label">Engineers</div>
+                    </div>
+                    <div class="stat rise">
+                        <div class="stat-num" data-count="11">11</div>
+                        <div class="stat-label">Events shipped</div>
+                    </div>
+                    <div class="stat rise">
+                        <div class="stat-num" data-count="3">3</div>
+                        <div class="stat-label">Cities</div>
+                    </div>
+                    <div class="stat rise">
+                        <div class="stat-num">∞</div>
+                        <div class="stat-label">Bharosa</div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ===== Manifesto ===== -->
-        <section class="manifesto" id="chapter">
-            <div class="wrap manifesto-grid">
-
-                <div class="manifesto-left reveal">
-                    <div class="section-eyebrow">// chapter / what-we-stand-for</div>
-                    <h2>
-                        A community of <em>cloud security practitioners</em> in Pakistan.
-                        Independent. Run by engineers.
+        <!-- ============================================================
+             CHAPTER 02 — PRACTICE (manifesto)
+        ============================================================ -->
+        <section class="chapter" id="ch-practice" data-chapter="2" data-name="Practice" aria-label="What we stand for">
+            <div class="wrap chapter-inner manifesto-grid">
+                <div>
+                    <div class="ch-label rise">Chapter 02 — Practice</div>
+                    <h2 class="ch-title">
+                        <span class="line"><span>A community of</span></span>
+                        <span class="line"><span><em>cloud security</em></span></span>
+                        <span class="line"><span>practitioners.</span></span>
                     </h2>
-                    <p class="manifesto-lede">
-                        CNSPK is its own thing. We are engineers, students, and security leads in Lahore, Karachi,
-                        and Islamabad — meeting online and in person, and building a body of practice that didn't
-                        exist here before.
+                    <p class="manifesto-lede rise">
+                        CNSPK is its own thing. We're engineers, students, and security leads in Lahore,
+                        Karachi, and Islamabad — meeting to build a body of practice that didn't exist here before.
                     </p>
-                    <p class="manifesto-subline">
+                    <p class="manifesto-sub rise">
                         Affiliated with CNCF as a recognised security chapter. Not a CNCF franchise.
                     </p>
                 </div>
 
-                <div class="manifesto-right reveal">
-                    <div class="pillar">
-                        <div class="pillar-num">PILLAR 01</div>
-                        <h3>Rigor</h3>
-                        <p>What is true matters more than what sounds good. We test, we cite, we date-stamp our
-                            corrections.</p>
+                <div class="terminal rise" role="img" aria-label="Terminal showing the chapter's operating principles">
+                    <div class="terminal-bar">
+                        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                        <span class="t">~/cnspk — zsh</span>
                     </div>
-                    <div class="pillar">
-                        <div class="pillar-num">PILLAR 02</div>
-                        <h3>Belonging</h3>
-                        <p>The first question is the most valuable one in the room. No gatekeeping on credentials,
-                            English fluency, or city.</p>
-                    </div>
-                    <div class="pillar">
-                        <div class="pillar-num">PILLAR 03</div>
-                        <h3>Bridge</h3>
-                        <p>We connect Pakistani engineers to KubeCon, OSS contribution, and the global CNCF in both
-                            directions.</p>
-                    </div>
-                    <div class="pillar">
-                        <div class="pillar-num">PILLAR 04</div>
-                        <h3>Practice</h3>
-                        <p>Talk is cheap. Show the kubectl. Every concept gets a demo, a code block, or a runnable
-                            lab.</p>
+                    <div class="terminal-body">
+                        <div><span class="pr">$</span> whoami</div>
+                        <div>cloud-native-security-pakistan</div>
+                        <div><span class="cm"># independent · practitioner-run</span></div>
+                        <br>
+                        <div><span class="pr">$</span> cat principles.txt</div>
+                        <div><span class="ok">✓</span> test it before you trust it</div>
+                        <div><span class="ok">✓</span> the first question is welcome</div>
+                        <div><span class="ok">✓</span> show the kubectl, not the slide</div>
+                        <br>
+                        <div><span class="pr">$</span> ./apply --region=pakistan</div>
+                        <div><span class="ok">deployed.</span> <span class="cm"># bharosa: ∞</span></div>
                     </div>
                 </div>
-
             </div>
         </section>
 
-        <!-- ===== Tagline mark ===== -->
-        <section class="tag-block reveal" aria-label="Chapter tagline">
-            <div class="wrap">
-                <code class="tag-mark">kubectl apply -f pakistan.yaml</code>
-                <h2>Read the CVE.<br />Drink the chai.</h2>
-                <p>
+        <!-- ============================================================
+             CHAPTER 03 — PILLARS (the code)
+        ============================================================ -->
+        <section class="chapter" id="ch-pillars" data-chapter="3" data-name="Pillars" aria-label="The four pillars">
+            <div class="wrap chapter-inner">
+                <div class="ch-label rise">Chapter 03 — The Code</div>
+                <h2 class="ch-title">
+                    <span class="line"><span>Four things we don't compromise.</span></span>
+                </h2>
+                <p class="pillars-lede rise">
+                    The chapter runs on four pillars. They decide what gets a stage, what gets shipped,
+                    and who feels at home in the room.
+                </p>
+
+                <div class="pillar-grid">
+                    <div class="pillar rise">
+                        <div class="pillar-num">PILLAR 01</div>
+                        <h3>Rigor</h3>
+                        <p>What is true matters more than what sounds good. We test, we cite, and we date-stamp our corrections.</p>
+                    </div>
+                    <div class="pillar rise">
+                        <div class="pillar-num">PILLAR 02</div>
+                        <h3>Belonging</h3>
+                        <p>The first question is the most valuable one in the room. No gatekeeping on credentials, English fluency, or city.</p>
+                    </div>
+                    <div class="pillar rise">
+                        <div class="pillar-num">PILLAR 03</div>
+                        <h3>Bridge</h3>
+                        <p>We connect Pakistani engineers to KubeCon, OSS contribution, and the global CNCF — in both directions.</p>
+                    </div>
+                    <div class="pillar rise">
+                        <div class="pillar-num">PILLAR 04</div>
+                        <h3>Practice</h3>
+                        <p>Talk is cheap. Show the kubectl. Every concept gets a demo, a code block, or a runnable lab.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             CHAPTER 04 — THE FIELD (events + topics)
+        ============================================================ -->
+        <section class="chapter" id="ch-field" data-chapter="4" data-name="The Field" aria-label="Events and topics">
+            <div class="wrap chapter-inner">
+                <div class="ch-label rise">Chapter 04 — The Field</div>
+                <h2 class="ch-title">
+                    <span class="line"><span>Eleven rooms.</span></span>
+                    <span class="line"><span>One <em>running</em> conversation.</span></span>
+                </h2>
+                <p class="field-lede rise">
+                    From the first Islamabad meetup to the year-end wrap in Lahore — talks, hands-on labs,
+                    and the kind of corridor questions that don't fit in a CFP.
+                </p>
+
+                <div class="topic-row rise">
+                    <span class="topic-chip"><span class="hash">#</span>kubernetes-security</span>
+                    <span class="topic-chip"><span class="hash">#</span>container-security</span>
+                    <span class="topic-chip"><span class="hash">#</span>secrets-management</span>
+                    <span class="topic-chip"><span class="hash">#</span>zero-trust</span>
+                    <span class="topic-chip"><span class="hash">#</span>supply-chain</span>
+                    <span class="topic-chip"><span class="hash">#</span>devsecops</span>
+                </div>
+
+                <div class="field-list">
+                    <a class="field-item rise" href="/events/">
+                        <span class="fi-date">2025 · DEC</span>
+                        <span class="fi-title">The Final Patch: 2025 Wrap-Up Gathering</span>
+                        <span class="fi-city">Lahore</span>
+                    </a>
+                    <a class="field-item rise" href="/events/">
+                        <span class="fi-date">2025 · OCT</span>
+                        <span class="fi-title">Hacktoberfest Lahore 2025: Secure Cloud Edition</span>
+                        <span class="fi-city">Lahore</span>
+                    </a>
+                    <a class="field-item rise" href="/events/">
+                        <span class="fi-date">2025 · JUN</span>
+                        <span class="fi-title">KubeSecure</span>
+                        <span class="fi-city">Lahore</span>
+                    </a>
+                    <a class="field-item rise" href="/events/">
+                        <span class="fi-date">2024 · MAY</span>
+                        <span class="fi-title">Cloud Native Security Meetup Islamabad</span>
+                        <span class="fi-city">Islamabad</span>
+                    </a>
+                </div>
+
+                <div class="field-cta rise">
+                    <a href="/sessions/" class="btn-secondary">
+                        <span class="mono">// session-archive</span>
+                        Watch the recordings
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             CHAPTER 05 — THE CREED (tagline)
+        ============================================================ -->
+        <section class="chapter" id="ch-creed" data-chapter="5" data-name="The Creed" aria-label="Chapter creed">
+            <div class="wrap chapter-inner">
+                <code class="creed-mark rise">kubectl apply -f pakistan.yaml</code>
+                <h2 class="ch-title">
+                    <span class="line"><span>Read the CVE.</span></span>
+                    <span class="line"><span class="gold">Drink the chai.</span></span>
+                </h2>
+                <p class="creed-sub rise">
                     Defense in depth. Hospitality on top. The chapter for engineers who actually ship.
                 </p>
             </div>
         </section>
 
-        <!-- ===== Hire experts CTA (preserved from existing site, rethemed) ===== -->
-        <section class="hire" id="hire">
-            <div class="wrap">
-                <div class="hire-panel reveal">
-                    <div class="hire-copy">
-                        <div class="section-eyebrow">// need-an-expert</div>
-                        <h2>Need cloud security expertise?</h2>
-                        <p>
-                            The chapter runs deep on Kubernetes, DevSecOps, and cloud architecture. Browse the
-                            consultants directory and connect with practitioners who do this for a living.
-                        </p>
-                    </div>
-                    <a href="/consultants/" class="btn-primary">
-                        Hire Experts
-                        <span style="font-family:var(--font-mono);">→</span>
+        <!-- ============================================================
+             CHAPTER 06 — THE DOOR (CTA)
+        ============================================================ -->
+        <section class="chapter" id="ch-door" data-chapter="6" data-name="The Door" aria-label="Join or hire">
+            <div class="wrap chapter-inner">
+                <div class="ch-label rise">Chapter 06 — The Door</div>
+                <h2 class="ch-title">
+                    <span class="line"><span>The door is</span></span>
+                    <span class="line"><span class="lime">open.</span></span>
+                </h2>
+                <p class="door-lede rise">
+                    No application gate, no membership fee. Pick a doorway — or bring a problem worth solving.
+                </p>
+
+                <div class="door-panels">
+                    <a class="door-panel rise" href="/join/">
+                        <div class="dp-eyebrow">// join-the-chapter</div>
+                        <h3>Join the Chapter</h3>
+                        <p>Five doorways — WhatsApp, the CNCF group, GitHub, socials, and more. Find your room.</p>
+                        <span class="dp-arrow">enter →</span>
+                    </a>
+                    <a class="door-panel rise" href="/consultants/">
+                        <div class="dp-eyebrow">// need-an-expert</div>
+                        <h3>Hire Experts</h3>
+                        <p>Deep on Kubernetes, DevSecOps, and cloud architecture. Browse practitioners who do this for a living.</p>
+                        <span class="dp-arrow">browse →</span>
                     </a>
                 </div>
             </div>
@@ -710,34 +715,295 @@
     <!-- ===== Footer (mounted via /js/Footer.js) ===== -->
     <div id="footer"></div>
 
+    <!-- ===== Navbar + Footer mount ===== -->
     <script type="module">
         import { Navbar } from '/js/Navbar.js';
         import { Footer } from '/js/Footer.js';
-
         new Navbar().init();
         new Footer().init();
+    </script>
 
-        /* ---- Scroll-reveal — respects prefers-reduced-motion ---- */
-        (function () {
-            const els = document.querySelectorAll('.reveal');
-            const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    <!-- ===== Immersive experience: three.js paint + GSAP + Lenis ===== -->
+    <script type="module">
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-            if (prefersReduced || !('IntersectionObserver' in window)) {
-                els.forEach(el => el.classList.add('is-visible'));
+        /* ----------------------------------------------------------
+           Per-chapter colour palettes [shadow, mid, highlight]
+           Drives the painted background's fluid colour transitions.
+        ---------------------------------------------------------- */
+        const PALETTES = [
+            ['#0a0c10', '#16361f', '#c7ff3e'], // 00 prologue — carbon → green → lime
+            ['#0a0e12', '#01411c', '#9bd11a'], // 01 origin
+            ['#08171a', '#063a3a', '#06b6d4'], // 02 practice — teal/signal
+            ['#0c0f16', '#1a1d24', '#c7ff3e'], // 03 pillars — slate + lime
+            ['#08111c', '#0e2a3a', '#06b6d4'], // 04 field — cyber blue
+            ['#16110a', '#3a2a0a', '#c9a227'], // 05 creed — chai gold
+            ['#0a0e12', '#01411c', '#c7ff3e'], // 06 door — back to lime/green
+        ];
+
+        /* ----------------------------------------------------------
+           1. Painted texture background (three.js, cursor-reactive)
+        ---------------------------------------------------------- */
+        let setPaletteTarget = () => {};   // hooked up once three.js is live
+        let setScrollProgress = () => {};
+
+        async function initPaint() {
+            const canvas = document.getElementById('paint');
+            if (reduceMotion) { document.body.classList.add('static-bg'); canvas.style.display = 'none'; return; }
+
+            let THREE;
+            try {
+                THREE = await import('three');
+            } catch (e) {
+                console.warn('[paint] three.js failed to load, using CSS fallback', e);
+                document.body.classList.add('static-bg');
+                canvas.style.display = 'none';
                 return;
             }
 
-            const io = new IntersectionObserver((entries, obs) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                        obs.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+            let renderer;
+            try {
+                renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'high-performance' });
+            } catch (e) {
+                console.warn('[paint] WebGL unavailable, using CSS fallback', e);
+                document.body.classList.add('static-bg');
+                canvas.style.display = 'none';
+                return;
+            }
 
-            els.forEach(el => io.observe(el));
-        })();
+            const scene = new THREE.Scene();
+            const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+            const toVec3 = (hex) => { const c = new THREE.Color(hex); return new THREE.Vector3(c.r, c.g, c.b); };
+
+            const uniforms = {
+                u_time:   { value: 0 },
+                u_res:    { value: new THREE.Vector2(1, 1) },
+                u_mouse:  { value: new THREE.Vector2(0.5, 0.5) },
+                u_scroll: { value: 0 },
+                u_colA:   { value: toVec3(PALETTES[0][0]) },
+                u_colB:   { value: toVec3(PALETTES[0][1]) },
+                u_colC:   { value: toVec3(PALETTES[0][2]) },
+            };
+
+            const vertex = `
+                varying vec2 vUv;
+                void main() { vUv = uv; gl_Position = vec4(position, 1.0); }
+            `;
+
+            const fragment = `
+                precision highp float;
+                varying vec2 vUv;
+                uniform float u_time;
+                uniform vec2  u_res;
+                uniform vec2  u_mouse;
+                uniform float u_scroll;
+                uniform vec3  u_colA;
+                uniform vec3  u_colB;
+                uniform vec3  u_colC;
+
+                vec2 hash2(vec2 p){
+                    p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+                    return -1.0 + 2.0 * fract(sin(p) * 43758.5453123);
+                }
+                float noise(vec2 p){
+                    vec2 i = floor(p); vec2 f = fract(p);
+                    vec2 u = f * f * (3.0 - 2.0 * f);
+                    return mix(mix(dot(hash2(i + vec2(0,0)), f - vec2(0,0)),
+                                   dot(hash2(i + vec2(1,0)), f - vec2(1,0)), u.x),
+                               mix(dot(hash2(i + vec2(0,1)), f - vec2(0,1)),
+                                   dot(hash2(i + vec2(1,1)), f - vec2(1,1)), u.x), u.y);
+                }
+                float fbm(vec2 p){
+                    float v = 0.0; float a = 0.5;
+                    mat2 m = mat2(1.6, 1.2, -1.2, 1.6);
+                    for(int i = 0; i < 6; i++){ v += a * noise(p); p = m * p; a *= 0.5; }
+                    return v;
+                }
+
+                void main(){
+                    vec2 asp = vec2(u_res.x / u_res.y, 1.0);
+                    vec2 p = (vUv - 0.5) * asp;
+                    float t = u_time * 0.045;
+
+                    // cursor influence — a soft painted swell that follows the pointer
+                    vec2 m = (u_mouse - 0.5) * asp;
+                    float md = distance(p, m);
+                    float ripple = exp(-md * 2.4) * 0.6;
+
+                    // domain-warped fbm → "wet paint" flow
+                    vec2 q = vec2(fbm(p + t), fbm(p + vec2(5.2, 1.3) - t));
+                    vec2 r = vec2(fbm(p + 1.8 * q + vec2(1.7, 9.2) + 0.15 * t + m * 0.30),
+                                  fbm(p + 1.8 * q + vec2(8.3, 2.8) - 0.12 * t));
+                    float f = fbm(p + 2.2 * r + ripple);
+                    f = clamp(f * 0.5 + 0.5 + ripple * 0.8, 0.0, 1.0);
+
+                    vec3 col = mix(u_colA, u_colB, smoothstep(0.18, 0.60, f));
+                    col = mix(col, u_colC, smoothstep(0.55, 0.96, f));
+
+                    // vignette so chapter text always has a calm centre
+                    float vig = smoothstep(1.35, 0.20, length((vUv - 0.5) * 1.42));
+                    col *= 0.60 + 0.40 * vig;
+
+                    // cursor glow tints toward the highlight colour
+                    col += u_colC * ripple * 0.28;
+
+                    gl_FragColor = vec4(col, 1.0);
+                }
+            `;
+
+            const material = new THREE.ShaderMaterial({ uniforms, vertexShader: vertex, fragmentShader: fragment });
+            scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
+
+            function resize() {
+                const w = window.innerWidth, h = window.innerHeight;
+                const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+                renderer.setPixelRatio(dpr);
+                renderer.setSize(w, h, false);
+                uniforms.u_res.value.set(w * dpr, h * dpr);
+            }
+            resize();
+            window.addEventListener('resize', resize, { passive: true });
+
+            // pointer + touch tracking (smoothed in the render loop)
+            const targetMouse = { x: 0.5, y: 0.5 };
+            window.addEventListener('pointermove', (e) => {
+                targetMouse.x = e.clientX / window.innerWidth;
+                targetMouse.y = 1.0 - (e.clientY / window.innerHeight);
+            }, { passive: true });
+
+            // colour interpolation targets
+            const curA = uniforms.u_colA.value.clone();
+            const curB = uniforms.u_colB.value.clone();
+            const curC = uniforms.u_colC.value.clone();
+            const tgtA = curA.clone(), tgtB = curB.clone(), tgtC = curC.clone();
+
+            setPaletteTarget = (idx) => {
+                const pal = PALETTES[idx] || PALETTES[0];
+                tgtA.copy(toVec3(pal[0])); tgtB.copy(toVec3(pal[1])); tgtC.copy(toVec3(pal[2]));
+            };
+            setScrollProgress = (p) => { uniforms.u_scroll.value = p; };
+
+            const clock = new THREE.Clock();
+            function render() {
+                uniforms.u_time.value = clock.getElapsedTime();
+                // ease the cursor
+                uniforms.u_mouse.value.x += (targetMouse.x - uniforms.u_mouse.value.x) * 0.06;
+                uniforms.u_mouse.value.y += (targetMouse.y - uniforms.u_mouse.value.y) * 0.06;
+                // ease the palette (fluid colour transitions between chapters)
+                curA.lerp(tgtA, 0.04); curB.lerp(tgtB, 0.04); curC.lerp(tgtC, 0.04);
+                uniforms.u_colA.value.copy(curA);
+                uniforms.u_colB.value.copy(curB);
+                uniforms.u_colC.value.copy(curC);
+                renderer.render(scene, camera);
+                requestAnimationFrame(render);
+            }
+            render();
+        }
+
+        /* ----------------------------------------------------------
+           2. Lenis smooth scroll + GSAP ScrollTrigger cinematics
+        ---------------------------------------------------------- */
+        async function initMotion() {
+            const counterCur = document.getElementById('ccCur');
+            const counterName = document.getElementById('ccName');
+            const counterFill = document.getElementById('ccFill');
+            const chapters = Array.from(document.querySelectorAll('.chapter'));
+
+            // Reduced motion / no-JS-safe: reveal everything, set palette per scroll, bail.
+            if (reduceMotion) {
+                document.querySelectorAll('.rise, .line > span').forEach(el => {
+                    el.style.opacity = '1'; el.style.transform = 'none';
+                });
+                return;
+            }
+
+            let gsap, ScrollTrigger, Lenis;
+            try {
+                ({ gsap } = await import('gsap'));
+                ({ ScrollTrigger } = await import('gsap/ScrollTrigger'));
+                Lenis = (await import('lenis')).default;
+            } catch (e) {
+                console.warn('[motion] GSAP/Lenis failed to load — content shown statically', e);
+                document.querySelectorAll('.rise, .line > span').forEach(el => {
+                    el.style.opacity = '1'; el.style.transform = 'none';
+                });
+                return;
+            }
+
+            gsap.registerPlugin(ScrollTrigger);
+
+            // ---- Lenis: buttery smooth scroll, fed into ScrollTrigger ----
+            const lenis = new Lenis({
+                duration: 1.15,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                smoothWheel: true,
+            });
+            lenis.on('scroll', ScrollTrigger.update);
+            gsap.ticker.add((time) => lenis.raf(time * 1000));
+            gsap.ticker.lagSmoothing(0);
+
+            // ---- Global scroll progress → paint uniform + counter rail ----
+            ScrollTrigger.create({
+                start: 0, end: 'max',
+                onUpdate: (self) => {
+                    setScrollProgress(self.progress);
+                    if (counterFill) counterFill.style.height = (self.progress * 100).toFixed(1) + '%';
+                },
+            });
+
+            // ---- Per-chapter cinematic scene + palette switch ----
+            chapters.forEach((ch) => {
+                const idx = parseInt(ch.dataset.chapter, 10) || 0;
+                const lines = ch.querySelectorAll('.line > span');
+                const rises = ch.querySelectorAll('.rise');
+
+                const tl = gsap.timeline({
+                    scrollTrigger: { trigger: ch, start: 'top 72%', toggleActions: 'play none none none' },
+                });
+                if (lines.length) {
+                    tl.from(lines, { yPercent: 118, duration: 1.05, ease: 'expo.out', stagger: 0.09 });
+                }
+                if (rises.length) {
+                    tl.from(rises, { y: 42, opacity: 0, duration: 0.85, ease: 'power3.out', stagger: 0.09 }, lines.length ? '-=0.55' : 0);
+                }
+
+                // Parallax drift on the chapter content for depth
+                gsap.to(ch.querySelector('.chapter-inner'), {
+                    yPercent: -6, ease: 'none',
+                    scrollTrigger: { trigger: ch, start: 'top bottom', end: 'bottom top', scrub: true },
+                });
+
+                // Palette + counter switch when a chapter owns the viewport centre
+                ScrollTrigger.create({
+                    trigger: ch, start: 'top center', end: 'bottom center',
+                    onToggle: (self) => {
+                        if (!self.isActive) return;
+                        setPaletteTarget(idx);
+                        if (counterCur) counterCur.textContent = String(idx).padStart(2, '0');
+                        if (counterName) counterName.textContent = ch.dataset.name || '';
+                    },
+                });
+            });
+
+            // ---- Count-up on the stat numbers ----
+            document.querySelectorAll('.stat-num[data-count]').forEach((el) => {
+                const end = parseInt(el.dataset.count, 10);
+                const suffix = el.dataset.suffix || '';
+                const obj = { v: 0 };
+                gsap.to(obj, {
+                    v: end, duration: 1.6, ease: 'power2.out',
+                    scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+                    onUpdate: () => { el.textContent = Math.round(obj.v) + suffix; },
+                });
+            });
+
+            ScrollTrigger.refresh();
+        }
+
+        // Kick everything off
+        initPaint();
+        initMotion();
     </script>
 </body>
 
