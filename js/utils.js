@@ -2,7 +2,7 @@
  * Utility functions for CNSPK Website
  */
 
-import { sanitizeHTML } from './lib/sanitize.js';
+import { sanitizeHTML, sanitizeAttribute, sanitizeURL } from './lib/sanitize.js';
 
 // Simple robust logger for CNSPK
 const log = {
@@ -41,6 +41,34 @@ export async function fetchData(url) {
  */
 export function sanitize(dirty) {
     return sanitizeHTML(dirty);
+}
+
+/**
+ * Sanitizes a RAW value that lands inside a quoted HTML attribute
+ * (`alt="…"`, `data-username="…"`, `id="…"`).
+ *
+ * Pass the original value, not the output of sanitize(), so entities are
+ * escaped exactly once. Entity escaping is transparent to the HTML parser, so
+ * `dataset`/`getAttribute` still read the original string.
+ *
+ * @param {*} value - Raw untrusted value.
+ * @returns {string} A value that cannot escape its attribute (Req 2.4).
+ */
+export function sanitizeAttr(value) {
+    return sanitizeAttribute(value);
+}
+
+/**
+ * Sanitizes a RAW value destined for `href` / `src`.
+ *
+ * Allows http/https/mailto/tel and relative URLs; anything executable
+ * (`javascript:`, `data:`, …) collapses to an empty, inert value (Req 2.4).
+ *
+ * @param {*} value - Raw untrusted URL.
+ * @returns {string} A safe URL, or '' when the value is not safe to link to.
+ */
+export function sanitizeUrl(value) {
+    return sanitizeURL(value);
 }
 
 /**

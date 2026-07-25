@@ -12,12 +12,20 @@
  *   .flyTo(lat, lng, zoom = 10)
  *   .openPopupByUsername(username)
  *
+ * Added: .setCityData(cityData) / .getUnresolvedCities()
+ *
+ * Pin placement is decided by js/lib/map-render.js, not here: exactly one pin per
+ * record whose city (or carried coordinates) resolves, no pin for an empty or
+ * unresolvable city — that city is recorded instead — and, when approval gating
+ * is on, only approved records at all (Requirements 12.2, 12.3, 12.4).
+ *
  * Tiles preserved: CartoDB Dark Matter (dark_all).
  * Marker / popup styling is themed where Leaflet allows it.
  * ----------------------------------------------------------
  */
 
-import { domReady, sanitize } from './utils.js';
+import { domReady, sanitize, sanitizeAttr } from './utils.js';
+import { buildCityIndex, buildPins, summarizeUnresolved } from './lib/map-render.js';
 
 export class Map {
     constructor(elementId) {
@@ -25,6 +33,25 @@ export class Map {
         this.map = null;
         this.markers = [];
         this.tileLayer = null;
+        /** Built city index used to place records that carry a city but no coords. */
+        this.cityIndex = null;
+        /** Deduped report of cities that got no pin on the last render. */
+        this.unresolvedCities = [];
+    }
+
+    /**
+     * Supply city data (`data/pakistan-cities.json` or `data/city-coords.json`)
+     * so records carrying only a city label can still be placed.
+     * @param {object|Array} cityData
+     */
+    setCityData(cityData) {
+        this.cityIndex = cityData ? buildCityIndex(cityData) : null;
+        return this;
+    }
+
+    /** Cities that could not be resolved on the last render, with counts. */
+    getUnresolvedCities() {
+        return this.unresolvedCities.slice();
     }
 
     /** Inject Leaflet popup + highlight theming once. Tokens from tokens.css. */
@@ -126,13 +153,30 @@ export class Map {
     }
 
     /**
-     * Update markers on the map
+     * Update markers on the map.
+     *
+     * Placement is delegated to js/lib/map-render.js: one marker per resolvable
+     * record, nothing for an unresolvable city (recorded instead), and only
+     * approved records when approval gating is enabled.
+     *
      * @param {Array} members
+     * @param {{ requireApproval?: boolean, cityData?: object }} [options]
      */
-    updateMarkers(members) {
+    updateMarkers(members, options = {}) {
         // Clear existing markers
         this.markers.forEach(marker => this.map.removeLayer(marker));
         this.markers = [];
+
+        const cityIndex = options.cityData ? buildCityIndex(options.cityData) : this.cityIndex;
+        const { pins, unresolved } = buildPins(members, cityIndex, {
+            requireApproval: options.requireApproval === true
+        });
+
+        this.unresolvedCities = summarizeUnresolved(unresolved);
+        if (this.unresolvedCities.length) {
+            console.warn('[map] no pin placed for unresolved cities:',
+                this.unresolvedCities.map(u => `${u.city} x${u.count}`).join(', '));
+        }
 
         // Lime member marker
         const icon = L.divIcon({
@@ -142,24 +186,29 @@ export class Map {
             iconAnchor: [7, 7]
         });
 
-        members.forEach(member => {
-            if (member.lat && member.lng) {
-                const safeName = sanitize(member.name);
-                const safeUser = sanitize(member.username);
-                const marker = L.marker([member.lat, member.lng], { icon: icon })
-                    .bindPopup(`
-                        <div class="cnspk-map-popup">
-                            <strong class="cnspk-map-popup__name">${safeName}</strong>
-                            <span class="cnspk-map-popup__handle">@${safeUser}</span><br/>
-                            <a href="#member-${safeUser}" data-view-card="${safeUser}" class="cnspk-map-popup__link view-card-link">View Card →</a>
-                        </div>
-                    `)
-                    .addTo(this.map);
+        pins.forEach(pin => {
+            const member = pin.record;
+            const safeName = sanitize(member.name);
+            const safeUser = sanitize(member.username);
+            // Attribute context inside the popup: the href fragment and the
+            // data-view-card hook the click delegate reads. Escaped from the raw
+            // handle so it cannot close the attribute and add an event handler;
+            // entity escaping is transparent to dataset.viewCard, so card lookup
+            // is unchanged (Req 2.4).
+            const attrUser = sanitizeAttr(member.username);
+            const marker = L.marker([pin.lat, pin.lng], { icon: icon })
+                .bindPopup(`
+                    <div class="cnspk-map-popup">
+                        <strong class="cnspk-map-popup__name">${safeName}</strong>
+                        <span class="cnspk-map-popup__handle">@${safeUser}</span><br/>
+                        <a href="#member-${attrUser}" data-view-card="${attrUser}" class="cnspk-map-popup__link view-card-link">View Card →</a>
+                    </div>
+                `)
+                .addTo(this.map);
 
-                // Store username for later lookup
-                marker._username = member.username;
-                this.markers.push(marker);
-            }
+            // Store username for later lookup
+            marker._username = member.username;
+            this.markers.push(marker);
         });
 
         // Set up event delegation for View Card links (only once)

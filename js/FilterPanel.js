@@ -22,6 +22,8 @@
  * ----------------------------------------------------------
  */
 
+import { sanitize, sanitizeAttr } from './utils.js';
+
 export class FilterPanel {
     constructor(onFilterChange) {
         this.onFilterChange = onFilterChange;
@@ -154,6 +156,12 @@ export class FilterPanel {
         document.head.appendChild(style);
     }
 
+    /**
+     * Filter bar markup. The city/team lists describe directory data, so their
+     * option values and labels go through the shared sanitize wrapper — inert for
+     * today's fixed lists, and already hardened if the lists are ever sourced
+     * from the members feed (Req 2.4).
+     */
     render() {
         this.injectStyles();
 
@@ -169,12 +177,12 @@ export class FilterPanel {
                 <div class="cnspk-filter-panel__controls">
                     <select id="filter-city" class="cnspk-filter-panel__select" aria-label="Filter by city">
                         <option value="">All Cities</option>
-                        ${this.cities.map(c => `<option value="${c}">${c}</option>`).join('')}
+                        ${this.cities.map(c => `<option value="${sanitizeAttr(c)}">${sanitize(c)}</option>`).join('')}
                     </select>
 
                     <select id="filter-team" class="cnspk-filter-panel__select" aria-label="Filter by team">
                         <option value="">All Teams</option>
-                        ${this.teams.map(t => `<option value="${t.toLowerCase()}">${t}</option>`).join('')}
+                        ${this.teams.map(t => `<option value="${sanitizeAttr(String(t).toLowerCase())}">${sanitize(t)}</option>`).join('')}
                     </select>
 
                     <div class="cnspk-filter-panel__field">

@@ -26,7 +26,7 @@
  * ----------------------------------------------------------
  */
 
-import { sanitize } from './utils.js';
+import { sanitize, sanitizeAttr, sanitizeUrl } from './utils.js';
 
 export class SessionDetail {
     constructor(session) {
@@ -361,13 +361,17 @@ export class SessionDetail {
         const safeSummary = sanitize(summary);
         const safeTopic = sanitize(topic);
         const safeDuration = sanitize(duration);
-        const safeThumb = sanitize(thumbnail);
+        // URL context (hero image / portrait) and attribute context (alt, title,
+        // iframe title) both take the raw values (Req 2.4).
+        const safeThumb = sanitizeUrl(thumbnail);
+        const attrTitle = sanitizeAttr(title);
 
         const sp = speaker || {};
         const safeSpeakerName = sanitize(sp.name);
         const safeSpeakerRole = sanitize(sp.role);
         const safeSpeakerCompany = sanitize(sp.company);
-        const safeSpeakerImg = sanitize(sp.image);
+        const safeSpeakerImg = sanitizeUrl(sp.image);
+        const attrSpeakerName = sanitizeAttr(sp.name);
         const speakerRoleLine = [safeSpeakerRole, safeSpeakerCompany].filter(Boolean).join(' @ ');
 
         const parsed = new Date(date);
@@ -376,10 +380,15 @@ export class SessionDetail {
             : parsed.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
         const isRecorded = type === 'recorded';
-        const embedId = isRecorded && recordingUrl ? recordingUrl.split('/').pop() : null;
+        // The YouTube id goes straight into the embed URL. Video ids are
+        // `[A-Za-z0-9_-]`, so anything else is dropped: a crafted recordingUrl
+        // cannot break out of the iframe src attribute (Req 2.4).
+        const rawEmbedId = isRecorded && recordingUrl ? String(recordingUrl).split('/').pop() : null;
+        const embedId = rawEmbedId ? rawEmbedId.replace(/[^A-Za-z0-9_-]/g, '') : null;
 
-        // Share URLs — preserved from the original moat behaviour.
-        const shareUrl = window.location.href;
+        // Share URLs — preserved from the original moat behaviour. Guarded so the
+        // component can also render outside a browser (e.g. under test).
+        const shareUrl = typeof window !== 'undefined' && window.location ? window.location.href : '';
         const linkedInShare = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
         const twitterShare = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`Check out this session on "${safeTitle}" by ${sp.name || 'CNSPK'} at Cloud Native Security Pakistan!`)}&url=${encodeURIComponent(shareUrl)}`;
 
@@ -407,14 +416,14 @@ export class SessionDetail {
                 <!-- Hero: embed or upcoming-registration -->
                 <div class="cnspk-sd__hero">
                     ${isRecorded && embedId ? `
-                        <iframe src="https://www.youtube.com/embed/${embedId}?autoplay=1&mute=1" title="${safeTitle}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe src="https://www.youtube.com/embed/${embedId}?autoplay=1&mute=1" title="${attrTitle}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     ` : `
-                        <img src="${safeThumb}" class="cnspk-sd__hero-img" alt="${safeTitle}">
+                        <img src="${safeThumb}" class="cnspk-sd__hero-img" alt="${attrTitle}">
                         <div class="cnspk-sd__hero-overlay">
                             <div class="cnspk-sd__upcoming-card">
                                 <div class="cnspk-sd__upcoming-eyebrow">// upcoming-session</div>
                                 <h3 class="cnspk-sd__upcoming-title">Registration Open</h3>
-                                <a href="${sanitize(this.session.registrationUrl)}" target="_blank" rel="noopener noreferrer" class="btn-primary btn-primary--sm">Register Here</a>
+                                <a href="${sanitizeUrl(this.session.registrationUrl)}" target="_blank" rel="noopener noreferrer" class="btn-primary btn-primary--sm">Register Here</a>
                             </div>
                         </div>
                     `}
@@ -430,7 +439,7 @@ export class SessionDetail {
                     <h1 class="cnspk-sd__title">${safeTitle}</h1>
 
                     <div class="cnspk-sd__speaker">
-                        <img src="${safeSpeakerImg}" class="cnspk-sd__speaker-img" alt="${safeSpeakerName}" loading="lazy"
+                        <img src="${safeSpeakerImg}" class="cnspk-sd__speaker-img" alt="${attrSpeakerName}" loading="lazy"
                              onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(sp.name || 'CNSPK')}&background=C7FF3E&color=0F1115'">
                         <div>
                             <p class="cnspk-sd__speaker-name">${safeSpeakerName}</p>

@@ -24,6 +24,7 @@
  */
 
 import { MEMBERSHIP } from './membership-config.js';
+import { sanitizeHTML, sanitizeAttribute } from './lib/sanitize.js';
 
 export class MembershipForm {
   constructor() {
@@ -60,7 +61,9 @@ export class MembershipForm {
 
   fillCityDatalist() {
     const dl = document.getElementById('cnspk-city-list');
-    if (dl) dl.innerHTML = this.cities.map(c => `<option value="${c}"></option>`).join('');
+    // City names come from a fetched dataset, so they are escaped for the
+    // attribute they land in (Req 2.4).
+    if (dl) dl.innerHTML = this.cities.map(c => `<option value="${sanitizeAttribute(c)}"></option>`).join('');
   }
 
   injectStyles() {
@@ -357,17 +360,25 @@ export class MembershipForm {
     this.showSuccess(name, city, featured);
   }
 
+  /**
+   * Thank-you panel. The name and city are intake values typed by the visitor,
+   * so both pass through the shared sanitize wrapper before they are written
+   * back into the page — no script and no event-handler attribute can be
+   * introduced through the form (Req 2.4).
+   */
   showSuccess(name, city, featured) {
     const body = document.getElementById('cnspk-mf-body');
     if (!body) return;
+    const safeName = sanitizeHTML(name);
+    const safeCity = sanitizeHTML(city);
     const mapLine = featured
-      ? `Your pin appears on the members map shortly. See you in ${city}.`
+      ? `Your pin appears on the members map shortly. See you in ${safeCity}.`
       : `You're a private member — not on the public map. You can ask to be featured any time.`;
     body.innerHTML = `
       <div class="cnspk-mf__success">
         <div class="check" aria-hidden="true">✓</div>
         <h3>You're registered.</h3>
-        <p><strong style="color:var(--bone)">${name}</strong> — welcome to CNSPK. Your <strong style="color:var(--lime)">membership number</strong> is on its way to your email.</p>
+        <p><strong style="color:var(--bone)">${safeName}</strong> — welcome to CNSPK. Your <strong style="color:var(--lime)">membership number</strong> is on its way to your email.</p>
         <p style="margin-top:10px">${mapLine}</p>
         <p style="margin-top:16px;font-family:var(--font-mono);font-size:12px;color:var(--steel)">kubectl apply -f pakistan.yaml</p>
       </div>`;

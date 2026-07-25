@@ -285,8 +285,8 @@
         import { FilterPanel } from '../js/FilterPanel.js';
         import { Navbar } from '../js/Navbar.js';
         import { Map } from '../js/Map.js';
-        import { domReady } from '../js/utils.js';
-        import { getAllMembers } from '../js/members-source.js';
+        import { domReady, sanitizeAttr } from '../js/utils.js';
+        import { getAllMembers, getCityData } from '../js/members-source.js';
         import { MembershipForm } from '../js/MembershipForm.js';
 
         // Initialize Nav (No footer on this dashboard view)
@@ -317,6 +317,8 @@
 
                 // Fetch Data — seed members + live Google-Sheet submissions, geocoded.
                 allMembers = await getAllMembers();
+                // City data lets the map resolve a record that carries only a city.
+                mapInstance.setCityData(getCityData());
                 loading.classList.add('hidden');
 
                 if (!allMembers || allMembers.length === 0) {
@@ -381,10 +383,14 @@
             container.innerHTML = members.map(member => {
                 // Add data attributes for click handling
                 const cardHtml = new MemberCard(member).render();
-                // Add data attributes to the article - the id is already set by MemberCard
+                // Add data attributes to the article - the id is already set by MemberCard.
+                // These values come from the members feed, so they are escaped for
+                // the attributes they land in; entity escaping is transparent to
+                // dataset, so the click handler still reads the original values
+                // (Req 2.4).
                 return cardHtml.replace(
                     '<article ',
-                    `<article data-lat="${member.lat}" data-lng="${member.lng}" data-username="${member.username}" `
+                    `<article data-lat="${sanitizeAttr(member.lat)}" data-lng="${sanitizeAttr(member.lng)}" data-username="${sanitizeAttr(member.username)}" `
                 ).replace(
                     'class="glass-panel',
                     'class="cursor-pointer glass-panel'

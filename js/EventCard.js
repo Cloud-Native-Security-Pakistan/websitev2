@@ -19,7 +19,7 @@
  * ----------------------------------------------------------
  */
 
-import { sanitize } from './utils.js';
+import { sanitize, sanitizeAttr, sanitizeUrl } from './utils.js';
 
 export class EventCard {
     constructor(event) {
@@ -227,8 +227,11 @@ export class EventCard {
         const safeLoc = sanitize(location);
         const safeType = sanitize(type);
         const safeTime = sanitize(time);
-        const safeLink = sanitize(link);
-        const safeImage = sanitize(image);
+        // URL context: an executable `javascript:` link/image collapses to an
+        // inert empty value. Attribute context: alt / aria-label (Req 2.4).
+        const safeLink = sanitizeUrl(link);
+        const safeImage = sanitizeUrl(image);
+        const attrTitle = sanitizeAttr(title);
 
         // City chip derived from the real location field ("Lahore, Pakistan" -> "Lahore").
         const city = location ? sanitize(String(location).split(',')[0].trim()) : '';
@@ -249,7 +252,7 @@ export class EventCard {
             <article class="cnspk-event-card">
                 <div class="cnspk-event-card__media">
                     <img src="${safeImage}"
-                         alt="${safeTitle}"
+                         alt="${attrTitle}"
                          class="cnspk-event-card__img ${isPast ? 'cnspk-event-card__img--past' : ''}"
                          loading="lazy"
                          onerror="this.src='https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80'">
@@ -283,7 +286,7 @@ export class EventCard {
                            target="_blank"
                            rel="noopener noreferrer"
                            class="cnspk-event-card__cta ${isPast ? 'cnspk-event-card__cta--past' : ''}"
-                           aria-label="${isPast ? 'View details for' : 'Register for'} ${safeTitle}">
+                           aria-label="${isPast ? 'View details for' : 'Register for'} ${attrTitle}">
                             <span>${isPast ? 'View details' : 'Register'}</span>
                             ${arrowIcon}
                         </a>

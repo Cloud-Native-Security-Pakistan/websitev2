@@ -292,7 +292,7 @@
     <script type="module">
         import { Navbar } from '/js/Navbar.js';
         import { Footer } from '/js/Footer.js';
-        import { fetchData, sanitize, domReady } from '/js/utils.js';
+        import { fetchData, sanitize, sanitizeAttr, sanitizeUrl, domReady } from '/js/utils.js';
         new Navbar().init();
         new Footer().init();
 
@@ -304,12 +304,16 @@
             const meta = sanitize([s.role, s.company].filter(Boolean).join(' @ '));
             const ini = sanitize(initials(s.name));
             const count = `${s.talks} talk${s.talks === 1 ? '' : 's'}`;
+            // Speaker values come from the sessions feed: text through sanitize,
+            // attributes through sanitizeAttr, and portrait/social URLs through
+            // sanitizeUrl so an executable link collapses to an inert one (Req 2.4).
+            const attrName = sanitizeAttr(s.name);
             const avatar = s.image
-                ? `<span class="avatar">${ini}<img src="${sanitize(s.image)}" alt="${name} — speaker portrait" loading="lazy" decoding="async"></span>`
+                ? `<span class="avatar">${ini}<img src="${sanitizeUrl(s.image)}" alt="${attrName} — speaker portrait" loading="lazy" decoding="async"></span>`
                 : `<span class="avatar">${ini}</span>`;
             const socials = [
-                s.linkedin && `<a href="${sanitize(s.linkedin)}" target="_blank" rel="noopener noreferrer">// linkedin</a>`,
-                s.twitter && `<a href="${sanitize(s.twitter)}" target="_blank" rel="noopener noreferrer">// twitter</a>`
+                s.linkedin && `<a href="${sanitizeUrl(s.linkedin)}" target="_blank" rel="noopener noreferrer">// linkedin</a>`,
+                s.twitter && `<a href="${sanitizeUrl(s.twitter)}" target="_blank" rel="noopener noreferrer">// twitter</a>`
             ].filter(Boolean).join('');
             return `
                 <article class="speaker-card" role="listitem">

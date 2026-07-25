@@ -21,7 +21,7 @@
  * ----------------------------------------------------------
  */
 
-import { sanitize } from './utils.js';
+import { sanitize, sanitizeAttr, sanitizeUrl } from './utils.js';
 
 export class SessionCard {
     constructor(session) {
@@ -267,13 +267,19 @@ export class SessionCard {
         const safeDesc = sanitize(description);
         const safeTopic = sanitize(topic);
         const safeDuration = sanitize(duration);
-        const safeThumb = sanitize(thumbnail);
+        // URL context: only linkable schemes survive (Req 2.4).
+        const safeThumb = sanitizeUrl(thumbnail);
+        // Attribute context: alt / id / data-* built from the raw values so the
+        // value cannot close its attribute and add an event handler (Req 2.4).
+        const attrTitle = sanitizeAttr(title);
+        const attrId = sanitizeAttr(id);
 
         const sp = speaker || {};
         const safeSpeakerName = sanitize(sp.name);
         const safeSpeakerRole = sanitize(sp.role);
         const safeSpeakerCompany = sanitize(sp.company);
-        const safeSpeakerImg = sanitize(sp.image);
+        const safeSpeakerImg = sanitizeUrl(sp.image);
+        const attrSpeakerName = sanitizeAttr(sp.name);
 
         const isUpcoming = type === 'upcoming';
         const parsed = new Date(date);
@@ -283,7 +289,9 @@ export class SessionCard {
 
         // Routing preserved: recorded sessions are a clickable card linking to
         // the detail view; upcoming sessions are a static div with a Register CTA.
-        const cardLink = isUpcoming ? null : `/sessions/view/?id=${id}`;
+        // The id travels as a query parameter, so encode it: benign slugs are
+        // unchanged, and quotes/markup can never break out of the href.
+        const cardLink = isUpcoming ? null : `/sessions/view/?id=${encodeURIComponent(id ?? '')}`;
         const wrapperTag = cardLink ? 'a' : 'div';
         const wrapperAttrs = cardLink ? `href="${cardLink}"` : '';
 
@@ -293,10 +301,10 @@ export class SessionCard {
         const speakerRoleLine = [safeSpeakerRole, safeSpeakerCompany].filter(Boolean).join(' @ ');
 
         return `
-            <${wrapperTag} ${wrapperAttrs} class="cnspk-session-card" data-session-id="${id}">
+            <${wrapperTag} ${wrapperAttrs} class="cnspk-session-card" data-session-id="${attrId}">
                 <div class="cnspk-session-card__media">
                     <img src="${safeThumb}"
-                         alt="${safeTitle}"
+                         alt="${attrTitle}"
                          class="cnspk-session-card__img"
                          loading="lazy"
                          onerror="this.src='https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80'">
@@ -312,7 +320,7 @@ export class SessionCard {
                 <div class="cnspk-session-card__body">
                     <div class="cnspk-session-card__speaker">
                         <img src="${safeSpeakerImg}"
-                             alt="${safeSpeakerName}"
+                             alt="${attrSpeakerName}"
                              class="cnspk-session-card__speaker-img"
                              loading="lazy"
                              onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(sp.name || 'CNSPK')}&background=C7FF3E&color=0F1115'">
@@ -334,7 +342,7 @@ export class SessionCard {
 
                     <div class="cnspk-session-card__foot">
                         ${isUpcoming ? `
-                            <a href="${sanitize(registrationUrl)}"
+                            <a href="${sanitizeUrl(registrationUrl)}"
                                target="_blank"
                                rel="noopener noreferrer"
                                class="cnspk-session-card__action">

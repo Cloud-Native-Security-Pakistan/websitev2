@@ -25,7 +25,7 @@
  * ----------------------------------------------------------
  */
 
-import { sanitize } from './utils.js';
+import { sanitize, sanitizeAttr, sanitizeUrl } from './utils.js';
 
 export class MemberCard {
     constructor(member) {
@@ -222,6 +222,12 @@ export class MemberCard {
         const safeRole = sanitize(role || 'Community Member');
         const safeLocation = sanitize(location || 'Pakistan');
 
+        // Attribute-context copies (id / aria-label). Built from the raw values
+        // so entities are escaped once and the value can never close its
+        // attribute and smuggle in an event handler (Req 2.4).
+        const attrUser = sanitizeAttr(username);
+        const attrName = sanitizeAttr(name || username);
+
         // Monogram: up to two initials from the display name.
         const monogram = safeName
             .split(/\s+/)
@@ -237,8 +243,12 @@ export class MemberCard {
         const linkedinIcon = `<svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>`;
         const xIcon = `<svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`;
 
+        // URL-context values: only http/https/mailto/tel and relative URLs
+        // survive, so a `javascript:` handle renders as an inert empty href.
         const githubHref = github
-            ? (github.startsWith('http') ? sanitize(github) : `https://github.com/${sanitize(github)}`)
+            ? (String(github).startsWith('http')
+                ? sanitizeUrl(github)
+                : `https://github.com/${sanitizeAttr(github)}`)
             : '';
 
         const interestTags = (interests && interests.length)
@@ -246,7 +256,7 @@ export class MemberCard {
             : '';
 
         return `
-            <article id="member-${safeUser}" class="cnspk-member-card">
+            <article id="member-${attrUser}" class="cnspk-member-card">
                 <div class="cnspk-member-card__top">
                     <div class="cnspk-member-card__identity">
                         <div class="cnspk-member-card__avatar" aria-hidden="true">${monogram}</div>
@@ -268,10 +278,10 @@ export class MemberCard {
                 ${interestTags ? `<div class="cnspk-member-card__tags">${interestTags}</div>` : ''}
 
                 <div class="cnspk-member-card__socials">
-                    ${link ? `<a href="${sanitize(link)}" target="_blank" rel="noopener noreferrer" class="cnspk-member-card__social" title="CNCF Profile" aria-label="${safeName} on CNCF Community">${globeIcon}</a>` : ''}
-                    ${github ? `<a href="${githubHref}" target="_blank" rel="noopener noreferrer" class="cnspk-member-card__social" title="GitHub" aria-label="${safeName} on GitHub">${githubIcon}</a>` : ''}
-                    ${linkedin ? `<a href="${sanitize(linkedin)}" target="_blank" rel="noopener noreferrer" class="cnspk-member-card__social" title="LinkedIn" aria-label="${safeName} on LinkedIn">${linkedinIcon}</a>` : ''}
-                    ${twitter ? `<a href="${sanitize(twitter)}" target="_blank" rel="noopener noreferrer" class="cnspk-member-card__social" title="X / Twitter" aria-label="${safeName} on X">${xIcon}</a>` : ''}
+                    ${link ? `<a href="${sanitizeUrl(link)}" target="_blank" rel="noopener noreferrer" class="cnspk-member-card__social" title="CNCF Profile" aria-label="${attrName} on CNCF Community">${globeIcon}</a>` : ''}
+                    ${github ? `<a href="${githubHref}" target="_blank" rel="noopener noreferrer" class="cnspk-member-card__social" title="GitHub" aria-label="${attrName} on GitHub">${githubIcon}</a>` : ''}
+                    ${linkedin ? `<a href="${sanitizeUrl(linkedin)}" target="_blank" rel="noopener noreferrer" class="cnspk-member-card__social" title="LinkedIn" aria-label="${attrName} on LinkedIn">${linkedinIcon}</a>` : ''}
+                    ${twitter ? `<a href="${sanitizeUrl(twitter)}" target="_blank" rel="noopener noreferrer" class="cnspk-member-card__social" title="X / Twitter" aria-label="${attrName} on X">${xIcon}</a>` : ''}
                 </div>
             </article>
         `;

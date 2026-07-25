@@ -482,7 +482,7 @@
         import { SessionCard } from '../js/SessionCard.js';
         import { Navbar } from '../js/Navbar.js';
         import { Footer } from '../js/Footer.js';
-        import { fetchData, domReady, debounce } from '../js/utils.js';
+        import { fetchData, domReady, debounce, sanitize, sanitizeAttr } from '../js/utils.js';
 
         new Navbar().init();
         new Footer().init();
@@ -538,8 +538,12 @@
         function buildTopicFilter() {
             const bar = document.getElementById('topic-bar');
             const topics = [...new Set(allSessions.map(s => s.topic).filter(Boolean))].sort();
+            // Topic strings come from the sessions feed: the label goes through the
+            // shared sanitize wrapper and the data-topic value is attribute-escaped.
+            // Escaping is transparent to dataset.topic, so filtering by topic still
+            // matches the raw value (Req 2.4).
             const chips = topics.map(topic =>
-                `<button class="topic-btn" data-topic="${topic.replace(/"/g, '&quot;')}">${topic}</button>`
+                `<button class="topic-btn" data-topic="${sanitizeAttr(topic)}">${sanitize(topic)}</button>`
             ).join('');
             bar.insertAdjacentHTML('beforeend', chips);
         }
