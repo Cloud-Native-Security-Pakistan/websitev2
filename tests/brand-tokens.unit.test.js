@@ -12,9 +12,19 @@ import {
   COLOR_TOKENS,
   LIME,
   LIME_600,
+  PAK_GREEN,
+  LIGHT_SURFACE_TEXT_ACCENT,
+  LIME_USAGE,
+  MEASURED_CONTRAST,
   DARK_SURFACES,
   LIGHT_SURFACES,
   BODY_CONTRAST_MIN,
+  LARGE_TEXT_CONTRAST_MIN,
+  isLimeTextValid,
+  isLimeDecorationValid,
+  evaluateLimeUsage,
+  isLightSurfaceTextAccent,
+  textAccentForSurface,
   normalizeColor,
   isBrandToken,
   tokenNameOf,
@@ -97,11 +107,15 @@ describe('isLimeSurfaceValid — the lime-surface rule (Req 4.2, 6.5, 6.9)', () 
     expect(isLimeSurfaceValid(COLOR_TOKENS['lime-glow'], COLOR_TOKENS.bone)).toBe(false);
   });
 
-  it('accepts the #9BD11A companion on light surfaces', () => {
+  // Task 9.6 ruling: this assertion used to expect `true` for #9BD11A as text
+  // on bone. That was the false pass the audit caught — #9BD11A on bone is
+  // 1.62:1, so lime text on a light surface must now fail.
+  it('rejects the #9BD11A companion as text on light surfaces, keeps it on dark', () => {
     for (const surface of LIGHT_SURFACES) {
-      expect(isLimeSurfaceValid(LIME_600, surface)).toBe(true);
+      expect(isLimeSurfaceValid(LIME_600, surface)).toBe(false);
     }
     expect(isLimeSurfaceValid(LIME_600, COLOR_TOKENS.charcoal)).toBe(true);
+    expect(isLimeSurfaceValid(LIME_600, COLOR_TOKENS.carbon)).toBe(true);
   });
 
   it('affirms nothing for non-lime foregrounds or unparseable surfaces', () => {
@@ -136,6 +150,65 @@ describe('contrast — WCAG relative luminance (Req 4.1, 6.10)', () => {
     expect(meetsBodyContrast(LIME, COLOR_TOKENS.bone)).toBe(false);
     expect(meetsBodyContrast(COLOR_TOKENS.steel, COLOR_TOKENS.carbon)).toBe(false);
     expect(meetsBodyContrast('not-a-color', COLOR_TOKENS.carbon)).toBe(false);
+  });
+});
+
+describe('light-surface text accent — the task 9.6 ruling (Req 4.1, 4.2, 6.5, 6.8)', () => {
+  it('names pak-green as the light-surface text accent and passes body contrast on bone', () => {
+    expect(LIGHT_SURFACE_TEXT_ACCENT).toBe(PAK_GREEN);
+    expect(PAK_GREEN).toBe('#01411C');
+    expect(isLightSurfaceTextAccent('var(--pak-green)')).toBe(true);
+    expect(isLightSurfaceTextAccent(LIME_600)).toBe(false);
+
+    for (const surface of LIGHT_SURFACES) {
+      expect(meetsBodyContrast(LIGHT_SURFACE_TEXT_ACCENT, surface)).toBe(true);
+    }
+    // AAA territory, not a marginal pass.
+    expect(contrastRatio(PAK_GREEN, COLOR_TOKENS.bone)).toBeGreaterThan(7);
+    expect(contrastRatio(PAK_GREEN, COLOR_TOKENS.bone)).toBeCloseTo(
+      MEASURED_CONTRAST['pak-green-on-bone'], 1,
+    );
+  });
+
+  it('fails lime-600 as text on bone — the false pass the audit caught', () => {
+    expect(isLimeTextValid(LIME_600, COLOR_TOKENS.bone)).toBe(false);
+    expect(meetsBodyContrast(LIME_600, COLOR_TOKENS.bone)).toBe(false);
+    // It fails even the 3:1 large-text / UI floor, so "AA on light" is wrong.
+    expect(contrastRatio(LIME_600, COLOR_TOKENS.bone)).toBeLessThan(LARGE_TEXT_CONTRAST_MIN);
+    expect(contrastRatio(LIME_600, COLOR_TOKENS.bone)).toBeCloseTo(
+      MEASURED_CONTRAST['lime-600-on-bone'], 1,
+    );
+    expect(evaluateLimeUsage(LIME_600, COLOR_TOKENS.bone).reason).toContain(
+      LIGHT_SURFACE_TEXT_ACCENT,
+    );
+  });
+
+  it('passes lime as text on carbon', () => {
+    expect(isLimeTextValid(LIME, COLOR_TOKENS.carbon)).toBe(true);
+    expect(meetsBodyContrast(LIME, COLOR_TOKENS.carbon)).toBe(true);
+    expect(contrastRatio(LIME, COLOR_TOKENS.carbon)).toBeCloseTo(
+      MEASURED_CONTRAST['lime-on-carbon'], 1,
+    );
+    expect(textAccentForSurface(COLOR_TOKENS.carbon)).toBe(LIME);
+    expect(textAccentForSurface(COLOR_TOKENS.bone)).toBe(LIGHT_SURFACE_TEXT_ACCENT);
+    expect(textAccentForSurface('not-a-color')).toBeNull();
+  });
+
+  it('keeps lime-as-decoration-on-light expressible and allowed', () => {
+    for (const surface of LIGHT_SURFACES) {
+      expect(isLimeDecorationValid(LIME, surface)).toBe(true);
+      expect(isLimeDecorationValid(LIME_600, surface)).toBe(true);
+      expect(isLimeSurfaceValid(LIME_600, surface, LIME_USAGE.DECORATION)).toBe(true);
+      // Text and decoration stay distinguishable, not one collapsed boolean.
+      expect(isLimeSurfaceValid(LIME_600, surface, LIME_USAGE.TEXT)).toBe(false);
+    }
+    expect(isLimeDecorationValid(COLOR_TOKENS.gold, COLOR_TOKENS.bone)).toBe(false);
+    expect(isLimeSurfaceValid(LIME, COLOR_TOKENS.bone, 'engraving')).toBe(false);
+
+    const verdict = evaluateLimeUsage(LIME, COLOR_TOKENS.bone, LIME_USAGE.DECORATION);
+    expect(verdict.allowed).toBe(true);
+    expect(verdict.surface).toBe('light');
+    expect(verdict.usage).toBe(LIME_USAGE.DECORATION);
   });
 });
 

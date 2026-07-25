@@ -58,6 +58,18 @@
         .wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
         main { display: block; }
 
+        /* Screen-reader-only text: "opens in a new tab" on external doorways */
+        .sr-only {
+            position: absolute;
+            width: 1px; height: 1px;
+            padding: 0; margin: -1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            clip-path: inset(50%);
+            white-space: nowrap;
+            border: 0;
+        }
+
         /* ---- Scroll reveal ----------------------------------- */
         .reveal {
             opacity: 0;
@@ -158,6 +170,7 @@
         }
         .coc-link:hover, .coc-link:focus-visible { color: var(--lime); }
         .coc-link svg { width: 16px; height: 16px; flex-shrink: 0; }
+        .coc-line { margin-bottom: 20px; }
 
         /* ==========================================================
            Doorway Cards — 5-card grid, ordered by friction
@@ -205,12 +218,23 @@
             box-shadow: var(--shadow-elevated);
         }
 
-        /* Friction-ordered grid placement (desktop 2-2-1) */
+        /* Friction-ordered grid placement (desktop 2-2-1). Modifiers match the
+           doorway keys in js/lib/channels.js. */
         .doorway-card--whatsapp { grid-column: span 6; border-color: var(--lime); }
         .doorway-card--cncf     { grid-column: span 6; background: var(--bone); border-color: var(--bone-2); }
-        .doorway-card--signal   { grid-column: span 4; }
+        .doorway-card--social   { grid-column: span 4; }
         .doorway-card--github   { grid-column: span 4; }
         .doorway-card--discord  { grid-column: span 4; position: relative; }
+        .doorway-fallback       { grid-column: span 12; }
+        .doorway-fallback__list { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+        .doorway-fallback__list a {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--lime);
+        }
+        .doorway-fallback__list a:hover,
+        .doorway-fallback__list a:focus-visible { color: var(--lime-glow); }
 
         /* Primary doorway gets the lime offset accent bar */
         .doorway-card--whatsapp { position: relative; overflow: hidden; }
@@ -302,77 +326,25 @@
             font-size: 11px;
             color: var(--steel);
         }
+        /* Secondary social feeds under the social doorway's CTA */
+        .doorway-card__feeds {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--steel);
+        }
+        .doorway-card__feeds a { color: var(--steel); border-bottom: 1px dotted var(--steel); }
+        .doorway-card__feeds a:hover,
+        .doorway-card__feeds a:focus-visible { color: var(--lime); border-bottom-color: var(--lime); }
         .doorway-card__coc a { color: var(--steel); border-bottom: 1px dotted var(--steel); }
         .doorway-card__coc a:hover { color: var(--lime); border-bottom-color: var(--lime); }
         .doorway-card--cncf .doorway-card__coc { color: #4A4E57; }
         .doorway-card--cncf .doorway-card__coc a { color: #4A4E57; border-bottom-color: #4A4E57; }
         .doorway-card--cncf .doorway-card__coc a:hover { color: var(--pak-green); border-bottom-color: var(--pak-green); }
 
-        /* Coming soon badge */
-        .badge-coming-soon {
-            font-family: var(--font-mono);
-            font-size: 10px;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            padding: 4px 10px;
-            border-radius: var(--r-pill);
-            background: rgba(199, 255, 62, 0.12);
-            border: 1px solid rgba(199, 255, 62, 0.3);
-            color: var(--lime);
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-
-        /* Notify-me input (Discord waitlist — mailto fallback) */
-        .notify-me {
-            display: flex;
-            gap: 8px;
-            margin-top: 4px;
-            flex-wrap: wrap;
-        }
-        .notify-me label {
-            position: absolute;
-            width: 1px; height: 1px;
-            padding: 0; margin: -1px;
-            overflow: hidden; clip: rect(0 0 0 0);
-            white-space: nowrap; border: 0;
-        }
-        .notify-me input {
-            flex: 1;
-            min-width: 0;
-            padding: 11px 14px;
-            background: var(--carbon);
-            border: 1px solid var(--slate);
-            border-radius: var(--r-sm);
-            color: var(--bone);
-            font-family: var(--font-mono);
-            font-size: 13px;
-        }
-        .notify-me input::placeholder { color: var(--steel); }
-        .notify-me input:focus-visible {
-            outline: 2px solid var(--lime);
-            outline-offset: 1px;
-            border-color: var(--lime);
-        }
-        .notify-me a {
-            padding: 11px 16px;
-            background: var(--lime);
-            color: var(--carbon);
-            font-family: var(--font-mono);
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            border-radius: var(--r-sm);
-            text-decoration: none;
-            white-space: nowrap;
-            transition: background var(--dur-hover) var(--ease), transform var(--dur-hover) var(--ease);
-        }
-        .notify-me a:hover, .notify-me a:focus-visible { background: var(--lime-glow); color: var(--carbon); }
-
         @media (max-width: 900px) {
             .doorway-card--whatsapp,
             .doorway-card--cncf,
-            .doorway-card--signal,
+            .doorway-card--social,
             .doorway-card--github,
             .doorway-card--discord { grid-column: span 12; }
         }
@@ -628,26 +600,33 @@
                     <em>Bharosa</em> is earned, not asked for.
                 </p>
 
+                <!--
+                  Requirement 14.3: the Code of Conduct link precedes the FIRST join
+                  call-to-action in document reading order — so it sits above the hero
+                  CTA row, not below it. Do not move it under the buttons.
+                -->
+                <p class="coc-line">
+                    <a href="/code-of-conduct/" class="coc-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        Read the Code of Conduct → /code-of-conduct/
+                    </a>
+                </p>
+
                 <div class="hero-cta-row">
                     <a href="https://chat.whatsapp.com/F5Hf1ZwI22TK6EcV6zz4wo"
                         class="btn-primary" target="_blank" rel="noopener noreferrer">
                         Tap into WhatsApp
                         <span style="font-family:var(--font-mono);">→</span>
+                        <span class="sr-only">(opens in a new tab)</span>
                     </a>
                     <a href="/events/" class="btn-secondary">
                         <span class="mono">// sessions</span>
                         Browse upcoming sessions →
                     </a>
                 </div>
-
-                <!-- CoC link appears BEFORE the join flow per JOIN_STRATEGY §4 -->
-                <a href="/code-of-conduct/" class="coc-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                    </svg>
-                    Read the Code of Conduct → /code-of-conduct/
-                </a>
             </div>
         </section>
 
@@ -663,118 +642,35 @@
                     </p>
                 </div>
 
-                <div class="doorways-grid reveal">
-
-                    <!-- 1. WhatsApp — lowest friction, primary visual weight -->
-                    <article class="doorway-card doorway-card--whatsapp">
-                        <div class="doorway-card__topline">
-                            <span class="doorway-card__eyebrow">// 01 · whatsapp</span>
-                            <span class="doorway-card__friction">Friction: Lowest</span>
-                        </div>
-                        <h3 class="doorway-card__title">Tap In</h3>
-                        <p class="doorway-card__body">
-                            The casual room. ~280 members, daily chatter, weekly questions. Mute any time.
-                            No DMs from strangers — ask in the room first.
-                        </p>
-                        <a href="https://chat.whatsapp.com/F5Hf1ZwI22TK6EcV6zz4wo"
-                            class="doorway-card__cta" target="_blank" rel="noopener noreferrer">
-                            Join WhatsApp →
-                        </a>
-                        <p class="doorway-card__coc">
-                            House rules in the <a href="/code-of-conduct/">Code of Conduct</a>.
-                        </p>
-                    </article>
-
-                    <!-- 2. CNCF Chapter — bone surface, medium weight -->
-                    <article class="doorway-card doorway-card--cncf">
-                        <div class="doorway-card__topline">
-                            <span class="doorway-card__eyebrow">// 02 · cncf chapter</span>
-                            <span class="doorway-card__friction">Friction: Medium</span>
-                        </div>
-                        <h3 class="doorway-card__title">RSVP a Session</h3>
-                        <p class="doorway-card__body">
-                            See the community before you join it. RSVP via our official CNCF chapter page.
-                            Free. Pakistani-time. Recordings posted after.
-                        </p>
-                        <a href="https://community.cncf.io/cloud-native-security-pakistan/"
-                            class="doorway-card__cta" target="_blank" rel="noopener noreferrer">
-                            Browse Events →
-                        </a>
-                        <p class="doorway-card__coc">
-                            By attending you agree to the <a href="/code-of-conduct/">Code of Conduct</a>.
-                        </p>
-                    </article>
-
-                    <!-- 3. Follow the Signal — small chip-style card -->
-                    <article class="doorway-card doorway-card--signal">
-                        <div class="doorway-card__topline">
-                            <span class="doorway-card__eyebrow">// 03 · social</span>
-                            <span class="doorway-card__friction">Friction: Near-zero</span>
-                        </div>
-                        <h3 class="doorway-card__title">Follow the Signal</h3>
-                        <p class="doorway-card__body">
-                            Read-only. Long-form on LinkedIn. Quick takes on X. Tool Tuesday on Instagram.
-                            Twice a week, max. Zero DM sales.
-                        </p>
-                        <a href="https://www.linkedin.com/company/cloud-native-security-pakistan"
-                            class="doorway-card__cta" target="_blank" rel="noopener noreferrer">
-                            Pick a feed →
-                        </a>
-                        <p class="doorway-card__coc">
-                            <a href="https://x.com/CloudSecPK" target="_blank" rel="noopener noreferrer">X</a> ·
-                            <a href="https://www.instagram.com/cloudnativesecuritypk" target="_blank" rel="noopener noreferrer">Instagram</a> ·
-                            <a href="https://github.com/Cloud-Native-Security-Pakistan" target="_blank" rel="noopener noreferrer">GitHub</a>
-                        </p>
-                    </article>
-
-                    <!-- 4. GitHub Membership — full charcoal card, the formal lane -->
-                    <article class="doorway-card doorway-card--github">
-                        <div class="doorway-card__topline">
-                            <span class="doorway-card__eyebrow">// 04 · github</span>
-                            <span class="doorway-card__friction">Friction: High</span>
-                        </div>
-                        <h3 class="doorway-card__title">Become a Member</h3>
-                        <p class="doorway-card__body">
-                            The formal lane. Get on the members map, earn the badge, unlock Contributor and
-                            Mentor ranks. One issue → Newbie team → PR or form → Member.
-                        </p>
-                        <a href="https://github.com/Cloud-Native-Security-Pakistan/becoming-a-member"
-                            class="doorway-card__cta" target="_blank" rel="noopener noreferrer">
-                            Start the request →
-                        </a>
-                        <p class="doorway-card__coc">
-                            Membership terms in the <a href="/code-of-conduct/">Code of Conduct</a>.
-                        </p>
-                    </article>
-
-                    <!-- 5. Discord — half-card, Coming soon, notify-me -->
-                    <article class="doorway-card doorway-card--discord">
-                        <div class="doorway-card__topline">
-                            <span class="doorway-card__eyebrow">// 05 · discord</span>
-                            <span class="badge-coming-soon">Coming soon</span>
-                        </div>
-                        <h3 class="doorway-card__title">The Inner Circle</h3>
-                        <p class="doorway-card__body">
-                            The deep technical home: threaded, searchable, channel-organised. Get a notify-me
-                            when the doors open.
-                        </p>
-                        <!--
-                          TODO: No form backend exists yet. Per JOIN_STRATEGY §10 (WaitlistInput),
-                          falling back to a mailto notify-me. Wire to a real waitlist capture (or the
-                          /join/discord-waitlist route) before Discord launch, then delete this card's
-                          mailto fallback.
-                        -->
-                        <form class="notify-me" action="mailto:hi@cloudnativesecurity.pk" method="get"
-                            onsubmit="return false;">
-                            <label for="discord-email">Email for the Discord waitlist</label>
-                            <input type="email" id="discord-email" name="email"
-                                placeholder="you@domain.pk" autocomplete="email" />
-                            <a href="mailto:hi@cloudnativesecurity.pk?subject=Discord%20waitlist&body=Notify%20me%20when%20the%20CNSPK%20Discord%20opens.">
-                                Notify me →
-                            </a>
-                        </form>
-                    </article>
-
+                <!--
+                  The five cards render from data/channels.json through
+                  js/lib/channels.js + js/DoorwayCard.js: friction order, one external
+                  link per doorway opened in a separate browsing context, and any
+                  doorway with an empty configured URL dropped rather than rendered as
+                  a dead link (Req 14.1, 14.4, 14.7). Discord is a live direct invite:
+                  no launch-pending badge, no email capture, no disabled state (Req 14.5).
+                  Change a URL in data/channels.json; never hardcode a card here.
+                -->
+                <div class="doorways-grid reveal" id="doorways-grid" data-doorways-mount>
+                    <noscript>
+                        <article class="doorway-card doorway-fallback">
+                            <h3 class="doorway-card__title">Every door, plain links</h3>
+                            <p class="doorway-card__body">
+                                The doorway cards need JavaScript to read the channel config. The doors
+                                themselves don't — here they are directly.
+                            </p>
+                            <p class="doorway-card__coc">
+                                House rules in the <a href="/code-of-conduct/">Code of Conduct</a>.
+                            </p>
+                            <ul class="doorway-fallback__list">
+                                <li><a href="https://chat.whatsapp.com/F5Hf1ZwI22TK6EcV6zz4wo" target="_blank" rel="noopener noreferrer">Join WhatsApp</a></li>
+                                <li><a href="https://community.cncf.io/cloud-native-security-pakistan/" target="_blank" rel="noopener noreferrer">Browse CNCF chapter events</a></li>
+                                <li><a href="https://www.linkedin.com/company/cloud-native-security-pakistan" target="_blank" rel="noopener noreferrer">Follow on LinkedIn</a></li>
+                                <li><a href="https://github.com/Cloud-Native-Security-Pakistan/becoming-a-member" target="_blank" rel="noopener noreferrer">Become a member on GitHub</a></li>
+                                <li><a href="https://discord.gg/wXFWN5ensp" target="_blank" rel="noopener noreferrer">Open the Discord invite</a></li>
+                            </ul>
+                        </article>
+                    </noscript>
                 </div>
             </div>
         </section>
@@ -878,9 +774,16 @@
     <script type="module">
         import { Navbar } from '/js/Navbar.js';
         import { Footer } from '/js/Footer.js';
+        import { mountDoorwaysFromConfig } from '/js/DoorwayCard.js';
 
         new Navbar().init();
         new Footer().init();
+
+        /* ---- Doorway picker — driven by data/channels.json ----
+           Renders the five doorways in friction order; a doorway whose URL is
+           empty is dropped, never rendered as a dead link. Falls back to the
+           compiled channel defaults if the config fetch fails. */
+        mountDoorwaysFromConfig('doorways-grid');
 
         /* ---- Scroll-reveal — respects prefers-reduced-motion ---- */
         (function () {

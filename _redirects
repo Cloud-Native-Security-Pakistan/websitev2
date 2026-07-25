@@ -1,0 +1,38 @@
+# ==========================================================================
+# CNSPK · Cloudflare Pages redirects  (task 16.1 · Requirements 1.3, 1.4)
+# ==========================================================================
+# One mechanism owns each redirect. No double hops.
+#
+#   www -> apex (308, path preserved) ....... Cloudflare Redirect Rule (edge)
+#                                             mirrored below for the record
+#   HTTP -> HTTPS ........................... Cloudflare "Always Use HTTPS"
+#                                             (SSL/TLS > Edge Certificates)
+#                                             NOT this file, by design
+#   unknown route ........................... /404.html (served automatically
+#                                             by Cloudflare Pages; no rule here)
+#
+# WHY THE www RULE LIVES AT THE EDGE, NOT HERE:
+# Cloudflare Pages' `_redirects` matches on path only — its own documentation
+# lists domain-level redirects as unsupported, and both hostnames map to the same
+# Pages project. So the authoritative implementation is a free Cloudflare
+# Redirect Rule (the exact rule is in DEPLOY.md), which fires at the edge before
+# the Pages project is reached. The declaration below is kept as a self-describing
+# mirror of that intent: if Pages ever honors a host-qualified source, it produces
+# the identical single 308 hop, so the two can never disagree or chain.
+#
+# DNS PREREQUISITE (verified 2025): `www.cloudnativesecurity.pk` currently does
+# not resolve at all — NXDOMAIN. Until a DNS record for `www` exists (CNAME to
+# the Pages project, proxied), this rule can never fire, because no request ever
+# reaches Cloudflare for that hostname. Adding the record is a cutover step in
+# DEPLOY.md.
+#
+# Also note: `_redirects` rules are not applied to requests served by Pages
+# Functions, so nothing here affects /api/*.
+#
+# No legacy path moves are declared: every route in the page map keeps its
+# existing path (Requirement 1.6), and /legacy/ stays reachable but is
+# disallowed in robots.txt rather than redirected.
+# ==========================================================================
+
+# source                                    destination                              code
+https://www.cloudnativesecurity.pk/*        https://cloudnativesecurity.pk/:splat    308

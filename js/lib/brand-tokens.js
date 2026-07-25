@@ -40,14 +40,79 @@ export const COLOR_TOKENS = Object.freeze({
   signal: '#06B6D4',
 });
 
+/* ----------------------------------------------------------
+   Measured contrast ratios — the light-surface accent ruling
+   ----------------------------------------------------------
+   Computed with `contrastRatio()` below (WCAG 2.1 relative
+   luminance) from the canonical token hexes:
+
+     lime      #C7FF3E on carbon  #0F1115 → 16.02 : 1   AAA
+     lime-600  #9BD11A on carbon  #0F1115 → 10.37 : 1   AAA
+     lime      #C7FF3E on bone    #F4F1EA →  1.05 : 1   fail
+     lime-600  #9BD11A on bone    #F4F1EA →  1.62 : 1   fail
+     lime-600  #9BD11A on bone-2  #E8E3D6 →  1.42 : 1   fail
+     pak-green #01411C on bone    #F4F1EA → 10.49 : 1   AAA
+     pak-green #01411C on bone-2  #E8E3D6 →  9.24 : 1   AAA
+     bone      #F4F1EA on carbon  #0F1115 → 16.75 : 1   AAA
+
+   AGENT_BRIEF.md describes lime-600 as "AA on light". That
+   line is WRONG: at 1.62:1 it is nowhere near the 4.5:1 body
+   minimum, and 1.62:1 also fails the 3:1 large-text/UI floor.
+   `css/tokens.css` carries the same incorrect note beside
+   `--lime-600` ("AA on bone/light") and should be corrected
+   there too.
+
+   STAKEHOLDER RULING (task 9.6): pak-green #01411C is the
+   light-surface / Embassy text accent. Lime and lime-600 are
+   permitted on light surfaces only as non-text graphical
+   decoration (rules, glows, fills, chart strokes) — never for
+   words a reader has to read. The two cases are kept
+   distinguishable in code via LIME_USAGE below rather than
+   collapsed into a single boolean.
+   ---------------------------------------------------------- */
+
 /** The signature lime accent — dark surfaces only (Req 6.5). */
 export const LIME = COLOR_TOKENS.lime;
 
-/** The lime companion that carries lime onto light surfaces (Req 4.2, 6.9). */
+/**
+ * The darker lime companion. Legible as text on dark surfaces (10.37:1 on
+ * carbon); on light surfaces it is decoration only (1.62:1 on bone) (Req 4.2, 6.9).
+ */
 export const LIME_600 = COLOR_TOKENS['lime-600'];
+
+/** Ceremonial heritage green, and the light-surface text accent (task 9.6). */
+export const PAK_GREEN = COLOR_TOKENS['pak-green'];
+
+/**
+ * The ruled text accent for light / Embassy surfaces: pak-green, 10.49:1 on
+ * bone and 9.24:1 on bone-2 (Req 4.1, 6.8).
+ */
+export const LIGHT_SURFACE_TEXT_ACCENT = PAK_GREEN;
+
+/** The measured ratios above, machine-readable for tests and the brand book. */
+export const MEASURED_CONTRAST = Object.freeze({
+  'lime-on-carbon': 16.02,
+  'lime-600-on-carbon': 10.37,
+  'lime-on-bone': 1.05,
+  'lime-600-on-bone': 1.62,
+  'lime-600-on-bone-2': 1.42,
+  'pak-green-on-bone': 10.49,
+  'pak-green-on-bone-2': 9.24,
+  'bone-on-carbon': 16.75,
+});
+
+/**
+ * How a color is being used. Text has to be read, so it carries the contrast
+ * obligation; decoration is non-text graphics and does not.
+ * @type {Readonly<{ TEXT: 'text', DECORATION: 'decoration' }>}
+ */
+export const LIME_USAGE = Object.freeze({ TEXT: 'text', DECORATION: 'decoration' });
 
 /** Lime-family tokens that are only legible on dark surfaces. */
 const BRIGHT_LIMES = Object.freeze([COLOR_TOKENS.lime, COLOR_TOKENS['lime-glow']]);
+
+/** Every lime-family token. */
+const LIME_FAMILY = Object.freeze([...BRIGHT_LIMES, COLOR_TOKENS['lime-600']]);
 
 /** The dark surface tokens: carbon, charcoal, slate (Req 6.5). */
 export const DARK_SURFACE_TOKENS = Object.freeze(['carbon', 'charcoal', 'slate']);
@@ -228,33 +293,115 @@ export function classifySurface(color) {
 }
 
 /**
- * Whether a lime usage obeys the lime-surface rule: `#C7FF3E` (and the brighter
- * `#E8FF8A` glow) only on dark surfaces, the `#9BD11A` companion on light.
+ * Whether a lime-family color may be used as TEXT on a surface.
  *
- * Returns false when either value is unparseable or when the foreground is not a
- * lime-family token — the rule can only be affirmed for lime usages.
+ * The whole lime family — `#C7FF3E`, `#E8FF8A`, and the `#9BD11A` companion — is
+ * dark-surface-only for text. On light surfaces no lime clears 4.5:1 (the
+ * companion manages 1.62:1 on bone), so light-surface text accents use
+ * `LIGHT_SURFACE_TEXT_ACCENT` (pak-green) instead.
  *
  * @param {string} limeColor
  * @param {string} surfaceColor
  * @returns {boolean}
  */
-export function isLimeSurfaceValid(limeColor, surfaceColor) {
+export function isLimeTextValid(limeColor, surfaceColor) {
   const lime = normalizeColor(limeColor);
   const surface = classifySurface(surfaceColor);
   if (lime === null || surface === 'unknown') return false;
+  if (!LIME_FAMILY.includes(lime)) return false;
+  return surface === 'dark';
+}
 
-  if (BRIGHT_LIMES.includes(lime)) {
-    // Bright lime is a dark-surface-only accent.
-    return surface === 'dark';
-  }
+/**
+ * Whether a lime-family color may be used as non-text DECORATION on a surface —
+ * rules, glows, fills, chart strokes, and other graphics that carry no words.
+ *
+ * Lime decoration is allowed on light surfaces: the ruling restricts lime on
+ * light to exactly this case, so it stays expressible rather than blanket-denied.
+ *
+ * @param {string} limeColor
+ * @param {string} surfaceColor
+ * @returns {boolean}
+ */
+export function isLimeDecorationValid(limeColor, surfaceColor) {
+  const lime = normalizeColor(limeColor);
+  const surface = classifySurface(surfaceColor);
+  if (lime === null || surface === 'unknown') return false;
+  return LIME_FAMILY.includes(lime);
+}
 
-  if (lime === LIME_600) {
-    // The companion is the required lime on light surfaces, and is also the
-    // lime used for dark-surface details (hover, CTA offset shadow).
-    return true;
-  }
-
+/**
+ * Whether a lime usage obeys the lime-surface rule for a given usage.
+ *
+ * Defaults to `LIME_USAGE.TEXT`, the obligation-carrying case: lime text is
+ * dark-surface-only, so lime-600 as text on bone now fails rather than
+ * reporting the old false pass. Pass `LIME_USAGE.DECORATION` for non-text
+ * graphics, which lime may carry on light surfaces too.
+ *
+ * Returns false when either value is unparseable, when the foreground is not a
+ * lime-family token, or when the usage is not a known usage — the rule can only
+ * be affirmed for lime usages.
+ *
+ * @param {string} limeColor
+ * @param {string} surfaceColor
+ * @param {'text' | 'decoration'} [usage] Defaults to text.
+ * @returns {boolean}
+ */
+export function isLimeSurfaceValid(limeColor, surfaceColor, usage = LIME_USAGE.TEXT) {
+  if (usage === LIME_USAGE.DECORATION) return isLimeDecorationValid(limeColor, surfaceColor);
+  if (usage === LIME_USAGE.TEXT) return isLimeTextValid(limeColor, surfaceColor);
   return false;
+}
+
+/**
+ * The full verdict for a lime usage, so callers can report *why* rather than
+ * just pass/fail.
+ *
+ * @param {string} limeColor
+ * @param {string} surfaceColor
+ * @param {'text' | 'decoration'} [usage]
+ * @returns {{ allowed: boolean, usage: string, surface: 'dark' | 'light' | 'unknown', ratio: number, reason: string }}
+ */
+export function evaluateLimeUsage(limeColor, surfaceColor, usage = LIME_USAGE.TEXT) {
+  const surface = classifySurface(surfaceColor);
+  const ratio = contrastRatio(limeColor, surfaceColor);
+  const allowed = isLimeSurfaceValid(limeColor, surfaceColor, usage);
+  let reason;
+  if (usage !== LIME_USAGE.TEXT && usage !== LIME_USAGE.DECORATION) {
+    reason = `unknown usage "${usage}"`;
+  } else if (normalizeColor(limeColor) === null || surface === 'unknown') {
+    reason = 'unparseable color or surface';
+  } else if (!LIME_FAMILY.includes(normalizeColor(limeColor))) {
+    reason = 'foreground is not a lime-family token';
+  } else if (allowed) {
+    reason = usage === LIME_USAGE.TEXT
+      ? `lime text on a ${surface} surface`
+      : `lime decoration carries no text obligation on a ${surface} surface`;
+  } else {
+    reason = `lime text on a light surface never reaches ${BODY_CONTRAST_MIN}:1 — use the light-surface text accent ${LIGHT_SURFACE_TEXT_ACCENT}`;
+  }
+  return { allowed, usage, surface, ratio, reason };
+}
+
+/**
+ * Whether a color is the ruled light-surface text accent (pak-green).
+ * @param {string} color
+ * @returns {boolean}
+ */
+export function isLightSurfaceTextAccent(color) {
+  return normalizeColor(color) === LIGHT_SURFACE_TEXT_ACCENT;
+}
+
+/**
+ * The text accent to use on a surface: lime on dark, pak-green on light.
+ * @param {string} surfaceColor
+ * @returns {string | null} A token hex, or null for an unclassifiable surface.
+ */
+export function textAccentForSurface(surfaceColor) {
+  const surface = classifySurface(surfaceColor);
+  if (surface === 'dark') return LIME;
+  if (surface === 'light') return LIGHT_SURFACE_TEXT_ACCENT;
+  return null;
 }
 
 /* ==========================================================

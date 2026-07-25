@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--
+        404 · Workshop register. Served automatically by Cloudflare Pages for any
+        unmatched route, and honored by GitHub Pages too, so it improves the live
+        site before the cutover. Requirement 1.5.
+        CSP mirrors the other static pages: local assets + the Google Fonts
+        stylesheet/font hosts that css/tokens.css @imports. Nothing else loads here.
+    -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'none';">
+
+    <title>404 · Page not found · CNSPK</title>
+    <meta name="description" content="That page doesn't exist on the CNSPK site. Head back to the home page or pick another door.">
+    <meta name="robots" content="noindex, follow">
+    <meta name="theme-color" content="#0F1115">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <!-- Performance: preconnect to Google Fonts origins (tokens.css @imports fonts) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Design tokens first -->
+    <link rel="stylesheet" href="/css/tokens.css">
+
+    <style>
+        /* ==========================================================
+           404 · Workshop register · page-specific styles
+           Carbon surface only, so lime is safe as an accent.
+           Never lime text on bone/light (≈1.6:1 — fails).
+        ========================================================== */
+
+        .wrap { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+
+        main { display: block; }
+
+        .nf {
+            position: relative;
+            overflow: hidden;
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            padding: 140px 0 100px;
+            background:
+                radial-gradient(ellipse 70% 50% at 30% 30%, rgba(199, 255, 62, 0.07) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 70% at 85% 75%, rgba(1, 65, 28, 0.35) 0%, transparent 60%),
+                var(--carbon);
+        }
+        .nf::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(199, 255, 62, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(199, 255, 62, 0.04) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none;
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
+        }
+
+        .nf-content { position: relative; z-index: 2; max-width: 820px; }
+
+        .nf-code {
+            font-family: var(--font-mono);
+            font-size: clamp(56px, 12vw, 140px);
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: -0.04em;
+            color: var(--lime);
+            margin-bottom: 16px;
+        }
+
+        .nf h1 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            font-size: clamp(32px, 5.5vw, 64px);
+            line-height: 0.98;
+            letter-spacing: -0.03em;
+            text-transform: uppercase;
+            color: var(--bone);
+            margin-bottom: 24px;
+        }
+
+        .nf .lede {
+            font-size: 18px;
+            color: var(--bone-2);
+            max-width: 620px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .nf-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .nf-detail {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--steel);
+            letter-spacing: 0.02em;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--slate);
+        }
+
+        /* ---- Secondary route list ---------------------------- */
+        .nf-routes { padding: 0 0 100px; background: var(--carbon); }
+
+        .nf-routes h2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: clamp(22px, 3vw, 32px);
+            letter-spacing: -0.02em;
+            color: var(--bone);
+            margin-bottom: 24px;
+        }
+
+        .nf-route-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+        }
+
+        .nf-route-list a {
+            display: block;
+            padding: 18px 20px;
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-md);
+            color: var(--bone);
+            text-decoration: none;
+            font-weight: 500;
+            transition: border-color var(--dur-hover) var(--ease),
+                        color var(--dur-hover) var(--ease);
+        }
+        .nf-route-list a:hover { border-color: var(--lime); color: var(--lime); }
+
+        /* ---- Visible focus, 3:1 against carbon and charcoal --- */
+        .nf a:focus-visible,
+        .nf-route-list a:focus-visible {
+            outline: 3px solid var(--lime);
+            outline-offset: 3px;
+            border-radius: var(--r-sm);
+        }
+
+        @media (max-width: 768px) {
+            .nf { padding: 100px 0 72px; }
+            .nf-routes { padding-bottom: 72px; }
+            .wrap { padding: 0 20px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===== Navbar (mounted via /js/Navbar.js) ===== -->
+    <div id="navbar"></div>
+
+    <main>
+
+        <!-- ===== Not found ===== -->
+        <section class="nf" aria-labelledby="nf-headline">
+            <div class="wrap nf-content">
+                <div class="section-eyebrow">// 404</div>
+
+                <p class="nf-code" aria-hidden="true">404</p>
+
+                <h1 id="nf-headline">This door doesn't open.</h1>
+
+                <p class="lede">
+                    The page you asked for isn't here — it may have moved, or the link may be
+                    mistyped. Nothing is broken on your end. Head back to the home page, or
+                    jump straight to one of the routes below.
+                </p>
+
+                <div class="nf-actions">
+                    <a href="/" class="btn-primary">Back to Home</a>
+                    <a href="/join/" class="btn-secondary">Join CNSPK</a>
+                </div>
+
+                <p class="nf-detail">
+                    status 404 · cloudnativesecurity.pk · if a link on this site brought you here,
+                    tell us on GitHub so we can fix it
+                </p>
+            </div>
+        </section>
+
+        <!-- ===== Common routes ===== -->
+        <section class="nf-routes" aria-labelledby="nf-routes-heading">
+            <div class="wrap">
+                <h2 id="nf-routes-heading">Where you probably wanted to go</h2>
+                <ul class="nf-route-list">
+                    <li><a href="/about/">About CNSPK</a></li>
+                    <li><a href="/events/">Events</a></li>
+                    <li><a href="/sessions/">Sessions</a></li>
+                    <li><a href="/members/">Members</a></li>
+                    <li><a href="/team/">Team</a></li>
+                    <li><a href="/brand/">Brand</a></li>
+                    <li><a href="/code-of-conduct/">Code of Conduct</a></li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== Footer (mounted via /js/Footer.js) ===== -->
+    <div id="footer"></div>
+
+    <script type="module">
+        import { Navbar } from '/js/Navbar.js';
+        import { Footer } from '/js/Footer.js';
+
+        new Navbar().init();
+        new Footer().init();
+    </script>
+</body>
+
+</html>

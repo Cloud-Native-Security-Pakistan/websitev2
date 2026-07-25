@@ -7,7 +7,11 @@
  *
  * Critical: the "Join" CTA always points at /join/ — the
  * doorway picker. Never link the navbar straight to GitHub,
- * WhatsApp, or the CNCF chapter. See JOIN_STRATEGY.md §2.
+ * WhatsApp, or the CNCF chapter. The destination comes from
+ * CANONICAL_JOIN_PATH in js/lib/channels.js, which is the one
+ * source of truth for it. See JOIN_STRATEGY.md §2.
+ *
+ * Validates: Requirements 14.2, 18.2
  *
  * Usage:
  *   <div id="navbar"></div>
@@ -21,6 +25,8 @@
  * ----------------------------------------------------------
  */
 
+import { CANONICAL_JOIN_PATH } from './lib/channels.js';
+
 export class Navbar {
     constructor() {
         this.navItems = [
@@ -31,7 +37,9 @@ export class Navbar {
             { name: 'Team', path: '/team/' },
             { name: 'Brand', path: '/brand/' }
         ];
-        this.cta = { name: 'Join →', path: '/join/' };
+        // Single canonical Join destination, sourced from js/lib/channels.js so
+        // the navbar CTA can never drift to a channel URL (Req 14.2, 18.2).
+        this.cta = { name: 'Join →', path: CANONICAL_JOIN_PATH };
     }
 
     init() {

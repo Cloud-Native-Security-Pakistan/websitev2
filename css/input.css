@@ -1,16 +1,75 @@
 @import "tailwindcss";
 
+/* ==========================================================
+   CNSPK · Tailwind theme — Electric Lime
+   ----------------------------------------------------------
+   `css/tokens.css` is the single source of truth for the
+   Electric Lime palette (audit correction A6). This block
+   only re-expresses those exact values as Tailwind v4 theme
+   colors so utility classes resolve to brand tokens.
+
+   Audit correction A5: this file used to declare the retired
+   emerald theme on `--color-brand-*`, and CI runs `build:css`
+   on every PR, so the compiled stylesheet kept painting
+   emerald over the rebrand. No emerald hex may appear in this
+   file again — every value below traces to tokens.css.
+
+   Two naming layers, both mapped onto the same tokens:
+     1. `brand-*` / `dark-*` — the legacy numeric scale that
+        existing markup still uses (`bg-brand-500`,
+        `border-brand-500`, `bg-dark-900`, …). Kept so live
+        pages keep resolving, now on the lime ramp.
+     2. Token names (`lime`, `carbon`, `bone`, `watch`, …) —
+        the preferred spelling for new work; these read the
+        same as the CSS custom properties in tokens.css.
+   ========================================================== */
+
 @theme {
-  --color-brand-50: #ecfdf5;
-  --color-brand-100: #d1fae5;
-  --color-brand-200: #a7f3d0;
-  --color-brand-300: #6ee7b7;
-  --color-brand-400: #34d399;
-  --color-brand-500: #10b981;
-  --color-brand-600: #059669;
-  --color-brand-700: #047857;
-  --color-brand-800: #065f46;
-  --color-brand-900: #064e3b;
-  --color-dark-800: #1f2937;
-  --color-dark-900: #111827;
+  /* ---- Legacy numeric brand scale → lime ramp -----------
+     500 is the signature lime and 600 its darker companion,
+     so `bg-brand-500` / `bg-brand-600` land exactly on
+     `--lime` / `--lime-600`. The tails are tints of the glow
+     and shades running down to ceremonial pak-green. */
+  --color-brand-50: #FBFFF0;
+  --color-brand-100: #F3FFD4;
+  --color-brand-200: #E8FF8A;  /* = --lime-glow */
+  --color-brand-300: #DEFF6B;
+  --color-brand-400: #D3FF52;
+  --color-brand-500: #C7FF3E;  /* = --lime */
+  --color-brand-600: #9BD11A;  /* = --lime-600 */
+  --color-brand-700: #7CA815;
+  --color-brand-800: #4E7A18;
+  --color-brand-900: #01411C;  /* = --pak-green */
+
+  /* ---- Legacy dark scale → surface tokens --------------- */
+  --color-dark-700: #2A2E37;   /* = --slate */
+  --color-dark-800: #1A1D24;   /* = --charcoal */
+  --color-dark-900: #0F1115;   /* = --carbon */
+
+  /* ---- Primary lime -------------------------------------
+     `--color-lime-600` deliberately overrides Tailwind's
+     stock lime-600; the brand companion is the only lime-600
+     this site may ship. */
+  --color-lime: #C7FF3E;
+  --color-lime-600: #9BD11A;
+  --color-lime-glow: #E8FF8A;
+
+  /* ---- Heritage accents (ceremonial) --------------------
+     pak-green is also the light-surface text accent — see the
+     ruling recorded in js/lib/brand-tokens.js (task 9.6). */
+  --color-pak-green: #01411C;
+  --color-gold: #C9A227;
+
+  /* ---- Surfaces (dark-mode native) ---------------------- */
+  --color-carbon: #0F1115;
+  --color-charcoal: #1A1D24;
+  --color-slate-surface: #2A2E37;
+  --color-steel: #6B7280;
+  --color-bone: #F4F1EA;
+  --color-bone-2: #E8E3D6;
+
+  /* ---- Semantic ----------------------------------------- */
+  --color-watch: #F59E0B;
+  --color-breach: #F43F5E;
+  --color-signal: #06B6D4;
 }

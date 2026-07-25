@@ -1,0 +1,101 @@
+# ==========================================================================
+# CNSPK · Cloudflare Pages response headers  (task 16.1 · Requirements 2.1–2.3)
+# ==========================================================================
+# Cloudflare Pages parses this file and applies the rules to static asset
+# responses. It is NOT served as an asset itself.
+#
+# STATUS TODAY: the live site at cloudnativesecurity.pk is still served by
+# GitHub Pages (Cloudflare handles DNS only), and GitHub Pages ignores this
+# file. So this file is an inert no-op in production right now — it starts
+# sending real headers the moment the Cloudflare Pages project serves the
+# domain. See DEPLOY.md for the ordered, zero-downtime cutover and for the
+# free Cloudflare Transform Rule that can inject the same five headers on
+# top of GitHub Pages today.
+#
+# NOTE: Pages Functions (functions/api/*) build their own responses; headers
+# declared here are applied to static assets, so the /api/* handlers must set
+# any headers they need in code.
+#
+# HOW THE ALLOWLIST BELOW WAS DERIVED (not guessed):
+# It is the union of the `Content-Security-Policy` <meta> tags already shipped
+# on every non-legacy page (index, about, join, events, sessions, sessions/view,
+# members, team, speakers, projects, wins, labs, cfp, dispatch, brand,
+# consultants, code-of-conduct, linktree) plus the origins those pages and
+# their modules actually load:
+#   cdn.tailwindcss.com          Tailwind Play CDN            (members, team, events, brand, sessions)
+#   cdn.jsdelivr.net             DOMPurify 3.0.6              (members, team, sessions, join)
+#   unpkg.com                    Leaflet 1.9.4 JS + CSS + its marker/shadow PNGs
+#                                (leaflet.css references images/marker-icon.png
+#                                 relative to unpkg.com, so unpkg must be in img-src)
+#   fonts.googleapis.com         Google Fonts stylesheet      (@import in css/tokens.css)
+#   fonts.gstatic.com            Google Fonts font files
+#   *.basemaps.cartocdn.com      map tiles actually used by js/Map.js (Dark Matter, OSM data)
+#   *.tile.openstreetmap.org     OpenStreetMap tile hosts — Leaflet's default layer and the
+#                                documented fallback if the Carto layer is swapped out
+#   docs.google.com              published Directory_CSV host + the Google Forms
+#                                /formResponse POST target + the hidden form-sink frame
+#   *.googleusercontent.com      where the published-to-web Sheets CSV redirects
+#   sheets.googleapis.com        Sheets read path in js/members-source.js
+#   api.github.com               GitHub intake/status reads
+#   images.unsplash.com          current (placeholder) session/event imagery — task 14.4
+#                                replaces these with labeled local placeholders; drop the
+#                                origin from img-src once that lands
+#   community.cncf.io            CNCF-hosted team photos (data/team.json)
+#   avatars.githubusercontent.com  GitHub avatars
+#   ui-avatars.com               speaker-avatar onerror fallback (SessionCard, SessionDetail)
+#   www.youtube.com              session recording embeds (js/SessionDetail.js iframe)
+#   'self'                       everything local, including the same-origin /api/* fetches
+#
+# DIRECTIVES DELIBERATELY LOOSENED, AND WHY (honest list):
+#   1. script-src 'unsafe-inline'
+#      Every page carries inline <script> blocks: the `tailwind.config = {...}`
+#      block, the `<script type="module">` Navbar/Footer mount + scroll-reveal
+#      IIFE, and JSON-LD. Nonces/hashes cannot be expressed in a static
+#      `_headers` file (no per-request templating), so removing this would break
+#      every page. Mitigation: no user-controlled string ever reaches a script
+#      context, and all rendered data goes through js/lib/sanitize.js (DOMPurify).
+#   2. style-src 'unsafe-inline'
+#      Two hard reasons: (a) every page has a large page-scoped <style> block and
+#      js/Navbar.js + js/Footer.js inject a <style> element at runtime;
+#      (b) the Tailwind Play CDN writes its compiled CSS into an injected style
+#      element. Also several components set inline style attributes.
+#   3. img-src data:
+#      Inline data: URIs are used for small inline SVG/graphics and the Leaflet
+#      shadow fallback.
+#   4. Wildcards are subdomain-only and never in script-src:
+#      *.basemaps.cartocdn.com (a/b/c/d tile subdomains),
+#      *.tile.openstreetmap.org, *.googleusercontent.com (Sheets CSV redirect
+#      target, whose subdomain is not stable). No `*` host appears in script-src.
+#   5. frame-src includes docs.google.com and www.youtube.com
+#      js/MembershipForm.js POSTs to Google Forms through a hidden iframe sink
+#      (Google Forms has no CORS for fetch), and session recordings embed YouTube.
+#   6. form-action includes mailto: and docs.google.com
+#      The membership form posts directly to Google Forms, and the intake forms
+#      fall back to a labeled mailto: when an /api/* endpoint is unconfigured
+#      (Requirement 19.3).
+#
+# NOT loosened: no 'unsafe-eval'. The Tailwind Play CDN runs fine without it —
+# the pages already enforce these same meta policies in the browser today with
+# no eval allowance, so script-src stays eval-free.
+#
+# TIGHTENED vs. the meta tags: frame-ancestors is 'none' here, not 'self'.
+# `frame-ancestors` is ignored inside a <meta> CSP, so it only becomes real once
+# it is sent as a header. Nothing on the site frames its own pages, so 'none' is
+# safe and it pairs with X-Frame-Options: DENY for older agents.
+#
+# Referrer-Policy: strict-origin-when-cross-origin — chosen because it is strict
+# where it matters and breaks nothing. Cross-origin requests (Google Fonts,
+# unpkg, tile hosts, the Google Forms POST) send only the origin, never the path,
+# so a member's or session's URL never leaks to a third party; HTTPS→HTTP
+# downgrades send nothing at all; and same-origin navigation keeps the full
+# referrer, which the site's own relative links and the /api/* handlers rely on.
+# `no-referrer` would be marginally stricter but would strip same-origin context
+# for no real privacy gain here.
+# ==========================================================================
+
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://unpkg.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://unpkg.com https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com https://ui-avatars.com https://*.basemaps.cartocdn.com https://*.tile.openstreetmap.org; connect-src 'self' https://api.github.com https://sheets.googleapis.com https://docs.google.com https://*.googleusercontent.com; frame-src 'self' https://docs.google.com https://www.youtube.com; form-action 'self' mailto: https://docs.google.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
