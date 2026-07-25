@@ -1,0 +1,10 @@
+{
+  "_comment": "External doorway URLs for the /join/ picker. An empty value hides only that doorway (Requirement 14.7). Mirrors CHANNELS in js/lib/channels.js.",
+  "whatsapp": "https://chat.whatsapp.com/F5Hf1ZwI22TK6EcV6zz4wo",
+  "cncf": "https://community.cncf.io/cloud-native-security-pakistan/",
+  "github": "https://github.com/Cloud-Native-Security-Pakistan/becoming-a-member",
+  "discord": "https://discord.gg/wXFWN5ensp",
+  "linkedin": "https://www.linkedin.com/company/cloud-native-security-pakistan",
+  "x": "https://x.com/CloudSecPK",
+  "instagram": "https://www.instagram.com/cloudnativesecuritypk"
+}

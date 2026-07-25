@@ -2,6 +2,8 @@
  * Utility functions for CNSPK Website
  */
 
+import { sanitizeHTML } from './lib/sanitize.js';
+
 // Simple robust logger for CNSPK
 const log = {
     info: (...args) => console.log('[CNSPK]', ...args),
@@ -27,26 +29,18 @@ export async function fetchData(url) {
 }
 
 /**
- * Sanitizes an HTML string using DOMPurify if available, otherwise falls back to basic escaping.
+ * Sanitizes an untrusted value before it is inserted into the DOM.
+ *
+ * Delegates to the shared js/lib/sanitize.js wrapper so member, session, and
+ * intake values everywhere on the site pass through one hardened path: the
+ * DOMPurify allowlist in the browser and a pure escaping fallback elsewhere.
+ * Both paths strip executable script and event-handler attributes (Req 2.4).
+ *
  * @param {string} dirty - The dirty HTML string.
- * @returns {string} The sanitized HTML string.
+ * @returns {string} The sanitized string.
  */
 export function sanitize(dirty) {
-    if (!dirty) return '';
-    // Check if DOMPurify is loaded globally (from CDN in index.html)
-    if (window.DOMPurify) {
-        return window.DOMPurify.sanitize(dirty, {
-            ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'span', 'div', 'ul', 'li'],
-            ALLOWED_ATTR: ['href', 'target', 'class', 'rel']
-        });
-    }
-    // Fallback if DOMPurify isn't ready yet or failed to load
-    return dirty
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    return sanitizeHTML(dirty);
 }
 
 /**

@@ -6,7 +6,9 @@
     "build:css": "tailwindcss -i ./css/input.css -o ./css/output.css --minify",
     "watch:css": "tailwindcss -i ./css/input.css -o ./css/output.css --watch",
     "dev": "npx serve .",
-    "test": "echo 'Tests will be added here'",
+    "test": "vitest --run",
+    "test:run": "vitest --run",
+    "test:prop": "vitest --run tests/prop",
     "lint": "eslint js/**/*.js || true"
   },
   "keywords": [
@@ -20,7 +22,9 @@
   "devDependencies": {
     "tailwindcss": "^4.1.18",
     "@tailwindcss/cli": "^4.0.0",
-    "eslint": "^10.4.0"
+    "eslint": "^10.4.0",
+    "vitest": "^2.1.8",
+    "fast-check": "^3.23.1"
   },
   "dependencies": {}
 }

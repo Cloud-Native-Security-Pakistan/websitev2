@@ -17,7 +17,7 @@
  * ----------------------------------------------------------
  */
 
-import { domReady } from './utils.js';
+import { domReady, sanitize } from './utils.js';
 
 export class Map {
     constructor(elementId) {
@@ -144,12 +144,14 @@ export class Map {
 
         members.forEach(member => {
             if (member.lat && member.lng) {
+                const safeName = sanitize(member.name);
+                const safeUser = sanitize(member.username);
                 const marker = L.marker([member.lat, member.lng], { icon: icon })
                     .bindPopup(`
                         <div class="cnspk-map-popup">
-                            <strong class="cnspk-map-popup__name">${member.name}</strong>
-                            <span class="cnspk-map-popup__handle">@${member.username}</span><br/>
-                            <a href="#member-${member.username}" data-view-card="${member.username}" class="cnspk-map-popup__link view-card-link">View Card →</a>
+                            <strong class="cnspk-map-popup__name">${safeName}</strong>
+                            <span class="cnspk-map-popup__handle">@${safeUser}</span><br/>
+                            <a href="#member-${safeUser}" data-view-card="${safeUser}" class="cnspk-map-popup__link view-card-link">View Card →</a>
                         </div>
                     `)
                     .addTo(this.map);

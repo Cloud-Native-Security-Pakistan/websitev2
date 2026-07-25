@@ -10,34 +10,22 @@
  *   - A live row with no usable city  → dropped (never a broken pin).
  *   - Dedupe: a live row matching a seed username/name is skipped.
  *
- * No third-party libraries. Plain fetch + a tiny CSV parser.
+ * No third-party libraries. Plain fetch + the shared RFC-4180 CSV parser.
  * ----------------------------------------------------------
  */
 
 import { MEMBERSHIP } from './membership-config.js';
+import { parseCSVRows } from './lib/csv.js';
 
 const truthy = (v) => /^(yes|true|1|approved|y|agree|agreed|consent)/i.test(String(v ?? '').trim());
 
-/** Minimal RFC-4180-ish CSV parser (handles quotes, commas, newlines in fields). */
+/**
+ * Parse a published CSV into the non-empty rows the loader expects.
+ * Delegates the RFC-4180 work (quotes, commas, newlines in fields) to the shared
+ * js/lib/csv.js module, then drops blank rows as the inline parser used to.
+ */
 function parseCSV(text) {
-  const rows = [];
-  let row = [], field = '', inQuotes = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i], next = text[i + 1];
-    if (inQuotes) {
-      if (c === '"' && next === '"') { field += '"'; i++; }
-      else if (c === '"') { inQuotes = false; }
-      else { field += c; }
-    } else {
-      if (c === '"') { inQuotes = true; }
-      else if (c === ',') { row.push(field); field = ''; }
-      else if (c === '\r') { /* skip */ }
-      else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
-      else { field += c; }
-    }
-  }
-  if (field.length || row.length) { row.push(field); rows.push(row); }
-  return rows.filter(r => r.length && r.some(c => c.trim() !== ''));
+  return parseCSVRows(text).filter(r => r.length && r.some(c => c.trim() !== ''));
 }
 
 /** Normalise a city string and look up coordinates. Accepts either the
