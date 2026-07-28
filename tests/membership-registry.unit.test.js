@@ -67,6 +67,9 @@ const CNSPK_STUB = {
   MEMBER_PAD: 4,
   FEATURE_OPT: 'Yes — feature me on the CNSPK website and members map',
   SAFE_COLUMNS: [...SAFE_COLUMNS],
+  MAX_COUNTER: 999999999,
+  LOCK_TIMEOUT_MS: 30 * 1000,
+  PROP_LAST_NO: 'cnspk_last_no',
 };
 
 // --- extract the numbering formatter from the script ---
@@ -75,6 +78,72 @@ const gsFormatMemberNo = new Function(
   `${region(GS, 'function cnspkFormatMemberNo_', 'function cnspkReadLastNumber_')}
    return cnspkFormatMemberNo_;`
 )(CNSPK_STUB);
+
+/**
+ * Extract the whole numbering block (formatter, cell parser, counter reader and
+ * the assignment routine) and run it against stubs for the two Google services
+ * it touches: LockService and SpreadsheetApp.flush. Only the unavailable
+ * platform is stubbed — the assignment logic under test is the real script
+ * source, so Req 9.2/9.5/9.6/9.7 behaviour is exercised, not asserted by shape.
+ */
+function loadNumbering({ lockAvailable = true, lockThrows = false } = {}) {
+  const lock = { released: 0, tried: 0 };
+  const LockServiceStub = {
+    getScriptLock: () => ({
+      tryLock: () => {
+        lock.tried += 1;
+        if (lockThrows) throw new Error('lock backend unavailable');
+        return lockAvailable;
+      },
+      releaseLock: () => {
+        lock.released += 1;
+      },
+    }),
+  };
+  const api = new Function(
+    'CNSPK',
+    'LockService',
+    'SpreadsheetApp',
+    `${region(GS, 'function cnspkFormatMemberNo_', 'function cnspkUtcNow_')}
+     return {
+       format: cnspkFormatMemberNo_,
+       parse: cnspkParseMemberNo_,
+       readLast: cnspkReadLastNumber_,
+       assign: cnspkAssignMembershipNumber_
+     };`
+  )(CNSPK_STUB, LockServiceStub, { flush() {} });
+  return { ...api, lock };
+}
+
+/** In-memory Script Properties stub. */
+function makeProps(initial = {}) {
+  const store = { ...initial };
+  return {
+    store,
+    getProperty: (key) => (key in store ? store[key] : null),
+    setProperty: (key, value) => {
+      store[key] = String(value);
+    },
+  };
+}
+
+/** In-memory Private Registry "Membership No" cell stub. */
+function makeCell(initial = '', { writeThrows = false, swallowWrite = false } = {}) {
+  const state = { value: initial, writes: 0 };
+  return {
+    state,
+    io: {
+      writeNumber(value) {
+        state.writes += 1;
+        if (writeThrows) throw new Error('sheet write rejected');
+        if (!swallowWrite) state.value = value;
+      },
+      readBack() {
+        return state.value;
+      },
+    },
+  };
+}
 
 // --- extract the privacy-projection mirror from the script ---
 const gsPrivacy = new Function(
@@ -122,6 +191,124 @@ describe('numbering agreement — .gs mirror matches js/lib (Req 9.1, 9.4)', () 
       const formatted = gsFormatMemberNo(n);
       expect(formatted).toBe(`CNSPK-${String(n).padStart(4, '0')}`);
       expect(formatted.slice('CNSPK-'.length).replace(/^0+/, '')).toBe(String(n));
+    }
+  });
+});
+
+describe('number assignment behaviour — .gs routine under service stubs (Req 9.2, 9.3, 9.5, 9.6, 9.7)', () => {
+  it('assigns baseline + 1, writes it to the registry row, then persists the counter', () => {
+    const { assign, lock } = loadNumbering();
+    const props = makeProps({ cnspk_last_no: '280' });
+    const cell = makeCell();
+
+    const result = assign(props, cell.io);
+
+    expect(result).toMatchObject({ ok: true, memberNo: 'CNSPK-0281', sequence: 281, reused: false });
+    expect(cell.state.value).toBe('CNSPK-0281');
+    expect(props.store.cnspk_last_no).toBe('281');
+    expect(lock.released).toBe(1);
+  });
+
+  it('extends past 9999 without padding loss', () => {
+    const { assign } = loadNumbering();
+    const props = makeProps({ cnspk_last_no: '9999' });
+    const cell = makeCell();
+
+    expect(assign(props, cell.io).memberNo).toBe('CNSPK-10000');
+    expect(cell.state.value).toBe('CNSPK-10000');
+    expect(props.store.cnspk_last_no).toBe('10000');
+  });
+
+  it('refuses to assign rather than race when the lock cannot be taken (Req 9.2)', () => {
+    const { assign } = loadNumbering({ lockAvailable: false });
+    const props = makeProps({ cnspk_last_no: '280' });
+    const cell = makeCell();
+
+    const result = assign(props, cell.io);
+
+    expect(result.ok).toBe(false);
+    expect(result.error).toBe('lock-timeout');
+    expect(cell.state.writes).toBe(0);
+    expect(props.store.cnspk_last_no).toBe('280'); // number not consumed
+  });
+
+  it('does not consume the number when the registry write fails (Req 9.6)', () => {
+    const { assign, lock } = loadNumbering();
+    const props = makeProps({ cnspk_last_no: '280' });
+    const cell = makeCell('', { writeThrows: true });
+
+    const result = assign(props, cell.io);
+
+    expect(result.ok).toBe(false);
+    expect(result.memberNo).toBeNull();
+    expect(result.error).toContain('registry-write-failed');
+    expect(props.store.cnspk_last_no).toBe('280');
+    expect(lock.released).toBe(1);
+  });
+
+  it('does not consume the number when the write cannot be verified (Req 9.5, 9.6)', () => {
+    const { assign } = loadNumbering();
+    const props = makeProps({ cnspk_last_no: '280' });
+    const cell = makeCell('', { swallowWrite: true }); // write "succeeds" but nothing lands
+
+    const result = assign(props, cell.io);
+
+    expect(result.ok).toBe(false);
+    expect(result.error).toContain('registry-write-unconfirmed');
+    expect(props.store.cnspk_last_no).toBe('280');
+  });
+
+  it('halts without writing when the persisted counter cannot be read (Req 9.7)', () => {
+    const { assign } = loadNumbering();
+    for (const [store, expected] of [
+      [{}, 'counter-missing'],
+      [{ cnspk_last_no: '' }, 'counter-missing'],
+      [{ cnspk_last_no: 'abc' }, 'counter-malformed'],
+      [{ cnspk_last_no: '1000000000' }, 'counter-out-of-range'], // digits-only but above MAX
+    ]) {
+      const props = makeProps(store);
+      const cell = makeCell();
+      const result = assign(props, cell.io);
+      expect(result.ok, JSON.stringify(store)).toBe(false);
+      expect(result.error, JSON.stringify(store)).toContain(expected);
+      expect(cell.state.writes).toBe(0); // nothing numbered on a halt
+    }
+  });
+
+  it('reuses the existing number when the row is already numbered (Req 9.2)', () => {
+    const { assign } = loadNumbering();
+    const props = makeProps({ cnspk_last_no: '281' });
+    const cell = makeCell('CNSPK-0281');
+
+    const result = assign(props, cell.io);
+
+    expect(result).toMatchObject({ ok: true, memberNo: 'CNSPK-0281', sequence: 281, reused: true });
+    expect(cell.state.writes).toBe(0);
+    expect(props.store.cnspk_last_no).toBe('281'); // counter not advanced twice
+  });
+
+  it('halts instead of overwriting an unrecognized value in the number cell', () => {
+    const { assign } = loadNumbering();
+    const props = makeProps({ cnspk_last_no: '280' });
+    const cell = makeCell('pending');
+
+    const result = assign(props, cell.io);
+
+    expect(result.ok).toBe(false);
+    expect(result.error).toContain('registry-cell-unrecognized');
+    expect(cell.state.value).toBe('pending');
+    expect(props.store.cnspk_last_no).toBe('280');
+  });
+
+  it('parses registry cell values into a canonical number or reports them unusable', () => {
+    const { parse } = loadNumbering();
+    expect(parse('')).toMatchObject({ present: false, valid: false });
+    expect(parse(null)).toMatchObject({ present: false, valid: false });
+    expect(parse('CNSPK-0281')).toMatchObject({ present: true, valid: true, memberNo: 'CNSPK-0281', sequence: 281 });
+    expect(parse('  CNSPK-281 ')).toMatchObject({ valid: true, memberNo: 'CNSPK-0281' });
+    expect(parse('CNSPK-12345')).toMatchObject({ valid: true, memberNo: 'CNSPK-12345' });
+    for (const bad of ['CNSPK-', 'CNSPK-0000', 'CNSP-0281', '281', 'CNSPK-abc']) {
+      expect(parse(bad), bad).toMatchObject({ present: true, valid: false });
     }
   });
 });
@@ -251,13 +438,27 @@ describe('static safeguards in tools/create-membership-form.gs', () => {
 
   it('writes and verifies the number in the private row before consuming it (Req 9.5, 9.6)', () => {
     const assign = region(CODE, 'function cnspkAssignMembershipNumber_', 'function cnspkUtcNow_');
+    const alreadyNumbered = assign.indexOf('cnspkParseMemberNo_(io.readBack())');
     const write = assign.indexOf('io.writeNumber(memberNo)');
-    const verify = assign.indexOf('io.readBack()');
+    const verify = assign.lastIndexOf('io.readBack()');
     const persist = assign.indexOf('props.setProperty(CNSPK.PROP_LAST_NO');
-    expect(write).toBeGreaterThan(-1);
+    // The idempotency peek happens first, the write next, the read-back
+    // verification after it, and the counter is consumed last of all.
+    expect(alreadyNumbered).toBeGreaterThan(-1);
+    expect(write).toBeGreaterThan(alreadyNumbered);
     expect(verify).toBeGreaterThan(write);
     expect(persist).toBeGreaterThan(verify);
     expect(assign).toContain('registry-write-failed');
+  });
+
+  it('never numbers the same registry row twice (Req 9.2)', () => {
+    const assign = region(CODE, 'function cnspkAssignMembershipNumber_', 'function cnspkUtcNow_');
+    expect(assign).toContain('if (existing.present)');
+    expect(assign).toContain('reused: true');
+    expect(assign).toContain('registry-cell-unrecognized');
+    // The reuse path returns before the counter is read, so nothing advances.
+    expect(assign.indexOf('reused: true'))
+      .toBeLessThan(assign.indexOf('cnspkReadLastNumber_(props)'));
   });
 
   it('halts assignment when the persisted counter cannot be read (Req 9.7)', () => {

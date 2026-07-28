@@ -269,6 +269,96 @@ describe('EventCard render point', () => {
   });
 });
 
+describe('rendered images carry explicit dimensions (Requirement 5.3)', () => {
+  /** Every real <img> tag in the markup, with its attribute text. */
+  function imgTags(html) {
+    return realTags(html).filter((tag) => /^<img\b/i.test(tag));
+  }
+
+  function assertEveryImageSized(html) {
+    const imgs = imgTags(html);
+    expect(imgs.length).toBeGreaterThan(0);
+    imgs.forEach((tag) => {
+      expect(tag).toMatch(/\swidth="\d+"/);
+      expect(tag).toMatch(/\sheight="\d+"/);
+      expect(tag).toMatch(/\sdecoding="async"/);
+    });
+  }
+
+  const session = {
+    id: 2,
+    title: 'Supply Chain 101',
+    description: 'Overview copy.',
+    date: '2025-03-04',
+    duration: '45 min',
+    type: 'upcoming',
+    topic: 'Kubernetes',
+    thumbnail: 'https://img.test/a.png',
+    registrationUrl: 'https://events.test/session',
+    speaker: { name: 'Ayesha Khan', role: 'Engineer', company: 'Acme', image: 'https://img.test/p.png' },
+  };
+
+  it('sizes the SessionCard thumbnail and speaker avatar', () => {
+    const html = new SessionCard(session).render();
+    assertEveryImageSized(html);
+    // Below the fold: the card images lazy-load.
+    imgTags(html).forEach((tag) => expect(tag).toMatch(/\sloading="lazy"/));
+  });
+
+  it('sizes the SessionDetail hero and speaker portrait', () => {
+    const html = new SessionDetail(session).render();
+    assertEveryImageSized(html);
+    // The hero is the above-the-fold image, so it is not lazy-loaded; the
+    // speaker portrait below it is.
+    const [hero, portrait] = imgTags(html);
+    expect(hero).toContain('cnspk-sd__hero-img');
+    expect(hero).not.toMatch(/\sloading="lazy"/);
+    expect(portrait).toMatch(/\sloading="lazy"/);
+  });
+
+  it('sizes the EventCard image', () => {
+    const html = new EventCard({
+      title: 'CNSPK Lahore Meetup',
+      description: 'Talks and hallway track.',
+      location: 'Lahore, Pakistan',
+      type: 'Meetup',
+      time: '18:00',
+      image: 'https://img.test/e.png',
+      link: 'https://events.test/lahore',
+      date: '2025-01-05',
+    }).render();
+
+    assertEveryImageSized(html);
+    imgTags(html).forEach((tag) => expect(tag).toMatch(/\sloading="lazy"/));
+  });
+
+  it('sizes the labelled placeholder images used when no real asset exists', () => {
+    // No thumbnail and no speaker image: both slots fall back to the manifest
+    // placeholder, which still has to be sized.
+    const html = new SessionDetail({ ...session, thumbnail: '', speaker: { name: 'Ayesha Khan' } }).render();
+    assertEveryImageSized(html);
+    expect(html).toContain('data-placeholder="true"');
+  });
+});
+
+describe('SessionDetail speaker portrait honesty (Requirements 7.5, 7.6)', () => {
+  it('renders a labelled placeholder rather than a fabricated avatar service URL', () => {
+    const html = new SessionDetail({
+      id: 4,
+      title: 'Zero Trust',
+      description: 'Copy.',
+      type: 'upcoming',
+      registrationUrl: 'https://events.test/zt',
+      speaker: { name: 'Ayesha Khan', role: 'Engineer' },
+    }).render();
+
+    expect(html).not.toContain('ui-avatars.com');
+    expect(html).not.toMatch(/\sonerror=/);
+    expect(html).toContain('Placeholder · no photo yet');
+    assertInert(html);
+  });
+});
+
 describe('FilterPanel render point', () => {
   it('renders its option lists inert and unchanged for the configured values', () => {
     const html = new FilterPanel(() => {}).render();

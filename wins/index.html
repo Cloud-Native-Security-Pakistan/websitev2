@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' https://github.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
+        content="default-src 'self' https://github.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
 
     <title>Member Wins — CNSPK | Shabaash</title>
     <meta name="description"
@@ -203,6 +203,33 @@
         }
         .empty-banner p { color: var(--bone-2); max-width: 520px; margin: 0 auto; font-size: 15px; line-height: 1.6; }
 
+        /* Attributed win card — rendered only for entries content-rules.js clears */
+        .win-card {
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-md);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .win-card__kind {
+            align-self: flex-start;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--lime);
+            border: 1px solid rgba(199, 255, 62, 0.25);
+            background: rgba(199, 255, 62, 0.08);
+            padding: 4px 8px;
+            border-radius: var(--r-sm);
+        }
+        .win-card__title { font-size: 16px; font-weight: 600; color: var(--bone); line-height: 1.35; }
+        .win-card__attribution { font-family: var(--font-mono); font-size: 12px; color: var(--bone-2); letter-spacing: 0.02em; }
+        .win-card__artifact { font-family: var(--font-mono); font-size: 12px; color: var(--lime); }
+        .win-card__artifact:hover { color: var(--lime-glow); }
+
         /* Share-your-win CTA */
         .share-cta {
             background: var(--bone);
@@ -217,10 +244,12 @@
             position: absolute; top: 0; left: 0; right: 0; height: 6px;
             background: var(--grad-stamp-glow);
         }
+        /* Light (bone) surface: the text accent is pak-green. Lime-600 on bone
+           is 1.62:1 and fails even the 3:1 floor — see js/lib/brand-tokens.js. */
         .share-cta .eyebrow {
             font-family: var(--font-mono);
             font-size: 11px;
-            color: var(--lime-600);
+            color: var(--pak-green);
             letter-spacing: 0.12em;
             text-transform: uppercase;
             margin-bottom: 16px;
@@ -308,40 +337,50 @@
                 <p class="muted">Newest first. Submitted by members, posted with consent.</p>
 
                 <!--
-                    TODO: wire the wins feed to data/wins.json (per features audit item #20). Anyone can add a
-                    win via PR. Proposed shape (confirm with strategist before creating the file):
-                      [{ "member": "...", "username": "...", "type": "pr|talk|job|cve", "title": "...",
-                         "date": "YYYY-MM-DD", "url": "...", "consent": true }]
-                    Render newest-first; only render entries where consent === true. The ghost cards below are
-                    inert placeholders, NOT fake wins. DO NOT invent members, wins, dates, or links.
-                -->
-                <div class="empty-banner" role="status">
-                    <span class="badge">feed · empty</span>
-                    <h3>First win lands here</h3>
-                    <p>
-                        No wins posted yet. The moment a member merges a PR, lands a talk, or ships a CVE
-                        writeup — with their nod — it shows up in this feed. Be the first: share yours below.
-                    </p>
-                </div>
+                    The feed reads data/wins.json and is gated by js/lib/content-rules.js:
+                    selectAttributedWins() renders ONLY entries carrying attribution to a named
+                    person, a named team, or a linked artifact, and returns the empty state when
+                    nothing qualifies (Req 19.4, 19.5).
 
-                <div class="wins-grid" aria-hidden="true">
-                    <div class="win-ghost">
-                        <div class="line short"></div>
-                        <div class="line mid"></div>
-                        <div class="line"></div>
-                        <span class="chip">// awaiting first win</span>
+                    Entry shape (anyone can add one by PR):
+                      { "member": "...", "team": "...", "type": "pr|talk|job|cve",
+                        "title": "...", "date": "YYYY-MM-DD", "url": "https://…", "consent": true }
+
+                    data/wins.json is currently `[]` — there is no attributable win on record yet, so
+                    the honest empty state below is what renders. `consent: true` is required on top
+                    of attribution before an entry naming a real person may be published: the
+                    attribution rule is about honesty, consent is a separate obligation.
+                    DO NOT invent members, quotes, employers, dates, links, or outcomes.
+                -->
+                <div id="wins-feed" data-wins-state="empty">
+                    <div class="empty-banner" role="status" id="wins-empty">
+                        <span class="badge" id="wins-empty-label">feed · empty</span>
+                        <h3>First win lands here</h3>
+                        <p>
+                            No wins posted yet. The moment a member merges a PR, lands a talk, or ships a CVE
+                            writeup — with their nod — it shows up in this feed. Be the first: share yours below.
+                        </p>
                     </div>
-                    <div class="win-ghost">
-                        <div class="line short"></div>
-                        <div class="line"></div>
-                        <div class="line mid"></div>
-                        <span class="chip">// awaiting first win</span>
-                    </div>
-                    <div class="win-ghost">
-                        <div class="line short"></div>
-                        <div class="line mid"></div>
-                        <div class="line"></div>
-                        <span class="chip">// awaiting first win</span>
+
+                    <div class="wins-grid" id="wins-grid" aria-hidden="true">
+                        <div class="win-ghost">
+                            <div class="line short"></div>
+                            <div class="line mid"></div>
+                            <div class="line"></div>
+                            <span class="chip">// awaiting first win</span>
+                        </div>
+                        <div class="win-ghost">
+                            <div class="line short"></div>
+                            <div class="line"></div>
+                            <div class="line mid"></div>
+                            <span class="chip">// awaiting first win</span>
+                        </div>
+                        <div class="win-ghost">
+                            <div class="line short"></div>
+                            <div class="line mid"></div>
+                            <div class="line"></div>
+                            <span class="chip">// awaiting first win</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -382,8 +421,67 @@
     <script type="module">
         import { Navbar } from '/js/Navbar.js';
         import { Footer } from '/js/Footer.js';
+        import { fetchData, domReady, sanitize, sanitizeAttr, sanitizeUrl } from '/js/utils.js';
+        import { selectAttributedWins, WINS_EMPTY_LABEL } from '/js/lib/content-rules.js';
+
         new Navbar().init();
         new Footer().init();
+
+        /* ---------------------------------------------------------------
+           Wins feed · content-honesty gating (Req 19.4, 19.5)
+           A win renders only when content-rules.js clears its attribution
+           AND the entry carries consent. Nothing qualifies -> empty state.
+           --------------------------------------------------------------- */
+
+        /** Attribution line: the named person, the named team, or both. */
+        function attributionLine(win) {
+            const person = sanitize(win.member || win.person || win.name || '');
+            const team = sanitize(win.team || win.org || win.organization || '');
+            return [person, team].filter(Boolean).join(' · ');
+        }
+
+        function winCardHTML(win) {
+            const kind = sanitize(win.type || 'win').toUpperCase();
+            const title = sanitize(win.title || '');
+            const attribution = attributionLine(win);
+            const date = sanitize(win.date || '');
+            const url = sanitizeUrl(win.url || win.link || win.artifactUrl || win.proofUrl || '');
+            const label = sanitizeAttr(win.title || 'this win');
+
+            return `
+                <article class="win-card">
+                    <span class="win-card__kind">${kind}</span>
+                    ${title ? `<p class="win-card__title">${title}</p>` : ''}
+                    ${attribution ? `<p class="win-card__attribution">${attribution}${date ? ` · ${date}` : ''}</p>` : ''}
+                    ${url ? `<a class="win-card__artifact" href="${url}" target="_blank" rel="noopener noreferrer"
+                               aria-label="Open the artifact for ${label}">View the artifact →</a>` : ''}
+                </article>`;
+        }
+
+        async function loadWins() {
+            const feed = document.getElementById('wins-feed');
+            const grid = document.getElementById('wins-grid');
+            const empty = document.getElementById('wins-empty');
+            const emptyLabel = document.getElementById('wins-empty-label');
+
+            const raw = await fetchData('/data/wins.json');
+            // A missing or unreadable feed is an empty feed, never invented content.
+            const published = (Array.isArray(raw) ? raw : []).filter((win) => win && win.consent === true);
+            const { wins, isEmpty, emptyStateLabel } = selectAttributedWins(published);
+
+            if (isEmpty) {
+                feed.setAttribute('data-wins-state', 'empty');
+                emptyLabel.textContent = emptyStateLabel || WINS_EMPTY_LABEL;
+                return;
+            }
+
+            feed.setAttribute('data-wins-state', 'populated');
+            empty.remove();
+            grid.removeAttribute('aria-hidden');
+            grid.innerHTML = wins.map(winCardHTML).join('');
+        }
+
+        domReady(loadWins);
     </script>
 </body>
 

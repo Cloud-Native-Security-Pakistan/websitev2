@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto:;">
+
+    <title>Hire from CNSPK · Post a role to Pakistan's cloud-native security practitioners</title>
+    <meta name="description"
+        content="Post a cloud-native security role to CNSPK. One honest posting, no CV database, no member email lists. We reply within 3 working days.">
+    <meta name="author" content="Cloud Native Security Pakistan">
+    <meta name="theme-color" content="#1A1D24">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Hire from CNSPK">
+    <meta property="og:description"
+        content="Post a cloud-native security role to CNSPK. One honest posting, no CV database, no member email lists.">
+    <meta property="og:url" content="https://cloudnativesecurity.pk/hire/">
+    <meta property="og:site_name" content="Cloud Native Security Pakistan">
+    <meta property="og:image" content="https://cloudnativesecurity.pk/logo.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Hire from CNSPK">
+    <meta name="twitter:description"
+        content="Post a cloud-native security role to CNSPK. One honest posting, no CV database, no member email lists.">
+    <meta name="twitter:image" content="https://cloudnativesecurity.pk/logo.png">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="canonical" href="https://cloudnativesecurity.pk/hire/">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Design tokens first -->
+    <link rel="stylesheet" href="/css/tokens.css">
+
+    <style>
+        /* ==========================================================
+           /hire/ · EMBASSY register · page-specific styles
+           ----------------------------------------------------------
+           Restrained charcoal/bone. Pak-green #01411C is the ONLY
+           text accent on bone (10.49:1); gold #C9A227 is a hairline
+           and focus accent on dark only (6.96:1 on charcoal, 2.10:1
+           on bone — so never text on bone). Lime is dialled back:
+           no lime text anywhere on this page, and never on a light
+           surface (lime-600 on bone measures 1.62:1 and fails the
+           3:1 floor — see js/lib/brand-tokens.js).
+        ========================================================== */
+
+        .wrap { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+
+        /* ---- Hero ---- */
+        .page-hero {
+            padding: 140px 0 80px;
+            background: linear-gradient(180deg, var(--charcoal) 0%, var(--carbon) 100%);
+            border-bottom: 1px solid var(--slate);
+        }
+        .page-hero__content { max-width: 820px; }
+        .page-hero h1 {
+            font-family: var(--font-display); font-style: italic; font-weight: 800;
+            font-size: clamp(40px, 7vw, 88px); line-height: 0.95; letter-spacing: -0.04em;
+            text-transform: uppercase; color: var(--bone); margin-bottom: 28px;
+        }
+        .lede { font-size: clamp(17px, 2.2vw, 21px); color: var(--bone-2); max-width: 660px; line-height: 1.6; }
+
+        /* ---- Embassy accents ---- */
+        .embassy-eyebrow {
+            display: inline-flex; align-items: center; gap: 10px;
+            font-family: var(--font-mono); font-size: 11px; text-transform: uppercase;
+            letter-spacing: 0.12em; color: var(--gold); margin-bottom: 20px;
+        }
+        .embassy-eyebrow::before { content: ''; width: 24px; height: 1px; background: var(--gold); flex-shrink: 0; }
+        .embassy-eyebrow--light { color: var(--pak-green); }
+        .embassy-eyebrow--light::before { background: var(--pak-green); }
+        .embassy-rule { height: 1px; max-width: 320px; margin: 32px 0 14px;
+                        background: linear-gradient(90deg, var(--gold) 0%, transparent 100%); }
+        .embassy-meta { font-family: var(--font-mono); font-size: 12px; color: var(--bone-2); letter-spacing: 0.04em; }
+
+        /* ---- Sections ---- */
+        .section { padding: 80px 0; border-top: 1px solid var(--slate); }
+        .section h2 {
+            font-family: var(--font-display); font-style: italic; font-weight: 800;
+            text-transform: uppercase; font-size: clamp(26px, 4vw, 46px); line-height: 0.98;
+            letter-spacing: -0.03em; color: var(--bone); margin-bottom: 16px; max-width: 22ch;
+        }
+        .muted { font-size: 16px; color: var(--bone-2); max-width: 680px; line-height: 1.6; margin-bottom: 32px; }
+
+        /* ---- Bone panel (light surface: pak-green text accent only) ---- */
+        .embassy-panel {
+            background: var(--bone); color: #22262E; border-radius: var(--r-lg);
+            border-top: 6px solid var(--pak-green); padding: 48px;
+        }
+        .embassy-panel h2 { color: var(--pak-green); }
+        .panel-lead { font-size: 17px; line-height: 1.6; max-width: 62ch; margin-bottom: 26px; color: #22262E; }
+        .panel-lead strong { color: var(--pak-green); }
+        .terms-list { display: grid; gap: 12px; max-width: 70ch; }
+        .terms-list li { position: relative; padding-left: 22px; font-size: 15px; line-height: 1.6; color: #22262E; }
+        .terms-list li::before { content: '—'; position: absolute; left: 0; color: var(--pak-green); }
+        .terms-list strong { color: var(--pak-green); }
+        .panel-note { margin-top: 28px; font-size: 14px; line-height: 1.6; color: #3A3F47; }
+        .inline-link { color: var(--pak-green); border-bottom: 2px solid var(--pak-green); font-weight: 600; }
+        .inline-link:hover { color: #012E14; }
+        .embassy-panel a:focus-visible { outline: 2px solid var(--pak-green); outline-offset: 2px; }
+
+        /* ---- Form card (dark surface) ---- */
+        .form-card {
+            background: var(--charcoal); border: 1px solid var(--slate);
+            border-radius: var(--r-lg); padding: 40px; max-width: 720px;
+        }
+        .field { margin-bottom: 24px; }
+        .field-label {
+            display: block; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase;
+            letter-spacing: 0.1em; color: var(--bone-2); margin-bottom: 8px;
+        }
+        .field-input {
+            width: 100%; background: var(--carbon); border: 1px solid var(--slate);
+            border-radius: var(--r-sm); padding: 14px 16px; color: var(--bone);
+            font-family: var(--font-body); font-size: 15px;
+            transition: border-color var(--dur-hover) var(--ease);
+        }
+        .field-input:hover { border-color: var(--gold); }
+        .field-input:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+        .field-input--area { min-height: 150px; resize: vertical; line-height: 1.6; }
+        .field-hint { font-family: var(--font-mono); font-size: 11.5px; color: var(--bone-2); margin-top: 6px; line-height: 1.5; }
+        .field-error { font-family: var(--font-mono); font-size: 12px; color: var(--breach); margin-top: 6px; }
+        .field-success { font-family: var(--font-mono); font-size: 13px; color: var(--lime-600); margin-top: 10px; }
+
+        /* ---- Embassy CTA: pak-green on bone type, gold offset ---- */
+        .btn-embassy {
+            display: inline-flex; align-items: center; gap: 12px; padding: 16px 30px;
+            background: var(--pak-green); color: var(--bone);
+            font-family: var(--font-display); font-style: italic; font-weight: 800;
+            font-size: 16px; text-transform: uppercase; letter-spacing: 0.02em;
+            border: 0; border-radius: var(--r-sm); cursor: pointer;
+            box-shadow: 5px 5px 0 0 var(--gold);
+            transition: transform var(--dur-hover) var(--ease), box-shadow var(--dur-hover) var(--ease);
+        }
+        .btn-embassy:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 0 var(--gold); }
+        .btn-embassy:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+        /* The intake client's mailto fallback button, restyled for this register. */
+        [data-register="embassy"] a[data-intake-mailto] {
+            background: var(--pak-green); color: var(--bone); box-shadow: 5px 5px 0 0 var(--gold);
+        }
+
+        @media (max-width: 600px) {
+            .wrap { padding: 0 20px; }
+            .page-hero { padding: 112px 0 64px; }
+            .section { padding: 64px 0; }
+            .embassy-panel { padding: 32px 24px; }
+            .form-card { padding: 28px 22px; }
+        }
+
+        /* ---- Steps ---- */
+        .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+        .step { background: var(--charcoal); border: 1px solid var(--slate); border-radius: var(--r-md); padding: 28px; }
+        .step__num { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; color: var(--gold); margin-bottom: 10px; }
+        .step h3 { font-family: var(--font-display); font-style: italic; font-weight: 800; text-transform: uppercase;
+                   font-size: 20px; letter-spacing: -0.02em; color: var(--bone); margin-bottom: 8px; }
+        .step p { font-size: 14px; color: var(--bone-2); line-height: 1.55; }
+    </style>
+</head>
+
+<body data-register="embassy">
+
+    <!-- ===== Navbar (mounted via /js/Navbar.js) ===== -->
+    <div id="navbar"></div>
+
+    <main>
+
+        <!-- ===== Hero ===== -->
+        <section class="page-hero" aria-labelledby="hire-headline">
+            <div class="wrap page-hero__content">
+                <p class="embassy-eyebrow">// hire · recruiter intake</p>
+                <h1 id="hire-headline">Hire from<br>CNSPK.</h1>
+                <p class="lede">
+                    CNSPK is 280+ practitioners running cloud-native security in Pakistani teams — platform
+                    engineers, SREs, AppSec and infrastructure people. If you have a real role, this page is
+                    how you put it in front of them. One posting, in the open, with your name on it.
+                </p>
+                <p class="embassy-rule" aria-hidden="true"></p>
+                <p class="embassy-meta">independent chapter · CNCF-affiliated · community size 280+</p>
+            </div>
+        </section>
+
+        <!-- ===== How posting works ===== -->
+        <section class="section" aria-labelledby="hire-how">
+            <div class="wrap">
+                <p class="embassy-eyebrow">// how-it-works</p>
+                <h2 id="hire-how">How you post a role.</h2>
+                <p class="muted">
+                    Four steps, all of them human. There is no job board to log into and no account to create.
+                </p>
+                <div class="steps">
+                    <article class="step">
+                        <p class="step__num">01 / SEND</p>
+                        <h3>Send the role</h3>
+                        <p>Use the form below: who you are, the organisation, the role you are hiring for, and the detail
+                           a candidate needs — location, whether it is remote, and the compensation range.</p>
+                    </article>
+                    <article class="step">
+                        <p class="step__num">02 / CHECK</p>
+                        <h3>We read it</h3>
+                        <p>An organizer reads every submission. We check the role is real, currently open, and named —
+                           no blind "confidential client" listings, no unpaid work presented as experience.</p>
+                    </article>
+                    <article class="step">
+                        <p class="step__num">03 / POST</p>
+                        <h3>Posted once</h3>
+                        <p>The role goes out once in the community channel, credited to you. If a session is coming up and
+                           the role fits the room, an organizer mentions it there too.</p>
+                    </article>
+                    <article class="step">
+                        <p class="step__num">04 / DIRECT</p>
+                        <h3>Candidates come to you</h3>
+                        <p>Interested members apply through the contact route in your posting. We do not sit in the middle,
+                           forward CVs, or take a fee.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Response expectation + no-spam terms ===== -->
+        <section class="section" aria-labelledby="hire-terms">
+            <div class="wrap">
+                <div class="embassy-panel">
+                    <p class="embassy-eyebrow embassy-eyebrow--light">// terms</p>
+                    <h2 id="hire-terms">What you get, and what we will not do.</h2>
+
+                    <p class="panel-lead" data-response-expectation>
+                        <strong>Response expectation:</strong> an organizer replies within <strong>3 working days</strong>.
+                        If the role is a fit we tell you when it goes out; if it is not, we say so and why. You will not be
+                        left waiting on a silent inbox.
+                    </p>
+
+                    <ul class="terms-list" data-no-spam-terms>
+                        <li><strong>No CV database.</strong> CNSPK does not sell, rent, or share a candidate list. There
+                            is nothing to buy access to.</li>
+                        <li><strong>No member email addresses.</strong> Member emails stay in the private registry. They
+                            are never exported to a hiring partner.</li>
+                        <li><strong>No bulk messages to members.</strong> We do not send direct messages on any channel on
+                            behalf of an employer.</li>
+                        <li><strong>Your address is used for this role only.</strong> Sending a role does not subscribe you
+                            to anything. We add no one to a mailing list from this form.</li>
+                        <li><strong>Recruiter spam is removed.</strong> Repeat blasts, fake roles, and pay-to-apply schemes
+                            get the posting pulled and the sender removed from the channels.</li>
+                    </ul>
+
+                    <p class="panel-note">
+                        Looking to join the community rather than hire from it? Start at
+                        <a class="inline-link" href="/join/">the join page</a>. Everyone posting here is bound by the
+                        <a class="inline-link" href="/code-of-conduct/">Code of Conduct</a>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Intake form ===== -->
+        <section class="section" id="form" aria-labelledby="hire-form-heading">
+            <div class="wrap">
+                <p class="embassy-eyebrow">// submit-a-role</p>
+                <h2 id="hire-form-heading">Send us the role.</h2>
+                <p class="muted">
+                    Five fields. The more concrete the role description, the better it lands with practitioners.
+                </p>
+
+                <div class="form-card">
+                    <form data-intake="hire" novalidate>
+                        <div class="field">
+                            <label class="field-label" for="hire-name">Your name</label>
+                            <input class="field-input" type="text" id="hire-name" name="name" autocomplete="name">
+                            <p class="field-error" data-intake-error-for="name" role="alert"></p>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label" for="hire-email">Work email</label>
+                            <input class="field-input" type="email" id="hire-email" name="email" autocomplete="email"
+                                spellcheck="false" aria-describedby="hire-email-hint">
+                            <p class="field-hint" id="hire-email-hint">Format: local@domain. Used to reply to you about this role.</p>
+                            <p class="field-error" data-intake-error-for="email" role="alert"></p>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label" for="hire-org">Organisation</label>
+                            <input class="field-input" type="text" id="hire-org" name="org" autocomplete="organization">
+                            <p class="field-error" data-intake-error-for="org" role="alert"></p>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label" for="hire-role-sought">Role you are hiring for</label>
+                            <input class="field-input" type="text" id="hire-role-sought" name="role_sought"
+                                aria-describedby="hire-role-hint">
+                            <p class="field-hint" id="hire-role-hint">For example: Platform Security Engineer, Karachi, hybrid.</p>
+                            <p class="field-error" data-intake-error-for="role_sought" role="alert"></p>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label" for="hire-message">The role, in detail</label>
+                            <textarea class="field-input field-input--area" id="hire-message" name="message" rows="6"
+                                aria-describedby="hire-message-hint"></textarea>
+                            <p class="field-hint" id="hire-message-hint">
+                                Scope, stack, seniority, location or remote policy, compensation range, and how candidates
+                                should reach you. Up to 1000 characters.
+                            </p>
+                            <p class="field-error" data-intake-error-for="message" role="alert"></p>
+                        </div>
+
+                        <button type="submit" class="btn-embassy">Send the role</button>
+
+                        <p class="field-error" data-intake-error role="alert"></p>
+                        <p class="field-success" data-intake-success role="status" hidden></p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== Footer (mounted via /js/Footer.js) ===== -->
+    <div id="footer"></div>
+
+    <script type="module">
+        import { Navbar } from '/js/Navbar.js';
+        import { Footer } from '/js/Footer.js';
+        import { initIntakeForm } from '/js/intake-client.js';
+
+        new Navbar().init();
+        new Footer().init();
+
+        // One submit client for every intake form. With no endpoint configured it
+        // renders its own visibly labelled mailto / coming-soon fallback.
+        initIntakeForm({ form: 'form[data-intake="hire"]', kind: 'hire' });
+    </script>
+</body>
+
+</html>

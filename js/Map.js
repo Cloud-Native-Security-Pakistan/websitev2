@@ -13,6 +13,9 @@
  *   .openPopupByUsername(username)
  *
  * Added: .setCityData(cityData) / .getUnresolvedCities()
+ *        .setLoadStatus(status) / .getState()
+ *        .renderTextDirectory(target, members)   accessible non-map equivalent
+ *        .renderState(target)                    honest empty/error state
  *
  * Pin placement is decided by js/lib/map-render.js, not here: exactly one pin per
  * record whose city (or carried coordinates) resolves, no pin for an empty or
@@ -25,7 +28,15 @@
  */
 
 import { domReady, sanitize, sanitizeAttr } from './utils.js';
-import { buildCityIndex, buildPins, summarizeUnresolved } from './lib/map-render.js';
+import {
+    buildCityIndex,
+    buildPins,
+    summarizeUnresolved,
+    buildDirectoryEntries,
+    renderDirectoryHTML,
+    describeDirectoryState,
+    renderDirectoryStateHTML
+} from './lib/map-render.js';
 
 export class Map {
     constructor(elementId) {
@@ -37,6 +48,32 @@ export class Map {
         this.cityIndex = null;
         /** Deduped report of cities that got no pin on the last render. */
         this.unresolvedCities = [];
+        /** Pins placed on the last render — the honest count, never padded. */
+        this.pinCount = 0;
+        /** Members available to the last render (mapped or not). */
+        this.memberCount = 0;
+        /** Load outcome from members-source.js, used for the honest state copy. */
+        this.loadStatus = {};
+    }
+
+    /**
+     * Record how the member data loaded (from `getDirectoryStatus()`), so the
+     * map and the textual directory can state the truth when the Directory_CSV
+     * was unreachable instead of failing silently (Requirement 12.6).
+     * @param {object} status
+     */
+    setLoadStatus(status) {
+        this.loadStatus = status && typeof status === 'object' ? status : {};
+        return this;
+    }
+
+    /** The current honest state: `ok`, `degraded`, `empty`, or `error`. */
+    getState() {
+        return describeDirectoryState({
+            ...this.loadStatus,
+            memberCount: this.memberCount,
+            pinCount: this.pinCount
+        });
     }
 
     /**
@@ -164,7 +201,7 @@ export class Map {
      */
     updateMarkers(members, options = {}) {
         // Clear existing markers
-        this.markers.forEach(marker => this.map.removeLayer(marker));
+        if (this.map) this.markers.forEach(marker => this.map.removeLayer(marker));
         this.markers = [];
 
         const cityIndex = options.cityData ? buildCityIndex(options.cityData) : this.cityIndex;
@@ -172,10 +209,21 @@ export class Map {
             requireApproval: options.requireApproval === true
         });
 
+        this.memberCount = Array.isArray(members) ? members.length : 0;
+        this.pinCount = pins.length;
         this.unresolvedCities = summarizeUnresolved(unresolved);
         if (this.unresolvedCities.length) {
             console.warn('[map] no pin placed for unresolved cities:',
                 this.unresolvedCities.map(u => `${u.city} x${u.count}`).join(', '));
+        }
+
+        // No Leaflet map (never initialised, or the library did not load): the
+        // placement decision above still stands, so the accessible text directory
+        // and the honest state carry the page. Pins are simply not drawn — none
+        // are faked (Requirements 4.6, 12.6).
+        if (!this.map || typeof L === 'undefined') {
+            this.pinCount = 0;
+            return;
         }
 
         // Lime member marker
@@ -212,9 +260,12 @@ export class Map {
         });
 
         // Set up event delegation for View Card links (only once)
-        if (!this._viewCardListenerSet) {
+        const container = typeof document !== 'undefined'
+            ? document.getElementById(this.elementId)
+            : null;
+        if (!this._viewCardListenerSet && container) {
             this._viewCardListenerSet = true;
-            document.getElementById(this.elementId).addEventListener('click', (e) => {
+            container.addEventListener('click', (e) => {
                 const link = e.target.closest('[data-view-card]');
                 if (link) {
                     e.preventDefault();
@@ -231,6 +282,56 @@ export class Map {
                 }
             });
         }
+    }
+
+    /**
+     * Render the non-map textual equivalent of the member directory into a
+     * container, for assistive-technology users who cannot read the Leaflet map
+     * (Requirement 4.6).
+     *
+     * Built from the same placement decision as the pins, so the two agree: a
+     * member with a pin is marked on-map, a member whose city did not resolve is
+     * still listed but marked off-map, and an approval-gated member appears in
+     * neither.
+     *
+     * @param {string|HTMLElement} target - Container element or its id.
+     * @param {Array} members
+     * @param {{ requireApproval?: boolean, cityData?: object, caption?: string }} [options]
+     * @returns {Array} The rendered entries.
+     */
+    renderTextDirectory(target, members, options = {}) {
+        const el = typeof target === 'string' ? document.getElementById(target) : target;
+
+        const cityIndex = options.cityData ? buildCityIndex(options.cityData) : this.cityIndex;
+        const entries = buildDirectoryEntries(members, cityIndex, {
+            requireApproval: options.requireApproval === true
+        });
+
+        if (el) {
+            el.innerHTML = renderDirectoryHTML(entries, {
+                caption: options.caption,
+                // With nothing to list, say why: the empty message reflects the
+                // actual load state rather than always claiming "none yet".
+                emptyMessage: options.emptyMessage || this.getState().message
+            });
+        }
+        return entries;
+    }
+
+    /**
+     * Render the honest load state (nothing when everything is fine, a plain
+     * message when the directory degraded, is empty, or failed). Never claims a
+     * success that did not happen and never substitutes a guessed pin
+     * (Requirement 12.6).
+     *
+     * @param {string|HTMLElement} target - Container element or its id.
+     * @returns {{ kind: string, message: string }} The state that was rendered.
+     */
+    renderState(target) {
+        const el = typeof target === 'string' ? document.getElementById(target) : target;
+        const state = this.getState();
+        if (el) el.innerHTML = renderDirectoryStateHTML(state);
+        return state;
     }
 
     /**

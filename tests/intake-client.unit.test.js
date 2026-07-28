@@ -58,6 +58,18 @@ describe('intake config — four routes, empty means fallback', () => {
       expect(INTAKE_FORMS[kind].route).toBe(`/api/${kind}`);
     }
   });
+
+  it('ships every form pointed at its real backend route, so direct submit is the primary path', () => {
+    // mailto: is the labeled last resort, never the shipped default.
+    for (const kind of INTAKE_KINDS) {
+      expect(INTAKE_ENDPOINTS[kind]).toBe(`/api/${kind}`);
+      expect(resolveIntakeTarget(kind)).toEqual({
+        mode: 'endpoint',
+        target: `/api/${kind}`,
+        isFallback: false,
+      });
+    }
+  });
 });
 
 describe('resolveIntakeTarget — endpoint or labeled fallback (Req 15.2, 19.3)', () => {
@@ -324,6 +336,19 @@ describe('submitIntake — posts, interprets, and preserves entered values', () 
     expect(result.label).toBeTruthy();
     expect(result.mailtoHref).toContain(`mailto:${INTAKE_FALLBACK_EMAILS.speak}`);
     expect(calls).toHaveLength(0);
+  });
+
+  it('hands back the labeled fallback when a configured route is not deployed', async () => {
+    for (const status of [404, 405]) {
+      const { fetchImpl } = stubFetch(status, { message: 'Not found' });
+      const result = await submitIntake('hire', HIRE_VALUES, { endpoints: ENDPOINTS, fetchImpl });
+
+      expect(result.state).toBe(INTAKE_STATES.FALLBACK);
+      expect(result.mode).toBe('mailto');
+      expect(result.label).toBeTruthy();
+      expect(result.mailtoHref).toContain(`mailto:${INTAKE_FALLBACK_EMAILS.hire}`);
+      expect(result.values).toEqual(HIRE_VALUES);
+    }
   });
 
   it('returns the coming-soon fallback with no mailto href', async () => {

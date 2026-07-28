@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' https://github.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
+        content="default-src 'self' https://github.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
 
     <title>Submit a Talk — CNSPK Call for Proposals</title>
     <meta name="description"
@@ -151,7 +151,7 @@
             letter-spacing: 0.04em;
             padding-top: 2px;
         }
-        .tl-what h4 {
+        .tl-what h3 {
             font-family: var(--font-display);
             font-style: italic;
             font-weight: 800;
@@ -180,10 +180,13 @@
             position: absolute; top: 0; left: 0; right: 0; height: 6px;
             background: var(--grad-stamp-glow);
         }
+        /* Light surface: the text accent is pak-green #01411C (10.49:1 on bone).
+           Lime-600 measures 1.62:1 on bone and fails even the 3:1 floor, so it is
+           never used for words here — see js/lib/brand-tokens.js. */
         .first-timer .eyebrow {
             font-family: var(--font-mono);
             font-size: 11px;
-            color: var(--lime-600);
+            color: var(--pak-green);
             letter-spacing: 0.12em;
             text-transform: uppercase;
             margin-bottom: 16px;
@@ -202,7 +205,8 @@
             max-width: 20ch;
         }
         .first-timer p { font-size: 16px; color: #2A2E37; line-height: 1.6; max-width: 60ch; margin-bottom: 12px; }
-        .first-timer a.inline { color: var(--lime-600); border-bottom: 2px solid var(--lime-600); font-weight: 600; }
+        .first-timer a.inline { color: var(--pak-green); border-bottom: 2px solid var(--pak-green); font-weight: 600; }
+        .first-timer a:focus-visible { outline: 2px solid var(--pak-green); outline-offset: 2px; }
 
         /* Submission CTA cards */
         .submit-grid {
@@ -269,15 +273,50 @@
         }
         .empty-state p { color: var(--bone-2); max-width: 480px; margin: 0 auto; font-size: 15px; line-height: 1.6; }
 
+        /* ---- Terms block (dark surface, lime hairline) ---- */
+        .terms {
+            background: var(--charcoal); border: 1px solid var(--slate); border-left: 4px solid var(--lime);
+            border-radius: var(--r-md); padding: 36px; max-width: 760px;
+        }
+        .terms h2 { font-size: clamp(24px, 3.2vw, 34px); margin-bottom: 14px; }
+        .terms-list { display: grid; gap: 12px; }
+        .terms-list li { position: relative; padding-left: 22px; font-size: 15px; color: var(--bone-2); line-height: 1.6; }
+        .terms-list li::before { content: '>'; position: absolute; left: 0; color: var(--lime); font-family: var(--font-mono); }
+        .terms-list strong { color: var(--bone); }
+        .terms__note { margin-top: 24px; font-size: 14px; color: var(--bone-2); line-height: 1.6; }
+
+        /* ---- Direct intake form (shares the `speak` route with /speak/) ---- */
+        .form-card {
+            background: var(--charcoal); border: 1px solid var(--slate);
+            border-radius: var(--r-lg); padding: 40px; max-width: 720px;
+        }
+        .field { margin-bottom: 24px; }
+        .field-label {
+            display: block; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase;
+            letter-spacing: 0.1em; color: var(--bone-2); margin-bottom: 8px;
+        }
+        .field-input {
+            width: 100%; background: var(--carbon); border: 1px solid var(--slate);
+            border-radius: var(--r-sm); padding: 14px 16px; color: var(--bone);
+            font-family: var(--font-body); font-size: 15px;
+            transition: border-color var(--dur-hover) var(--ease);
+        }
+        .field-input:hover { border-color: var(--lime); }
+        .field-input--area { min-height: 170px; resize: vertical; line-height: 1.6; }
+        .field-hint { font-family: var(--font-mono); font-size: 11.5px; color: var(--bone-2); margin-top: 6px; line-height: 1.5; }
+        .field-error { font-family: var(--font-mono); font-size: 12px; color: var(--breach); margin-top: 6px; }
+        .field-success { font-family: var(--font-mono); font-size: 13px; color: var(--lime); margin-top: 10px; }
+
         @media (max-width: 600px) {
             .wrap { padding: 0 20px; }
             .page-hero { padding: 112px 0 64px; }
             .first-timer { padding: 32px 24px; }
+            .form-card, .terms { padding: 28px 22px; }
         }
     </style>
 </head>
 
-<body>
+<body data-register="workshop">
     <div id="navbar"></div>
 
     <main>
@@ -292,14 +331,12 @@
                     <strong>that's a talk.</strong> First-time speakers welcome. We mentor you through it.
                 </p>
                 <div class="hero-cta-row">
+                    <a class="btn-primary" href="#submit">Submit a proposal</a>
                     <!-- TODO: replace with the real GitHub issue-template URL once the cfp template is published under the org. -->
-                    <a class="btn-primary"
+                    <a class="btn-secondary"
                         href="https://github.com/Cloud-Native-Security-Pakistan"
                         target="_blank" rel="noopener noreferrer">
-                        Open the CFP template ↗
-                    </a>
-                    <a class="btn-secondary" href="#submit">
-                        <span class="mono">// how-it-works</span>
+                        <span class="mono">// file-it-on-github ↗</span>
                     </a>
                 </div>
                 <!-- Roman Urdu accent (one per page): mehfil = the gathering -->
@@ -343,26 +380,28 @@
                 <div class="section-eyebrow">// review-timeline</div>
                 <h2>You'll always know where you stand.</h2>
                 <p class="muted">No black holes. Here's exactly what happens after you hit submit.</p>
-                <div class="timeline">
+                <div class="timeline" data-response-expectation>
                     <div class="tl-step">
-                        <div class="tl-when">≤ 24 hours</div>
+                        <div class="tl-when">≤ 3 working days</div>
                         <div class="tl-what">
-                            <h4>Submission acknowledged</h4>
-                            <p>A human confirms we received your proposal. If you don't hear back in a day, ping us — something broke.</p>
+                            <h3>Submission acknowledged</h3>
+                            <p>A human confirms we received your proposal. If you hear nothing in three working days, something
+                               broke — resend it and say so.</p>
                         </div>
                     </div>
                     <div class="tl-step">
                         <div class="tl-when">≤ 7 days</div>
                         <div class="tl-what">
-                            <h4>Committee review</h4>
+                            <h3>Committee review</h3>
                             <p>The CFP committee reads every proposal. We may ask a clarifying question or suggest a sharper angle.</p>
                         </div>
                     </div>
                     <div class="tl-step">
                         <div class="tl-when">≤ 10 days</div>
                         <div class="tl-what">
-                            <h4>Decision</h4>
-                            <p>Accepted, waitlisted, or a "not this time, here's why." Every submitter gets a real answer — no silent rejections.</p>
+                            <h3>Decision</h3>
+                            <p>Accepted, held for a later session, or a "not this one, here's why." Every submitter gets a written
+                               answer — no silent rejections.</p>
                         </div>
                     </div>
                 </div>
@@ -376,18 +415,43 @@
                     <span class="eyebrow">// first-time-speakers</span>
                     <h2>Never spoken before? Perfect.</h2>
                     <p>
-                        Half of CNSPK's best talks came from someone's first time on a stage. If you've got
-                        the substance but not the slides, we pair you with a mentor who's spoken at KubeCon
-                        and the chapter before. We help you scope the talk, build the demo, and run a dry-run
-                        in front of a friendly room.
+                        If you have the substance but not the slides, an organizer works through it with you: we help
+                        you scope the talk, shape the demo, and run a dry run in front of a small, friendly room before
+                        you present it to the chapter.
                     </p>
                     <p>
-                        You bring the work. We bring the runway. No experience required — just something
-                        real you've done with cloud-native security.
+                        You bring the work. We bring the runway. No speaking experience required — just something real
+                        you have done with cloud-native security.
                     </p>
                     <p style="margin-bottom:0;">
-                        Want a mentor first? Note it in your submission, or email
-                        <a class="inline" href="mailto:hi@cloudnativesecurity.pk?subject=CFP%20mentorship">hi@cloudnativesecurity.pk</a>.
+                        Want that help? Say so in your submission, or email
+                        <a class="inline" href="mailto:hi@cloudnativesecurity.pk?subject=CFP%20dry%20run">hi@cloudnativesecurity.pk</a>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== No-spam terms ===== -->
+        <section class="section">
+            <div class="wrap">
+                <div class="terms">
+                    <div class="section-eyebrow">// terms</div>
+                    <h2>What we do with your submission.</h2>
+                    <ul class="terms-list" data-no-spam-terms>
+                        <li><strong>Your email is used for this proposal only.</strong> Submitting does not subscribe you
+                            to anything, and we add no one to a mailing list from this form.</li>
+                        <li><strong>No automated follow-ups.</strong> No reminder sequences, no nudge emails, no direct
+                            messages. A person replies, once, with a decision.</li>
+                        <li><strong>Your abstract stays yours.</strong> We publish the title, abstract, and your name only
+                            after you accept a slot, and only as you wrote them.</li>
+                        <li><strong>A rejection is a real answer.</strong> We tell you why, and a "no" for one cycle is not
+                            a "no" for the next.</li>
+                        <li><strong>Slots are not for sale.</strong> Sponsorship never buys a talk slot — see
+                            <a href="/sponsor/">sponsorship</a> for what backing an event does and does not include.</li>
+                    </ul>
+                    <p class="terms__note">
+                        Speakers and attendees are bound by the <a href="/code-of-conduct/">Code of Conduct</a>. Not here to
+                        speak? <a href="/join/">Join the community</a> instead.
                     </p>
                 </div>
             </div>
@@ -398,34 +462,82 @@
             <div class="wrap">
                 <div class="section-eyebrow">// submit</div>
                 <h2>Two ways in.</h2>
-                <p class="muted">Pick whichever fits how you work. Both reach the same committee.</p>
-                <div class="submit-grid">
-                    <article class="submit-card submit-card--primary">
-                        <div class="num">01 / GITHUB</div>
+                <p class="muted">
+                    Send the proposal straight from this page, or file it in the open on GitHub. Both reach the same
+                    committee and follow the same review timeline.
+                </p>
+
+                <div class="form-card">
+                    <h3 style="font-family:var(--font-display);font-style:italic;font-weight:800;text-transform:uppercase;font-size:22px;letter-spacing:-0.02em;color:var(--bone);margin-bottom:6px;">
+                        01 / Submit here
+                    </h3>
+                    <p class="field-hint" style="margin-bottom:24px;">
+                        Four fields plus an optional link. The same intake the <a href="/speak/">speak page</a> uses.
+                    </p>
+
+                    <form data-intake="speak" novalidate>
+                        <div class="field">
+                            <label class="field-label" for="cfp-name">Your name</label>
+                            <input class="field-input" type="text" id="cfp-name" name="name" autocomplete="name">
+                            <p class="field-error" data-intake-error-for="name" role="alert"></p>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label" for="cfp-email">Email</label>
+                            <input class="field-input" type="email" id="cfp-email" name="email" autocomplete="email"
+                                spellcheck="false" aria-describedby="cfp-email-hint">
+                            <p class="field-hint" id="cfp-email-hint">Format: local@domain. Used to answer this proposal.</p>
+                            <p class="field-error" data-intake-error-for="email" role="alert"></p>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label" for="cfp-talk-title">Talk title</label>
+                            <input class="field-input" type="text" id="cfp-talk-title" name="talk_title">
+                            <p class="field-error" data-intake-error-for="talk_title" role="alert"></p>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label" for="cfp-abstract">Abstract</label>
+                            <textarea class="field-input field-input--area" id="cfp-abstract" name="abstract" rows="7"
+                                aria-describedby="cfp-abstract-hint"></textarea>
+                            <p class="field-hint" id="cfp-abstract-hint">
+                                What you will show, the format (talk, lab, or lightning), the one takeaway, and whether this
+                                is your first time on a stage — first-time speakers get a dry run with an organizer. Up to
+                                1000 characters.
+                            </p>
+                            <p class="field-error" data-intake-error-for="abstract" role="alert"></p>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label" for="cfp-links">Links (optional)</label>
+                            <input class="field-input" type="text" id="cfp-links" name="links"
+                                aria-describedby="cfp-links-hint">
+                            <p class="field-hint" id="cfp-links-hint">A repo, a past recording, a write-up — anything that shows the work.</p>
+                            <p class="field-error" data-intake-error-for="links" role="alert"></p>
+                        </div>
+
+                        <button type="submit" class="btn-primary btn-primary--sm">Send the proposal</button>
+
+                        <p class="field-error" data-intake-error role="alert"></p>
+                        <p class="field-success" data-intake-success role="status" hidden></p>
+                    </form>
+                </div>
+
+                <div class="submit-grid" style="margin-top:24px;">
+                    <article class="submit-card">
+                        <div class="num">02 / GITHUB</div>
                         <h3>File the CFP issue</h3>
                         <p>
-                            The formal lane. Open the CFP issue template on the GitHub org, fill in the title,
-                            abstract, format, and your bio. Tracked in the open.
+                            The tracked-in-the-open lane. Open the CFP issue template on the GitHub org and fill in the
+                            title, abstract, format, and a line about you.
                         </p>
                         <!-- TODO: swap to the exact issue-template deep link, e.g.
                              https://github.com/Cloud-Native-Security-Pakistan/<repo>/issues/new?template=cfp.yml
                              once the template repo + filename are confirmed. -->
-                        <a class="btn-primary btn-primary--sm"
+                        <a class="btn-secondary"
                             href="https://github.com/Cloud-Native-Security-Pakistan"
                             target="_blank" rel="noopener noreferrer">
                             Open the template ↗
-                        </a>
-                    </article>
-                    <article class="submit-card">
-                        <div class="num">02 / EMAIL</div>
-                        <h3>Email the committee</h3>
-                        <p>
-                            Not a GitHub person? Send the title, a short abstract, the format, and a line
-                            about you. We'll take it from there.
-                        </p>
-                        <a class="btn-secondary"
-                            href="mailto:hi@cloudnativesecurity.pk?subject=CFP%20submission&body=Title%3A%0AAbstract%3A%0AFormat%20(talk%2Flab%2Flightning)%3A%0AAbout%20you%3A%0AFirst-time%20speaker%3F%20(we%20mentor)%3A">
-                            Email a proposal
                         </a>
                     </article>
                 </div>
@@ -460,8 +572,15 @@
     <script type="module">
         import { Navbar } from '/js/Navbar.js';
         import { Footer } from '/js/Footer.js';
+        import { initIntakeForm } from '/js/intake-client.js';
+
         new Navbar().init();
         new Footer().init();
+
+        // /cfp/ and /speak/ share the `speak` kind and route. With no endpoint
+        // configured the client renders its own visibly labelled mailto /
+        // coming-soon fallback instead of a submit that goes nowhere.
+        initIntakeForm({ form: 'form[data-intake="speak"]', kind: 'speak' });
     </script>
 </body>
 

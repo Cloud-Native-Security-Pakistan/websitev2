@@ -11,11 +11,14 @@
  *        400 { ok: false, field, message }       -> field-level error
  *        429 { ok: false, message }              -> rate limited, retry
  *        5xx { ok: false, message }              -> temporary, retry
+ *        404 / 405 (route not deployed)          -> labeled fallback, not a dead end
  *        network failure / unparseable body      -> honest error, retry
  *      Success is NEVER fabricated: only `200` with `ok: true` succeeds, and
  *      every error path preserves the values already entered.
  *   4. Renders the visibly labeled `mailto:` / coming-soon fallback when the
  *      endpoint is unconfigured, instead of a submit button that goes nowhere.
+ *      Direct submission to `/api/*` is the primary path; `mailto:` is only ever
+ *      the labeled last resort.
  *
  * Submit-target selection is delegated to `selectSubmitTarget()` in
  * `js/lib/content-rules.js`; the field rules to `validateSubmission()`. This
@@ -384,7 +387,31 @@ export async function submitIntake(kind, values, options = {}) {
     body = {};
   }
 
-  const result = interpretResponse(Number(response.status), body);
+  const status = Number(response.status);
+
+  // Configured, but the route is not there (404) or rejects the method (405):
+  // the endpoint is the primary path, so this should not happen — when it does,
+  // hand back the labeled fallback rather than a dead end.
+  if (status === 404 || status === 405) {
+    const escape = resolveIntakeTarget(kind, { ...options, endpoints: {} });
+    return {
+      state: INTAKE_STATES.FALLBACK,
+      ok: false,
+      mode: escape.mode,
+      target: escape.target,
+      label: escape.label,
+      mailtoHref:
+        escape.mode === SUBMIT_MODES.MAILTO ? buildMailtoHref(kind, supplied, escape.target) : undefined,
+      message: escape.label,
+      canRetry: false,
+      kind: form.kind,
+      endpoint: target.target,
+      status,
+      values: supplied,
+    };
+  }
+
+  const result = interpretResponse(status, body);
   return { ...result, kind: form.kind, endpoint: target.target, values: supplied };
 }
 
@@ -683,6 +710,10 @@ export function initIntakeForm(options = {}) {
     } else if (result.state === INTAKE_STATES.FIELD_ERROR) {
       // Values are untouched: the person edits one field and resubmits.
       renderFieldError(formEl, result.field, result.message);
+    } else if (result.state === INTAKE_STATES.FALLBACK) {
+      // The route answered 404/405: offer the labeled escape hatch, prefilled
+      // with what was typed, instead of a submit button that goes nowhere.
+      renderFallback(formEl, kind, { mode: result.mode, target: result.target, label: result.label });
     } else {
       generalErrorRegion(formEl).textContent = result.message;
       if (submitButton && result.canRetry) submitButton.disabled = false;

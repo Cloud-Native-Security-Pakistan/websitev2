@@ -10,6 +10,13 @@
  *   Consumes: title, date, time, location, type, description,
  *             image, link  (from data/events.json)
  *
+ * Media: the image slot resolves through the single image
+ * manifest in js/site-config.js. A real published photo renders
+ * as the photo; with no real asset the card renders a visibly
+ * labelled placeholder instead (Req 7.4, 7.5). No stock image is
+ * ever presented as a CNSPK event photograph, so the old Unsplash
+ * `onerror` fallback is gone.
+ *
  * Security: all interpolated data is passed through the
  * DOMPurify-backed sanitize() helper, exactly as before.
  *
@@ -20,6 +27,7 @@
  */
 
 import { sanitize, sanitizeAttr, sanitizeUrl } from './utils.js';
+import { resolveImageSlot, mediaPlaceholderHTML } from './site-config.js';
 
 export class EventCard {
     constructor(event) {
@@ -220,7 +228,7 @@ export class EventCard {
     render() {
         this.injectStyles();
 
-        const { title, date, time, location, type, description, image, link } = this.event;
+        const { id, title, date, time, location, type, description, image, link } = this.event;
 
         const safeTitle = sanitize(title);
         const safeDesc = sanitize(description);
@@ -230,8 +238,10 @@ export class EventCard {
         // URL context: an executable `javascript:` link/image collapses to an
         // inert empty value. Attribute context: alt / aria-label (Req 2.4).
         const safeLink = sanitizeUrl(link);
-        const safeImage = sanitizeUrl(image);
         const attrTitle = sanitizeAttr(title);
+
+        // One manifest decides the media: real photo, or labelled placeholder.
+        const slot = resolveImageSlot('events', id, image, title);
 
         // City chip derived from the real location field ("Lahore, Pakistan" -> "Lahore").
         const city = location ? sanitize(String(location).split(',')[0].trim()) : '';
@@ -251,12 +261,13 @@ export class EventCard {
         return `
             <article class="cnspk-event-card">
                 <div class="cnspk-event-card__media">
-                    <img src="${safeImage}"
+                    ${slot.isPlaceholder ? mediaPlaceholderHTML(slot) : `
+                    <img src="${slot.src}"
                          alt="${attrTitle}"
                          class="cnspk-event-card__img ${isPast ? 'cnspk-event-card__img--past' : ''}"
-                         loading="lazy"
-                         onerror="this.src='https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80'">
-                    <div class="cnspk-event-card__scrim"></div>
+                         width="800" height="400"
+                         loading="lazy" decoding="async">`}
+                    ${slot.isPlaceholder ? '' : '<div class="cnspk-event-card__scrim"></div>'}
                     ${validDate ? `
                     <div class="cnspk-event-card__date-badge" aria-hidden="true">
                         <span class="cnspk-event-card__date-month">${month}</span>

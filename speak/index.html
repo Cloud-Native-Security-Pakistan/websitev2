@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto:;">
+
+    <title>Speak at CNSPK · Propose a talk, lab, or lightning session</title>
+    <meta name="description"
+        content="Propose a talk to Cloud Native Security Pakistan. Acknowledged in 3 working days, reviewed in 7, answered in 10. First-time speakers get a dry run.">
+    <meta name="author" content="Cloud Native Security Pakistan">
+    <meta name="theme-color" content="#0F1115">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Speak at CNSPK">
+    <meta property="og:description"
+        content="Propose a talk, lab, or lightning session. Acknowledged in 3 working days, reviewed in 7, answered in 10. Every proposal gets a real answer.">
+    <meta property="og:url" content="https://cloudnativesecurity.pk/speak/">
+    <meta property="og:site_name" content="Cloud Native Security Pakistan">
+    <meta property="og:image" content="https://cloudnativesecurity.pk/logo.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Speak at CNSPK">
+    <meta name="twitter:description"
+        content="Propose a talk, lab, or lightning session. Every proposal gets a real answer.">
+    <meta name="twitter:image" content="https://cloudnativesecurity.pk/logo.png">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="canonical" href="https://cloudnativesecurity.pk/speak/">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Design tokens first -->
+    <link rel="stylesheet" href="/css/tokens.css">
+
+    <style>
+        /* ==========================================================
+           /speak/ · WORKSHOP register · page-specific styles
+           ----------------------------------------------------------
+           Lime on carbon/charcoal only. No bone/light text surfaces
+           on this page, so no lime-on-light case can arise (lime-600
+           on bone measures 1.62:1 and fails the 3:1 floor — see
+           js/lib/brand-tokens.js).
+        ========================================================== */
+
+        .wrap { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+
+        /* ---- Hero ---- */
+        .page-hero {
+            position: relative; overflow: hidden; padding: 140px 0 80px;
+            background:
+                radial-gradient(ellipse 80% 60% at 18% 18%, rgba(199, 255, 62, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 80% at 92% 90%, rgba(1, 65, 28, 0.35) 0%, transparent 60%),
+                var(--carbon);
+        }
+        .page-hero::before {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background-image:
+                linear-gradient(rgba(199, 255, 62, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(199, 255, 62, 0.04) 1px, transparent 1px);
+            background-size: 64px 64px;
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+        }
+        .page-hero__content { position: relative; z-index: 2; max-width: 800px; }
+        .page-hero h1 {
+            font-family: var(--font-display); font-style: italic; font-weight: 800;
+            font-size: clamp(42px, 7.5vw, 96px); line-height: 0.93; letter-spacing: -0.04em;
+            text-transform: uppercase; color: var(--bone); margin-bottom: 28px;
+        }
+        .page-hero h1 .accent { color: var(--lime); }
+        .lede { font-size: clamp(17px, 2.2vw, 21px); color: var(--bone-2); max-width: 660px; line-height: 1.6; }
+        .lede strong { color: var(--lime); font-weight: 600; }
+
+        /* ---- Sections ---- */
+        .section { padding: 80px 0; }
+        .section + .section { border-top: 1px solid var(--slate); }
+        .section h2 {
+            font-family: var(--font-display); font-style: italic; font-weight: 800;
+            text-transform: uppercase; font-size: clamp(26px, 4vw, 48px); line-height: 0.97;
+            letter-spacing: -0.03em; color: var(--bone); margin-bottom: 16px; max-width: 22ch;
+        }
+        .muted { font-size: 16px; color: var(--bone-2); max-width: 680px; line-height: 1.6; margin-bottom: 32px; }
+
+        /* ---- Cards ---- */
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .card {
+            background: var(--charcoal); border: 1px solid var(--slate); border-radius: var(--r-md); padding: 28px;
+            transition: border-color var(--dur-hover) var(--ease);
+        }
+        .card:hover { border-color: var(--lime); }
+        .card h3 {
+            font-family: var(--font-display); font-style: italic; font-weight: 800; text-transform: uppercase;
+            font-size: 20px; letter-spacing: -0.02em; color: var(--bone); margin-bottom: 8px;
+        }
+        .card h3 .tick { color: var(--lime); font-family: var(--font-mono); }
+        .card p { font-size: 14px; color: var(--bone-2); line-height: 1.55; }
+
+        /* ---- Review SLA ---- */
+        .sla { display: grid; gap: 0; max-width: 760px; }
+        .sla__step {
+            display: grid; grid-template-columns: 150px 1fr; gap: 24px; align-items: start;
+            padding: 22px 0; border-bottom: 1px dashed var(--slate);
+        }
+        .sla__step:last-child { border-bottom: 0; }
+        .sla__when { font-family: var(--font-mono); font-size: 13px; color: var(--lime); letter-spacing: 0.04em; padding-top: 2px; }
+        .sla__what h3 {
+            font-family: var(--font-display); font-style: italic; font-weight: 800; text-transform: uppercase;
+            font-size: 19px; letter-spacing: -0.02em; color: var(--bone); margin-bottom: 6px;
+        }
+        .sla__what p { font-size: 14px; color: var(--bone-2); line-height: 1.55; }
+        @media (max-width: 560px) { .sla__step { grid-template-columns: 1fr; gap: 6px; } }
+
+        /* ---- Terms block (dark surface, lime hairline) ---- */
+        .terms {
+            background: var(--charcoal); border: 1px solid var(--slate); border-left: 4px solid var(--lime);
+            border-radius: var(--r-md); padding: 36px; max-width: 760px;
+        }
+        .terms h2 { font-size: clamp(24px, 3.2vw, 34px); margin-bottom: 14px; }
+        .terms-list { display: grid; gap: 12px; }
+        .terms-list li { position: relative; padding-left: 22px; font-size: 15px; color: var(--bone-2); line-height: 1.6; }
+        .terms-list li::before { content: '>'; position: absolute; left: 0; color: var(--lime); font-family: var(--font-mono); }
+        .terms-list strong { color: var(--bone); }
+        .terms__note { margin-top: 24px; font-size: 14px; color: var(--bone-2); line-height: 1.6; }
+
+        /* ---- Form ---- */
+        .form-card {
+            background: var(--charcoal); border: 1px solid var(--slate);
+            border-radius: var(--r-lg); padding: 40px; max-width: 720px;
+        }
+        .field { margin-bottom: 24px; }
+        .field-label {
+            display: block; font-family: var(--font-mono); font-size: 11px; text-transform: uppercase;
+            letter-spacing: 0.1em; color: var(--bone-2); margin-bottom: 8px;
+        }
+        .field-input {
+            width: 100%; background: var(--carbon); border: 1px solid var(--slate);
+            border-radius: var(--r-sm); padding: 14px 16px; color: var(--bone);
+            font-family: var(--font-body); font-size: 15px;
+            transition: border-color var(--dur-hover) var(--ease);
+        }
+        .field-input:hover { border-color: var(--lime); }
+        .field-input--area { min-height: 170px; resize: vertical; line-height: 1.6; }
+        .field-hint { font-family: var(--font-mono); font-size: 11.5px; color: var(--bone-2); margin-top: 6px; line-height: 1.5; }
+        .field-error { font-family: var(--font-mono); font-size: 12px; color: var(--breach); margin-top: 6px; }
+        .field-success { font-family: var(--font-mono); font-size: 13px; color: var(--lime); margin-top: 10px; }
+
+        @media (max-width: 600px) {
+            .wrap { padding: 0 20px; }
+            .page-hero { padding: 112px 0 64px; }
+            .section { padding: 64px 0; }
+            .form-card, .terms { padding: 28px 22px; }
+        }
+    </style>
+</head>
+
+<body data-register="workshop">
+
+    <!-- ===== Navbar (mounted via /js/Navbar.js) ===== -->
+    <div id="navbar"></div>
+
+    <main>
+
+        <!-- ===== Hero ===== -->
+        <section class="page-hero" aria-labelledby="speak-headline">
+            <div class="wrap page-hero__content">
+                <div class="section-eyebrow">// speak · talk proposals</div>
+                <h1 id="speak-headline">Speak at<br><span class="accent">CNSPK.</span></h1>
+                <p class="lede">
+                    If you have shipped it, broken it, hardened it, or debugged it at 3am, you have a talk.
+                    <strong>Practitioners, not pitch decks.</strong> Propose a talk, a hands-on lab, or a
+                    five-minute lightning session — first-time speakers included.
+                </p>
+            </div>
+        </section>
+
+        <!-- ===== What we look for ===== -->
+        <section class="section" aria-labelledby="speak-what">
+            <div class="wrap">
+                <div class="section-eyebrow">// what-we-look-for</div>
+                <h2 id="speak-what">Real work beats hot takes.</h2>
+                <p class="muted">
+                    No vendor pitches, no 40-slide introduction to what Kubernetes is. Bring the demo, the incident,
+                    or the config that actually ran.
+                </p>
+                <div class="cards">
+                    <article class="card">
+                        <h3><span class="tick">&gt;</span> Demos over decks</h3>
+                        <p>A live cluster, a runnable repo, a terminal you type in. Talk is cheap — show the kubectl.</p>
+                    </article>
+                    <article class="card">
+                        <h3><span class="tick">&gt;</span> Pakistani context</h3>
+                        <p>The constraints you actually work under: local scale, local budgets, local regulators. Global
+                           topics are welcome; grounded ones land hardest.</p>
+                    </article>
+                    <article class="card">
+                        <h3><span class="tick">&gt;</span> Honest postmortems</h3>
+                        <p>The outage, the misconfiguration, the CVE that shipped. What broke, what you learned, what you
+                           would do again.</p>
+                    </article>
+                    <article class="card">
+                        <h3><span class="tick">&gt;</span> One clear takeaway</h3>
+                        <p>The single thing the room can apply on Monday morning. One is enough.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Review SLA ===== -->
+        <section class="section" aria-labelledby="speak-sla">
+            <div class="wrap">
+                <div class="section-eyebrow">// review-sla</div>
+                <h2 id="speak-sla">You will always know where you stand.</h2>
+                <p class="muted">
+                    Three checkpoints. No silent rejections, and no proposal sits in a queue without an answer.
+                </p>
+                <div class="sla" data-response-expectation>
+                    <div class="sla__step">
+                        <p class="sla__when">≤ 3 working days</p>
+                        <div class="sla__what">
+                            <h3>Acknowledged</h3>
+                            <p>A human confirms your proposal arrived. If you hear nothing in three working days, something
+                               broke — resend it and say so.</p>
+                        </div>
+                    </div>
+                    <div class="sla__step">
+                        <p class="sla__when">≤ 7 days</p>
+                        <div class="sla__what">
+                            <h3>Reviewed</h3>
+                            <p>The programme committee reads every proposal. We may ask a clarifying question or suggest a
+                               sharper angle before deciding.</p>
+                        </div>
+                    </div>
+                    <div class="sla__step">
+                        <p class="sla__when">≤ 10 days</p>
+                        <div class="sla__what">
+                            <h3>Answered</h3>
+                            <p>Accepted, held for a later session, or a "not this one, here is why". Every submitter gets a
+                               written answer either way.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== No-spam terms ===== -->
+        <section class="section" aria-labelledby="speak-terms">
+            <div class="wrap">
+                <div class="terms">
+                    <div class="section-eyebrow">// terms</div>
+                    <h2 id="speak-terms">What we do with your submission.</h2>
+                    <ul class="terms-list" data-no-spam-terms>
+                        <li><strong>Your email is used for this proposal only.</strong> Submitting does not subscribe you
+                            to anything, and we add no one to a mailing list from this form.</li>
+                        <li><strong>No automated follow-ups.</strong> No reminder sequences, no nudge emails, no direct
+                            messages. A person replies, once, with a decision.</li>
+                        <li><strong>Your abstract stays yours.</strong> We publish the title, abstract, and your name only
+                            after you accept a slot, and only as you wrote them.</li>
+                        <li><strong>A rejection is a real answer.</strong> We tell you why, and a "no" for one session is
+                            not a "no" for the next.</li>
+                        <li><strong>Slots are not for sale.</strong> Sponsorship never buys a talk slot — see
+                            <a href="/sponsor/">sponsorship</a> for what backing an event does and does not include.</li>
+                    </ul>
+                    <p class="terms__note">
+                        Speakers and attendees are bound by the <a href="/code-of-conduct/">Code of Conduct</a>. Not here to
+                        speak? <a href="/join/">Join the community</a> instead.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Intake form ===== -->
+        <section class="section" id="form" aria-labelledby="speak-form-heading">
+            <div class="wrap">
+                <div class="section-eyebrow">// propose-a-talk</div>
+                <h2 id="speak-form-heading">Send the proposal.</h2>
+                <p class="muted">
+                    Four fields plus an optional link. Prefer a tracked, public submission? The
+                    <a href="/cfp/">call for proposals</a> reaches the same committee through GitHub.
+                </p>
+
+                <div class="form-card">
+                    <form data-intake="speak" novalidate>
+                        <div class="field">
+                            <label class="field-label" for="speak-name">Your name</label>
+                            <input class="field-input" type="text" id="speak-name" name="name" autocomplete="name">
+                            <p class="field-error" data-intake-error-for="name" role="alert"></p>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label" for="speak-email">Email</label>
+                            <input class="field-input" type="email" id="speak-email" name="email" autocomplete="email"
+                                spellcheck="false" aria-describedby="speak-email-hint">
+                            <p class="field-hint" id="speak-email-hint">Format: local@domain. Used to answer this proposal.</p>
+                            <p class="field-error" data-intake-error-for="email" role="alert"></p>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label" for="speak-talk-title">Talk title</label>
+                            <input class="field-input" type="text" id="speak-talk-title" name="talk_title">
+                            <p class="field-error" data-intake-error-for="talk_title" role="alert"></p>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label" for="speak-abstract">Abstract</label>
+                            <textarea class="field-input field-input--area" id="speak-abstract" name="abstract" rows="7"
+                                aria-describedby="speak-abstract-hint"></textarea>
+                            <p class="field-hint" id="speak-abstract-hint">
+                                What you will show, the format (talk, lab, or lightning), the one takeaway, and whether this
+                                is your first time on a stage — we pair first-time speakers with an organizer for a dry run.
+                                Up to 1000 characters.
+                            </p>
+                            <p class="field-error" data-intake-error-for="abstract" role="alert"></p>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label" for="speak-links">Links (optional)</label>
+                            <input class="field-input" type="text" id="speak-links" name="links"
+                                aria-describedby="speak-links-hint">
+                            <p class="field-hint" id="speak-links-hint">A repo, a past recording, a write-up — anything that shows the work.</p>
+                            <p class="field-error" data-intake-error-for="links" role="alert"></p>
+                        </div>
+
+                        <button type="submit" class="btn-primary btn-primary--sm">Send the proposal</button>
+
+                        <p class="field-error" data-intake-error role="alert"></p>
+                        <p class="field-success" data-intake-success role="status" hidden></p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== Footer (mounted via /js/Footer.js) ===== -->
+    <div id="footer"></div>
+
+    <script type="module">
+        import { Navbar } from '/js/Navbar.js';
+        import { Footer } from '/js/Footer.js';
+        import { initIntakeForm } from '/js/intake-client.js';
+
+        new Navbar().init();
+        new Footer().init();
+
+        // One submit client for every intake form. /speak/ and /cfp/ share the
+        // `speak` kind and route; with no endpoint configured the client renders
+        // its own visibly labelled mailto / coming-soon fallback.
+        initIntakeForm({ form: 'form[data-intake="speak"]', kind: 'speak' });
+    </script>
+</body>
+
+</html>

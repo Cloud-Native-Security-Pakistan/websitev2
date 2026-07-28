@@ -44,6 +44,30 @@ export function getCityData() {
 }
 
 /**
+ * Outcome of the last load, so the page can surface an honest state instead of
+ * a silent failure (Requirement 12.6). `liveConfigured && !liveOk` is the
+ * degraded case: the Directory_CSV was unreachable or unparseable, the map
+ * carries seed pins only, and nothing is guessed for the rows we never saw.
+ */
+const freshStatus = () => ({
+  seedLoaded: false,
+  seedCount: 0,
+  cityDataLoaded: false,
+  liveConfigured: false,
+  liveAttempted: false,
+  liveOk: false,
+  liveCount: 0,
+  error: null,
+});
+
+let loadStatus = freshStatus();
+
+/** Read the load outcome of the last getAllMembers() call. */
+export function getDirectoryStatus() {
+  return { ...loadStatus };
+}
+
+/**
  * Parse a published CSV into the non-empty rows the loader expects.
  * Delegates the RFC-4180 work (quotes, commas, newlines in fields) to the shared
  * js/lib/csv.js module, then drops blank rows as the inline parser used to.
@@ -61,7 +85,10 @@ async function loadJSON(url) {
 /** Fetch + map the live Google-Sheet rows into member objects. */
 async function loadLiveMembers(cityCoords) {
   const cfg = MEMBERSHIP;
-  if (!cfg.enabled || !cfg.sheetCsvUrl) return [];
+  loadStatus.liveConfigured = Boolean(cfg.enabled && cfg.sheetCsvUrl);
+  if (!loadStatus.liveConfigured) return [];
+
+  loadStatus.liveAttempted = true;
 
   let text;
   try {
@@ -69,11 +96,23 @@ async function loadLiveMembers(cityCoords) {
     if (!res.ok) throw new Error(`sheet -> ${res.status}`);
     text = await res.text();
   } catch (err) {
+    // Honest degradation: the map keeps the seed pins, shows no live pins, and
+    // the page surfaces the failure rather than inventing locations (Req 12.6).
+    loadStatus.error = `directory CSV unreachable: ${err.message}`;
     console.warn('[members] live sheet unreachable, using seed members only:', err.message);
     return [];
   }
 
-  const rows = parseCSV(text);
+  let rows;
+  try {
+    rows = parseCSV(text);
+  } catch (err) {
+    loadStatus.error = `directory CSV unparseable: ${err.message}`;
+    console.warn('[members] live sheet could not be parsed, using seed members only:', err.message);
+    return [];
+  }
+
+  loadStatus.liveOk = true;
   if (rows.length < 2) return [];
 
   const headers = rows[0].map(h => h.trim());
@@ -133,9 +172,12 @@ async function loadLiveMembers(cityCoords) {
       unresolvedCities.map(u => `${u.city} x${u.count}`).join(', '));
   }
 
-  return pins
+  const placed = pins
     .slice(0, cfg.maxLiveMembers)
     .map(pin => ({ ...pin.record, lat: pin.lat, lng: pin.lng }));
+
+  loadStatus.liveCount = placed.length;
+  return placed;
 }
 
 /**
@@ -146,24 +188,37 @@ export async function getAllMembers() {
   let seed = [];
   let cityData = {};
   unresolvedCities = [];
+  loadStatus = freshStatus();
 
   try {
     [seed, cityData] = await Promise.all([
       loadJSON('../data/members.json'),
       loadJSON('../data/pakistan-cities.json').catch(() => loadJSON('../data/city-coords.json'))
     ]);
+    loadStatus.seedLoaded = true;
   } catch (err) {
+    loadStatus.error = `seed data failed: ${err.message}`;
     console.error('[members] failed to load seed data:', err.message);
     // Last-ditch: try just the seed members
-    try { seed = await loadJSON('../data/members.json'); } catch { seed = []; }
+    try {
+      seed = await loadJSON('../data/members.json');
+      loadStatus.seedLoaded = true;
+    } catch {
+      seed = [];
+    }
   }
 
+  seed = Array.isArray(seed) ? seed : [];
+  loadStatus.seedCount = seed.length;
+
   cityDataCache = cityData && typeof cityData === 'object' ? cityData : null;
+  loadStatus.cityDataLoaded = cityDataCache !== null && Object.keys(cityDataCache).length > 0;
 
   let live = [];
   try {
     live = await loadLiveMembers(cityData);
   } catch (err) {
+    loadStatus.error = loadStatus.error || `live load failed: ${err.message}`;
     console.warn('[members] live load failed, seed only:', err.message);
   }
 

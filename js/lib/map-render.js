@@ -23,6 +23,8 @@
  * Validates: Requirements 12.2, 12.3, 12.4
  */
 
+import { sanitizeHTML, sanitizeAttribute } from './sanitize.js';
+
 /** Maximum absolute jitter applied to a resolved coordinate, in degrees. */
 export const MAX_JITTER_DEGREES = 0.03;
 
@@ -317,4 +319,226 @@ export function summarizeUnresolved(unresolved) {
   return [...counts.entries()]
     .map(([city, count]) => ({ city, count }))
     .sort((a, b) => b.count - a.count || a.city.localeCompare(b.city));
+}
+/* ------------------------------------------------------------------------- *
+ * Accessible directory equivalent + honest degradation states.
+ *
+ * A Leaflet map is not reachable by assistive technology, so the members page
+ * must also carry a **non-map textual equivalent** of the same directory
+ * (Requirement 4.6). It is built from the same `buildPins` decision as the pins
+ * themselves, so the two can never disagree: a member with a pin is listed as
+ * mapped, a member whose city did not resolve is still listed but marked as not
+ * mapped, and an approval-gated member appears in neither.
+ *
+ * The state helper turns a load outcome into one honest message. When the
+ * Directory_CSV cannot be retrieved or parsed, the map shows no live pins and
+ * this reports the degradation — never a fabricated success and never a guessed
+ * pin (Requirement 12.6).
+ *
+ * Validates: Requirements 4.6, 12.6
+ * ------------------------------------------------------------------------- */
+
+/** Columns of the textual directory, in render order. */
+export const DIRECTORY_COLUMNS = Object.freeze([
+  'Membership No',
+  'Name',
+  'Role',
+  'City',
+  'Interests',
+  'On map',
+]);
+
+/** Label used for a member who is listed but has no pin. */
+export const NOT_MAPPED_LABEL = 'Not on map — city not recognised';
+
+/** Label used for a member who has a pin. */
+export const MAPPED_LABEL = 'On map';
+
+/** Honest copy for each load outcome. One message per state, no fabrication. */
+export const DIRECTORY_STATE_MESSAGES = Object.freeze({
+  ok: 'Showing the published member directory.',
+  degraded:
+    'The live member directory could not be loaded, so only the members bundled with the site are shown. No pins are shown for the members we could not load.',
+  empty: 'No members are published in the directory yet.',
+  error: 'The member directory could not be loaded, so no members are shown. Please try again later.',
+});
+
+const first = (record, fields) => {
+  for (const f of fields) {
+    const v = record[f];
+    if (v !== undefined && v !== null && String(v).trim() !== '') return String(v).trim();
+  }
+  return '';
+};
+
+/** Normalize an interests value (array or delimited string) to a capped list. */
+function toInterests(value) {
+  const list = Array.isArray(value)
+    ? value
+    : String(value == null ? '' : value).split(/[,;/|]/);
+  return list.map((s) => String(s).trim()).filter(Boolean).slice(0, 4);
+}
+
+/**
+ * Build the textual directory rows for a member list.
+ *
+ * Uses the same placement decision as the map, so `mapped` on a row is exactly
+ * "this member has a pin". Approval-gated members are excluded entirely, which
+ * keeps the textual equivalent identical in membership to the map (Req 12.4).
+ *
+ * @param {object[]} records
+ * @param {object|Array} [cityData]
+ * @param {object} [options] - Same options as buildPins.
+ * @returns {Array<{ id: string, memberNo: string, name: string, role: string,
+ *                   city: string, interests: string[], mapped: boolean,
+ *                   lat: number|null, lng: number|null }>}
+ */
+export function buildDirectoryEntries(records, cityData, options = {}) {
+  const { pins, unresolved } = buildPins(records, cityData, options);
+
+  const toEntry = (record, index, mapped, pin) => {
+    const safe = record && typeof record === 'object' ? record : {};
+    return {
+      id: recordKey(safe, index),
+      memberNo: first(safe, ['memberNo', 'Membership No', 'membershipNo', 'id']),
+      name: first(safe, ['name', 'Name']) || 'Unnamed member',
+      role: first(safe, ['role', 'Role']),
+      city: getRecordCity(safe, options.cityField),
+      interests: toInterests(safe.interests !== undefined ? safe.interests : safe.Interests),
+      mapped,
+      lat: mapped && pin ? pin.lat : null,
+      lng: mapped && pin ? pin.lng : null,
+    };
+  };
+
+  const entries = [
+    ...pins.map((pin, i) => toEntry(pin.record, i, true, pin)),
+    ...unresolved.map((u) => toEntry(u.record, u.index, false, null)),
+  ];
+
+  // Mapped first, then alphabetical, so the reading order is predictable.
+  return entries.sort(
+    (a, b) => Number(b.mapped) - Number(a.mapped) || a.name.localeCompare(b.name)
+  );
+}
+
+/**
+ * Render the accessible, non-map textual equivalent of the member directory as
+ * an HTML table string (Requirement 4.6).
+ *
+ * A table (not a bare list) so screen readers announce each value with its
+ * column header. Every value is sanitized on the way in, so a member row
+ * carrying markup cannot inject anything (Req 2.4).
+ *
+ * @param {Array} entries - From buildDirectoryEntries.
+ * @param {object} [options]
+ * @param {string} [options.caption]
+ * @param {string} [options.emptyMessage]
+ * @returns {string} HTML for the directory, or an honest empty state.
+ */
+export function renderDirectoryHTML(entries, options = {}) {
+  const list = Array.isArray(entries) ? entries : [];
+  const caption =
+    options.caption || 'CNSPK member directory — text equivalent of the members map';
+
+  if (list.length === 0) {
+    const message = options.emptyMessage || DIRECTORY_STATE_MESSAGES.empty;
+    return `<p class="members-directory__empty">${sanitizeHTML(message)}</p>`;
+  }
+
+  const head = DIRECTORY_COLUMNS
+    .map((c) => `<th scope="col">${sanitizeHTML(c)}</th>`)
+    .join('');
+
+  const rows = list
+    .map((entry) => {
+      const e = entry || {};
+      const mapped = e.mapped === true;
+      const cells = [
+        e.memberNo || '—',
+        e.name || 'Unnamed member',
+        e.role || '—',
+        e.city || '—',
+        (Array.isArray(e.interests) ? e.interests : []).join(', ') || '—',
+        mapped ? MAPPED_LABEL : NOT_MAPPED_LABEL,
+      ].map((v) => sanitizeHTML(v));
+
+      return (
+        `<tr data-mapped="${sanitizeAttribute(mapped ? 'yes' : 'no')}">` +
+        `<th scope="row">${cells[0]}</th>` +
+        cells.slice(1).map((c) => `<td>${c}</td>`).join('') +
+        `</tr>`
+      );
+    })
+    .join('');
+
+  return (
+    `<table class="members-directory__table">` +
+    `<caption>${sanitizeHTML(caption)}</caption>` +
+    `<thead><tr>${head}</tr></thead>` +
+    `<tbody>${rows}</tbody>` +
+    `</table>`
+  );
+}
+
+/**
+ * Turn a load outcome into exactly one honest state.
+ *
+ * `kind` is one of:
+ *   - `error`    — nothing usable loaded (or a failure left nothing to show);
+ *                  no pins, an error state is shown.
+ *   - `degraded` — the live Directory_CSV failed, so only seed members are shown.
+ *   - `empty`    — everything loaded, there is simply nobody to show.
+ *   - `ok`       — the published directory is on screen.
+ *
+ * @param {object} [status]
+ * @param {number} [status.memberCount=0] - Members actually available to render.
+ * @param {number} [status.pinCount=0] - Pins actually placed.
+ * @param {boolean} [status.seedLoaded=false] - Seed data/members.json loaded.
+ * @param {boolean} [status.liveConfigured=false] - A Directory_CSV is configured.
+ * @param {boolean} [status.liveOk=false] - The Directory_CSV loaded and parsed.
+ * @param {string|null} [status.error=null] - Underlying failure reason, if any.
+ * @returns {{ kind: 'ok'|'degraded'|'empty'|'error', message: string,
+ *             detail: string|null, memberCount: number, pinCount: number }}
+ */
+export function describeDirectoryState(status = {}) {
+  const {
+    memberCount = 0,
+    pinCount = 0,
+    seedLoaded = false,
+    liveConfigured = false,
+    liveOk = false,
+    error = null,
+  } = status || {};
+
+  let kind;
+  if (!seedLoaded && !liveOk) kind = 'error';
+  else if (memberCount === 0 && error) kind = 'error';
+  else if (liveConfigured && !liveOk) kind = 'degraded';
+  else if (memberCount === 0) kind = 'empty';
+  else kind = 'ok';
+
+  return {
+    kind,
+    message: DIRECTORY_STATE_MESSAGES[kind],
+    detail: error ? String(error) : null,
+    memberCount,
+    pinCount,
+  };
+}
+
+/**
+ * Render a directory state as an inert, honest status block.
+ * `ok` renders nothing, so a healthy page carries no noise.
+ *
+ * @param {{ kind: string, message: string }} state - From describeDirectoryState.
+ * @returns {string} HTML, or '' when there is nothing to say.
+ */
+export function renderDirectoryStateHTML(state) {
+  if (!state || state.kind === 'ok') return '';
+  const role = state.kind === 'error' ? 'alert' : 'status';
+  return (
+    `<p class="members-directory__state members-directory__state--${sanitizeAttribute(state.kind)}" ` +
+    `role="${role}">${sanitizeHTML(state.message)}</p>`
+  );
 }

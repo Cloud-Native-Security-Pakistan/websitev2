@@ -37,14 +37,16 @@
 #   *.googleusercontent.com      where the published-to-web Sheets CSV redirects
 #   sheets.googleapis.com        Sheets read path in js/members-source.js
 #   api.github.com               GitHub intake/status reads
-#   images.unsplash.com          current (placeholder) session/event imagery — task 14.4
-#                                replaces these with labeled local placeholders; drop the
-#                                origin from img-src once that lands
 #   community.cncf.io            CNCF-hosted team photos (data/team.json)
 #   avatars.githubusercontent.com  GitHub avatars
 #   ui-avatars.com               speaker-avatar onerror fallback (SessionCard, SessionDetail)
 #   www.youtube.com              session recording embeds (js/SessionDetail.js iframe)
 #   'self'                       everything local, including the same-origin /api/* fetches
+#
+# REMOVED (task 14.4): images.unsplash.com. Event/session imagery no longer
+# loads stock photography — every media slot resolves through the single image
+# manifest in js/site-config.js to a same-origin asset or a visibly labelled
+# placeholder, so no remote stock origin belongs in img-src. Do not re-add it.
 #
 # DIRECTIVES DELIBERATELY LOOSENED, AND WHY (honest list):
 #   1. script-src 'unsafe-inline'
@@ -94,7 +96,7 @@
 # ==========================================================================
 
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://unpkg.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://unpkg.com https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com https://ui-avatars.com https://*.basemaps.cartocdn.com https://*.tile.openstreetmap.org; connect-src 'self' https://api.github.com https://sheets.googleapis.com https://docs.google.com https://*.googleusercontent.com; frame-src 'self' https://docs.google.com https://www.youtube.com; form-action 'self' mailto: https://docs.google.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://unpkg.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://unpkg.com https://community.cncf.io https://avatars.githubusercontent.com https://ui-avatars.com https://*.basemaps.cartocdn.com https://*.tile.openstreetmap.org; connect-src 'self' https://api.github.com https://sheets.googleapis.com https://docs.google.com https://*.googleusercontent.com; frame-src 'self' https://docs.google.com https://www.youtube.com; form-action 'self' mailto: https://docs.google.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; upgrade-insecure-requests
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin

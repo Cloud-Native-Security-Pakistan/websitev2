@@ -330,6 +330,51 @@ function cnspkFormatMemberNo_(n) {
 }
 
 /**
+ * Inspect whatever a Private Registry "Membership No" cell already holds.
+ *
+ * Used as an idempotency gate: a spreadsheet form-submit trigger can be
+ * re-delivered (Google retries a failed execution, and an organizer may re-run
+ * the handler by hand after fixing a fault). Numbering the same row twice would
+ * consume a second number and send a second welcome email, so an already
+ * numbered row must be recognized rather than re-numbered (Req 9.2, 9.5).
+ *
+ * A cell holding something that is NOT a well-formed CNSPK number is reported
+ * as present-but-invalid: we refuse to overwrite it, because we cannot tell
+ * whether it is a hand-edited number that a member has already been told.
+ *
+ * @param {*} rawValue The current cell value.
+ * @return {{present: boolean, valid: boolean, memberNo: string|null,
+ *           sequence: number|null, text: string}}
+ */
+function cnspkParseMemberNo_(rawValue) {
+  var text = String(rawValue === null || rawValue === undefined ? '' : rawValue).trim();
+  if (text === '') {
+    return { present: false, valid: false, memberNo: null, sequence: null, text: '' };
+  }
+  var prefix = CNSPK.MEMBER_PREFIX;
+  if (text.slice(0, prefix.length) !== prefix) {
+    return { present: true, valid: false, memberNo: null, sequence: null, text: text };
+  }
+  var digits = text.slice(prefix.length);
+  if (!/^\d+$/.test(digits)) {
+    return { present: true, valid: false, memberNo: null, sequence: null, text: text };
+  }
+  var sequence = parseInt(digits, 10);
+  if (!isFinite(sequence) || sequence < 1 || sequence > CNSPK.MAX_COUNTER) {
+    return { present: true, valid: false, memberNo: null, sequence: null, text: text };
+  }
+  // Re-format so a value written with different padding still resolves to the
+  // canonical form the rest of the pipeline uses.
+  return {
+    present: true,
+    valid: true,
+    memberNo: cnspkFormatMemberNo_(sequence),
+    sequence: sequence,
+    text: text
+  };
+}
+
+/**
  * Read the persisted last-assigned number (Req 9.3, 9.4).
  * An unreadable, missing or malformed value is NOT treated as zero — that
  * would restart numbering and hand out duplicates. We report failure so the
@@ -364,16 +409,22 @@ function cnspkReadLastNumber_(props) {
  * number is consumed (Req 9.5).
  *
  * Ordering is deliberate:
- *   read counter → format candidate → write to the private row → verify the
- *   write by reading the cell back → only then persist the new counter.
+ *   check the row is not already numbered → read counter → format candidate →
+ *   write to the private row → verify the write by reading the cell back →
+ *   only then persist the new counter.
  * If the write (or the read-back verification) fails, the counter is left
  * untouched, so the same number is offered to the next submission and no
  * member is silently numbered (Req 9.6).
  *
+ * The leading already-numbered check makes the assignment idempotent: a
+ * re-delivered or manually re-run submission reuses the number already in the
+ * row instead of consuming a second one (Req 9.2).
+ *
  * @param {{writeNumber: function(string): void, readBack: function(): string}} io
  *        writeNumber writes the value into the private row; readBack returns
  *        the value currently stored in that cell.
- * @return {{ok: boolean, memberNo: string|null, sequence: number|null, error: string|null}}
+ * @return {{ok: boolean, memberNo: string|null, sequence: number|null,
+ *           reused: boolean, error: string|null}}
  */
 function cnspkAssignMembershipNumber_(props, io) {
   var lock = LockService.getScriptLock();
@@ -381,22 +432,49 @@ function cnspkAssignMembershipNumber_(props, io) {
   try {
     acquired = lock.tryLock(CNSPK.LOCK_TIMEOUT_MS);
   } catch (lockErr) {
-    return { ok: false, memberNo: null, sequence: null, error: 'lock-error: ' + lockErr };
+    return { ok: false, memberNo: null, sequence: null, reused: false, error: 'lock-error: ' + lockErr };
   }
   if (!acquired) {
     // Refuse rather than race. The submission row stays un-numbered and the
     // failure is recorded/escalated by the caller.
-    return { ok: false, memberNo: null, sequence: null, error: 'lock-timeout' };
+    return { ok: false, memberNo: null, sequence: null, reused: false, error: 'lock-timeout' };
   }
 
   try {
+    // ---- idempotency gate: never number the same row twice (Req 9.2) ----
+    var existing;
+    try {
+      existing = cnspkParseMemberNo_(io.readBack());
+    } catch (peekErr) {
+      // Cannot tell whether the row is already numbered: halt rather than risk
+      // handing out a second number for the same member.
+      return {
+        ok: false, memberNo: null, sequence: null, reused: false,
+        error: 'registry-read-failed: ' + peekErr
+      };
+    }
+    if (existing.present) {
+      if (!existing.valid) {
+        return {
+          ok: false, memberNo: null, sequence: null, reused: false,
+          error: 'registry-cell-unrecognized: "' + existing.text + '"'
+        };
+      }
+      // Already assigned in an earlier delivery of this submission. The counter
+      // is untouched, so no number is consumed a second time.
+      return {
+        ok: true, memberNo: existing.memberNo, sequence: existing.sequence,
+        reused: true, error: null
+      };
+    }
+
     var read = cnspkReadLastNumber_(props);
     if (!read.ok) {
       // Req 9.7 — halt instead of risking a duplicate.
-      return { ok: false, memberNo: null, sequence: null, error: read.error };
+      return { ok: false, memberNo: null, sequence: null, reused: false, error: read.error };
     }
     if (read.value >= CNSPK.MAX_COUNTER) {
-      return { ok: false, memberNo: null, sequence: null, error: 'counter-exhausted' };
+      return { ok: false, memberNo: null, sequence: null, reused: false, error: 'counter-exhausted' };
     }
 
     var next = read.value + 1;                       // baseline + 1 (Req 9.4)
@@ -409,7 +487,7 @@ function cnspkAssignMembershipNumber_(props, io) {
     } catch (writeErr) {
       // Number NOT consumed: counter still holds read.value (Req 9.6).
       return {
-        ok: false, memberNo: null, sequence: null,
+        ok: false, memberNo: null, sequence: null, reused: false,
         error: 'registry-write-failed: ' + writeErr
       };
     }
@@ -420,13 +498,13 @@ function cnspkAssignMembershipNumber_(props, io) {
       confirmed = String(io.readBack() || '').trim();
     } catch (verifyErr) {
       return {
-        ok: false, memberNo: null, sequence: null,
+        ok: false, memberNo: null, sequence: null, reused: false,
         error: 'registry-verify-failed: ' + verifyErr
       };
     }
     if (confirmed !== memberNo) {
       return {
-        ok: false, memberNo: null, sequence: null,
+        ok: false, memberNo: null, sequence: null, reused: false,
         error: 'registry-write-unconfirmed: expected ' + memberNo + ' found "' + confirmed + '"'
       };
     }
@@ -438,13 +516,15 @@ function cnspkAssignMembershipNumber_(props, io) {
       // The row already carries the number but the counter did not advance:
       // the next submission would reuse it. Surface loudly instead of
       // pretending success.
+      // The idempotency gate above keeps this recoverable: the row keeps the
+      // number, and a re-run reuses it rather than issuing a second one.
       return {
-        ok: false, memberNo: memberNo, sequence: next,
+        ok: false, memberNo: memberNo, sequence: next, reused: false,
         error: 'counter-persist-failed: ' + persistErr
       };
     }
 
-    return { ok: true, memberNo: memberNo, sequence: next, error: null };
+    return { ok: true, memberNo: memberNo, sequence: next, reused: false, error: null };
   } finally {
     try { lock.releaseLock(); } catch (e) {}
   }
@@ -1298,6 +1378,13 @@ function cnspkOnFormSubmit(e) {
     throw new Error('CNSPK: membership number assignment halted (' + assignment.error + ').');
   }
   var memberNo = assignment.memberNo;
+  if (assignment.reused) {
+    // Re-delivered or manually re-run submission: the row was already numbered,
+    // so the counter was not advanced again (Req 9.2). The welcome email is
+    // separately guarded by the sent-marker, so no second email goes out.
+    Logger.log('CNSPK: registry row ' + rowIdx + ' already carried ' + memberNo +
+      ' — reused, no additional number consumed.');
+  }
 
   // ---- consent state (Req 11.6, 11.7) ----
   var consent = cnspkConfirmFeatureConsent_(rawCell('Public directory'));

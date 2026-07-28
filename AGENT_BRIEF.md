@@ -35,11 +35,11 @@ Revamp the live `cloudnativesecurity.pk` site into the new **Electric register**
 ```
 Primary:
   --lime: #C7FF3E          /* main accent, CTAs, lime-on-dark only */
-  --lime-600: #9BD11A      /* darker companion for hover, AA on light */
+  --lime-600: #9BD11A      /* darker companion for hover/dark-surface text; NOT text on light (1.62:1 on bone) */
   --lime-glow: #E8FF8A     /* subtle highlights */
 
 Heritage (ceremonial accent only):
-  --pak-green: #01411C     /* used sparingly */
+  --pak-green: #01411C     /* ceremonial, AND the light-surface / Embassy text accent (10.49:1 on bone) */
   --gold: #C9A227          /* Urdu tagline accent */
 
 Surfaces (dark-mode native):
@@ -60,7 +60,20 @@ Signature gradients:
   --grad-terminal-dawn: linear-gradient(180deg, #0F1115 0%, #01411C 50%, #C7FF3E 100%)
 ```
 
-**Critical:** Lime `#C7FF3E` only ever appears on **dark backgrounds**. On bone/light surfaces, use `#9BD11A` (lime-600) for text and CTAs. Lime on white = WCAG fail.
+**Critical:** Lime `#C7FF3E` only ever appears on **dark backgrounds**. Lime on white = WCAG fail.
+
+**Correction (task 9.6 ruling) — no lime is a light-surface text color.** An earlier version of this brief called `#9BD11A` "AA on light" and told you to use it for text and CTA labels on bone. That was wrong. Measured against bone `#F4F1EA`:
+
+| Pair | Ratio | Verdict |
+|---|---|---|
+| `#C7FF3E` on bone `#F4F1EA` | 1.05 : 1 | fail (also fails 3:1) |
+| `#9BD11A` on bone `#F4F1EA` | 1.62 : 1 | fail (also fails 3:1) |
+| `#9BD11A` on bone-2 `#E8E3D6` | 1.42 : 1 | fail (also fails 3:1) |
+| **`#01411C` pak-green on bone `#F4F1EA`** | **10.49 : 1** | **AAA — use this** |
+| `#C7FF3E` on carbon `#0F1115` | 16.02 : 1 | AAA |
+| `#9BD11A` on carbon `#0F1115` | 10.37 : 1 | AAA |
+
+The ruling: **pak-green `#01411C` is the light-surface / Embassy text accent.** `#9BD11A` is restricted to **non-text, graphical use** on light surfaces (rules, fills, glows, chart strokes) and to text on dark surfaces only. The ratios are encoded machine-readably in `js/lib/brand-tokens.js` (`MEASURED_CONTRAST`, `LIGHT_SURFACE_TEXT_ACCENT`), where the contrast checker fails lime text on a light surface rather than asserting the old false pass.
 
 ### Typography
 

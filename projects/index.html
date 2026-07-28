@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://github.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://github.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
 
     <title>Projects · CNSPK</title>
     <meta name="description"
@@ -301,8 +301,18 @@
             <div class="wrap">
                 <div class="projects-grid reveal">
 
+                    <!--
+                      Every card declares its repository state on the <article> itself:
+                      `data-repo-url` + `data-repo-published`. js/lib/content-rules.js
+                      (projectRepoRule) is the single authority over what that state may
+                      render: a repository link only for a published repo, otherwise the
+                      visible "Not yet public" status label and no link (Req 7.7).
+                    -->
+
                     <!-- Real repo: verified live in the CNSPK GitHub org -->
-                    <article class="project-card">
+                    <article class="project-card"
+                             data-repo-url="https://github.com/Cloud-Native-Security-Pakistan/cloudnativesecurity.pk-website"
+                             data-repo-published="true">
                         <div class="card-top">
                             <span class="repo-name">cloudnativesecurity.pk-website</span>
                             <span class="status-badge is-live">Live</span>
@@ -317,13 +327,16 @@
                     </article>
 
                     <!-- Real repo: verified live — slug is 'becoming-a-member' -->
-                    <article class="project-card">
+                    <article class="project-card"
+                             data-repo-url="https://github.com/Cloud-Native-Security-Pakistan/becoming-a-member"
+                             data-repo-published="true">
                         <div class="card-top">
                             <span class="repo-name">becoming-a-member</span>
                             <span class="status-badge is-live">Live</span>
                         </div>
                         <h3>Become a Member</h3>
-                        <p>The membership pipeline. Open an issue, get added to the directory — onboarding driven by GitHub, no forms, no gatekeeping. This is how 280+ engineers joined.</p>
+                        <!-- Member_Count renders from js/site-config.js — never hardcoded here (Req 7.2) -->
+                        <p>The membership pipeline. Open an issue, get added to the directory — onboarding driven by GitHub, no forms, no gatekeeping. This is how <span data-member-count data-member-count-noun="engineers"><noscript>engineers</noscript></span> joined.</p>
                         <a href="https://github.com/Cloud-Native-Security-Pakistan/becoming-a-member"
                            target="_blank" rel="noopener noreferrer" class="card-link"
                            aria-label="View the Becoming a Member repository on GitHub">
@@ -332,7 +345,9 @@
                     </article>
 
                     <!-- Real: the GitHub organisation itself -->
-                    <article class="project-card">
+                    <article class="project-card"
+                             data-repo-url="https://github.com/Cloud-Native-Security-Pakistan"
+                             data-repo-published="true">
                         <div class="card-top">
                             <span class="repo-name">@Cloud-Native-Security-Pakistan</span>
                             <span class="status-badge is-live">Org</span>
@@ -347,7 +362,9 @@
                     </article>
 
                     <!-- Real, honest framing: members contribute upstream to CNCF projects -->
-                    <article class="project-card">
+                    <article class="project-card"
+                             data-repo-url="https://github.com/Cloud-Native-Security-Pakistan"
+                             data-repo-published="true">
                         <div class="card-top">
                             <span class="repo-name">upstream / cncf</span>
                             <span class="status-badge is-upstream">Upstream</span>
@@ -362,11 +379,12 @@
                     </article>
 
                     <!--
-                      TODO: CTF challenges repo is not yet public. When it ships under the
-                      CNSPK org, replace .card-note with a real .card-link to the repo and
-                      flip the badge to .is-live. Do not link to a placeholder URL.
+                      CTF challenges repo is not yet public: `data-repo-published="false"` keeps
+                      projectRepoRule() on the no-link branch even if a URL is added later, so the
+                      card cannot advertise an unpublished repo. When it ships under the CNSPK org,
+                      set the URL and flip the flag to "true". Do not link to a placeholder URL.
                     -->
-                    <article class="project-card">
+                    <article class="project-card" data-repo-url="" data-repo-published="false">
                         <div class="card-top">
                             <span class="repo-name">ctf / challenges</span>
                             <span class="status-badge is-soon">Not yet public</span>
@@ -379,11 +397,11 @@
                     </article>
 
                     <!--
-                      TODO: The Discord community bot exists in development but is not yet
-                      published to the CNSPK org. When the repo goes public, swap .card-note
-                      for a .card-link and update the badge to .is-live.
+                      The Discord community bot exists in development but is not yet published to
+                      the CNSPK org. When the repo goes public, set `data-repo-url` and flip
+                      `data-repo-published` to "true".
                     -->
-                    <article class="project-card">
+                    <article class="project-card" data-repo-url="" data-repo-published="false">
                         <div class="card-top">
                             <span class="repo-name">discord / bot</span>
                             <span class="status-badge is-soon">Not yet public</span>
@@ -396,10 +414,11 @@
                     </article>
 
                     <!--
-                      TODO: The Dispatch newsletter has no public repo/archive yet. When an
-                      archive or source repo is published, replace .card-note with a real link.
+                      The Dispatch newsletter has no public repo/archive yet. When an archive or
+                      source repo is published, set `data-repo-url` and flip
+                      `data-repo-published` to "true".
                     -->
-                    <article class="project-card">
+                    <article class="project-card" data-repo-url="" data-repo-published="false">
                         <div class="card-top">
                             <span class="repo-name">the / dispatch</span>
                             <span class="status-badge is-soon">Not yet public</span>
@@ -453,9 +472,50 @@
     <script type="module">
         import { Navbar } from '/js/Navbar.js';
         import { Footer } from '/js/Footer.js';
+        import { mountMemberCount } from '/js/site-config.js';
+        import { projectRepoRule, NOT_YET_PUBLIC_LABEL } from '/js/lib/content-rules.js';
 
         new Navbar().init();
         new Footer().init();
+
+        /* Member_Count from the single config source (Req 7.2, 7.3) */
+        mountMemberCount();
+
+        /* ---------------------------------------------------------------
+           Repo-link gating (Req 7.7)
+           content-rules.js decides, per card, whether a repository link may
+           render. A card whose repo is not published loses any link and shows
+           the visible NOT_YET_PUBLIC_LABEL status instead.
+           --------------------------------------------------------------- */
+        (function applyProjectRepoRules() {
+            document.querySelectorAll('.project-card').forEach((card) => {
+                const declaredPublished = card.dataset.repoPublished === 'true';
+                const rule = projectRepoRule({
+                    repoUrl: card.dataset.repoUrl || '',
+                    published: declaredPublished,
+                });
+
+                const badge = card.querySelector('.status-badge');
+                const link = card.querySelector('.card-link');
+
+                if (rule.showLink) {
+                    // Keep the authored link, but never a link the rule did not clear.
+                    if (link) link.setAttribute('href', rule.url);
+                    return;
+                }
+
+                if (link) link.remove();
+                if (badge) badge.textContent = rule.statusLabel || NOT_YET_PUBLIC_LABEL;
+
+                if (!card.querySelector('.card-note')) {
+                    const note = document.createElement('span');
+                    note.className = 'card-note';
+                    note.setAttribute('aria-label', 'Repository not yet public');
+                    note.textContent = `// ${(rule.statusLabel || NOT_YET_PUBLIC_LABEL).toLowerCase()}`;
+                    card.appendChild(note);
+                }
+            });
+        })();
 
         /* Scroll-reveal */
         (function () {

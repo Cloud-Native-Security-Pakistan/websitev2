@@ -42,7 +42,7 @@
         "topic": "Kubernetes Security",
         "recordingUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
         "registrationUrl": null,
-        "thumbnail": "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=800&q=80",
+        "thumbnail": "",
         "speaker": {
             "name": "Muhammad Farhan Ashraf",
             "role": "DevSecOps Engineer",
@@ -95,12 +95,12 @@
         "topic": "Container Security",
         "recordingUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
         "registrationUrl": null,
-        "thumbnail": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80",
+        "thumbnail": "",
         "speaker": {
             "name": "Syed Naqvi",
             "role": "Security Project Manager",
             "company": "Securiti.ai",
-            "image": "https://avatars.githubusercontent.com/u/12345678",
+            "image": "",
             "linkedin": "https://LinkedIn.com/in/syedalizain033",
             "twitter": "https://twitter.com/Syedalizain033"
         }
@@ -144,12 +144,12 @@
         "topic": "Secrets Management",
         "recordingUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ",
         "registrationUrl": null,
-        "thumbnail": "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&q=80",
+        "thumbnail": "",
         "speaker": {
             "name": "Sharjeel Yunus",
             "role": "Web and Graphics Lead",
             "company": "Ensemble Technologies",
-            "image": "https://avatars.githubusercontent.com/u/87654321",
+            "image": "",
             "linkedin": "https://www.linkedin.com/in/sharjeel-yunus/",
             "twitter": "https://twitter.com/sharjeelyunus"
         }
@@ -172,12 +172,12 @@
         "topic": "Zero Trust",
         "recordingUrl": null,
         "registrationUrl": "https://community.cncf.io/events/details/cncf-cloud-native-security-pakistan-presents-zero-trust-architecture/",
-        "thumbnail": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80",
+        "thumbnail": "",
         "speaker": {
             "name": "Muhammad Abdullah",
             "role": "Software Engineer & Community Leader",
             "company": "Manafa",
-            "image": "https://avatars.githubusercontent.com/u/11223344",
+            "image": "",
             "linkedin": "https://www.linkedin.com/in/muhammad-abdullah-software-engineer-pk/",
             "twitter": null
         }
@@ -200,12 +200,12 @@
         "topic": "Supply Chain Security",
         "recordingUrl": null,
         "registrationUrl": "https://community.cncf.io/events/details/cncf-cloud-native-security-pakistan-presents-supply-chain-security/",
-        "thumbnail": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80",
+        "thumbnail": "",
         "speaker": {
             "name": "Hasnaat Iftikhar",
             "role": "FullStack Developer & Designer",
             "company": "Webling",
-            "image": "https://avatars.githubusercontent.com/u/55667788",
+            "image": "",
             "linkedin": "https://www.linkedin.com/in/hasnaat-iftikhar/",
             "twitter": "https://twitter.com/HasnaatIftikha1"
         }

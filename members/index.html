@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://api.github.com https://sheets.googleapis.com https://docs.google.com https://unpkg.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com https://*.basemaps.cartocdn.com; connect-src 'self' https://api.github.com https://sheets.googleapis.com https://docs.google.com https://*.googleusercontent.com; frame-src https://docs.google.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://api.github.com https://sheets.googleapis.com https://docs.google.com https://unpkg.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://community.cncf.io https://avatars.githubusercontent.com https://*.basemaps.cartocdn.com; connect-src 'self' https://api.github.com https://sheets.googleapis.com https://docs.google.com https://*.googleusercontent.com; frame-src https://docs.google.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
     <title>Members - Cloud Native Security Pakistan</title>
     <meta name="description"
         content="The CNSPK member directory — security practitioners across Pakistan, mapped. Find your people.">
@@ -169,6 +169,83 @@
             letter-spacing: 0.06em;
         }
 
+        /* ==========================================================
+           Accessible text directory (Req 4.6) + honest state (Req 12.6).
+           Dark surface, so lime is the safe accent here.
+        ========================================================== */
+        .members-directory {
+            margin-top: var(--space-8);
+            padding-top: var(--space-6);
+            border-top: 1px solid var(--slate);
+        }
+        .members-directory__heading {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            font-size: 20px;
+            color: var(--bone);
+            margin-bottom: var(--space-2);
+        }
+        .members-directory__note,
+        .members-directory__empty {
+            font-size: 13px;
+            line-height: 1.55;
+            color: var(--bone-2);
+            margin-bottom: var(--space-4);
+            max-width: 52ch;
+        }
+        .members-directory__table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--bone);
+        }
+        .members-directory__table caption {
+            text-align: left;
+            font-size: 12px;
+            color: var(--bone-2);
+            padding-bottom: var(--space-2);
+        }
+        .members-directory__table th,
+        .members-directory__table td {
+            text-align: left;
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--slate);
+            vertical-align: top;
+        }
+        .members-directory__table thead th {
+            color: var(--lime);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-size: 11px;
+        }
+        .members-directory__table tbody th {
+            font-weight: 600;
+            color: var(--bone);
+            white-space: nowrap;
+        }
+        .members-directory__table tr[data-mapped="no"] td:last-child {
+            color: var(--bone-2);
+        }
+        .members-directory__state {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            line-height: 1.6;
+            color: var(--bone);
+            background: rgba(15, 17, 21, 0.6);
+            border: 1px solid var(--slate);
+            border-left: 3px solid var(--lime);
+            border-radius: var(--r-md);
+            padding: 12px 14px;
+            margin-bottom: var(--space-4);
+        }
+        .members-directory__state--error {
+            border-left-color: var(--lime-600);
+        }
+
         /* Lime-tinted scrollbar */
         .custom-scrollbar {
             scrollbar-width: thin;
@@ -256,11 +333,29 @@
                         <span class="text-gray-500 text-sm">Scanning the chapter…</span>
                     </div>
 
+                    <!-- Honest load state: empty when all is well, a plain message
+                         when the live directory could not be loaded (Req 12.6). -->
+                    <div id="directory-state" class="members-directory__state-slot"></div>
+
                     <div id="members-container" class="space-y-4"></div>
 
                     <div id="no-results" class="hidden text-center py-12 text-gray-500">
                         No members match these filters.
                     </div>
+
+                    <!-- Non-map textual equivalent of the members map (Req 4.6).
+                         Same placement decision as the pins, readable without the
+                         map, and reachable by keyboard + screen reader. -->
+                    <section class="members-directory" aria-labelledby="members-directory-heading">
+                        <h2 id="members-directory-heading" class="members-directory__heading">
+                            Member directory (text version)
+                        </h2>
+                        <p class="members-directory__note">
+                            The same members as the map, as text. Members whose city could not be
+                            placed are listed here and marked as not on the map.
+                        </p>
+                        <div id="members-directory-table"></div>
+                    </section>
                 </div>
             </aside>
 
@@ -286,7 +381,7 @@
         import { Navbar } from '../js/Navbar.js';
         import { Map } from '../js/Map.js';
         import { domReady, sanitizeAttr } from '../js/utils.js';
-        import { getAllMembers, getCityData } from '../js/members-source.js';
+        import { getAllMembers, getCityData, getDirectoryStatus } from '../js/members-source.js';
         import { MembershipForm } from '../js/MembershipForm.js';
 
         // Initialize Nav (No footer on this dashboard view)
@@ -316,19 +411,28 @@
                 mapInstance.init();
 
                 // Fetch Data — seed members + live Google-Sheet submissions, geocoded.
+                // On a failure the source falls back to the seed file and reports it;
+                // nothing is guessed, so the map never shows a wrong pin (Req 12.6).
                 allMembers = await getAllMembers();
                 // City data lets the map resolve a record that carries only a city.
                 mapInstance.setCityData(getCityData());
+                mapInstance.setLoadStatus(getDirectoryStatus());
                 loading.classList.add('hidden');
 
                 if (!allMembers || allMembers.length === 0) {
-                    // Handle empty
+                    // Nothing to show: state the truth, and still render the text
+                    // directory shell so its empty state is announced.
+                    mapInstance.updateMarkers([]);
+                    renderAccessibleDirectory([]);
+                    mapInstance.renderState('directory-state');
                     return;
                 }
 
                 // Initial Render
                 renderMembers(allMembers);
                 mapInstance.updateMarkers(allMembers);
+                renderAccessibleDirectory(allMembers);
+                mapInstance.renderState('directory-state');
 
                 // Initialize Filters
                 new FilterPanel((filters) => {
@@ -341,6 +445,7 @@
 
                     renderMembers(filtered);
                     mapInstance.updateMarkers(filtered);
+                    renderAccessibleDirectory(filtered);
                 }).render();
 
                 // Re-render filter panel to inject into DOM (since FilterPanel.render returns string)
@@ -354,6 +459,7 @@
                     });
                     renderMembers(filtered);
                     mapInstance.updateMarkers(filtered);
+                    renderAccessibleDirectory(filtered);
                 });
 
                 document.getElementById('filter-panel').innerHTML = filterPanel.render();
@@ -363,9 +469,24 @@
                 updateCount(allMembers.length);
 
             } catch (err) {
+                // Honest error state: no pins, no fabricated directory (Req 12.6).
                 console.error('Error loading members:', err);
-                loading.innerHTML = '<p class="text-red-500">CONNECTION LOST</p>';
+                loading.classList.add('hidden');
+                if (mapInstance) {
+                    mapInstance.setLoadStatus({ ...getDirectoryStatus(), error: err.message });
+                    mapInstance.renderState('directory-state');
+                }
+                renderAccessibleDirectory([]);
             }
+        }
+
+        /**
+         * Render the non-map textual equivalent of the directory (Req 4.6).
+         * Same records, same placement decision as the pins.
+         */
+        function renderAccessibleDirectory(members) {
+            if (!mapInstance) return;
+            mapInstance.renderTextDirectory('members-directory-table', members || []);
         }
 
         function renderMembers(members) {

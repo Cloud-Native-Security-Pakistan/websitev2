@@ -21,12 +21,26 @@
  *   Keeps the inline copy-link onclick handler and the
  *   window.location.href share URLs.
  *
+ * Security: every session/speaker value reaches the DOM through
+ * js/lib/sanitize.js (via utils.js) in the context it lands in —
+ * sanitize() for text, sanitizeAttr() for quoted attributes,
+ * sanitizeUrl() for href/src. No data value is interpolated raw
+ * (Req 2.4).
+ *
+ * Media: the hero image and the speaker portrait resolve through
+ * the single image manifest in js/site-config.js, so a missing
+ * asset renders a visibly labelled placeholder instead of a
+ * fabricated avatar of a named person (Req 7.5, 7.6) — the old
+ * ui-avatars `onerror` fallback is gone. Both slots carry
+ * explicit width/height so the layout never shifts (Req 5.3).
+ *
  * Styles consumed from /css/tokens.css (vars only). Component
  * styling is injected once, scoped under .cnspk-session-detail.
  * ----------------------------------------------------------
  */
 
 import { sanitize, sanitizeAttr, sanitizeUrl } from './utils.js';
+import { resolveImageSlot, mediaPlaceholderHTML } from './site-config.js';
 
 export class SessionDetail {
     constructor(session) {
@@ -180,6 +194,9 @@ export class SessionDetail {
                 object-fit: cover;
                 border: 2px solid rgba(199, 255, 62, 0.35);
             }
+            /* Labelled placeholder slots (js/site-config.js) sized for this view. */
+            .cnspk-sd__speaker-slot { width: 48px; height: 48px; flex-shrink: 0; }
+            .cnspk-sd__hero-slot { border-bottom: 0; }
             .cnspk-sd__speaker-name {
                 font-size: 18px;
                 font-weight: 700;
@@ -361,16 +378,19 @@ export class SessionDetail {
         const safeSummary = sanitize(summary);
         const safeTopic = sanitize(topic);
         const safeDuration = sanitize(duration);
-        // URL context (hero image / portrait) and attribute context (alt, title,
-        // iframe title) both take the raw values (Req 2.4).
-        const safeThumb = sanitizeUrl(thumbnail);
+        // Attribute context: alt / iframe title built from the raw values so a
+        // value can never close its attribute and add a handler (Req 2.4).
         const attrTitle = sanitizeAttr(title);
+        // One manifest decides the media, and it runs every candidate URL
+        // through sanitizeUrl, so an executable src degrades to the labelled
+        // placeholder instead of reaching the DOM (Req 2.4, 7.5).
+        const heroSlot = resolveImageSlot('sessions', id, thumbnail, title);
 
         const sp = speaker || {};
         const safeSpeakerName = sanitize(sp.name);
         const safeSpeakerRole = sanitize(sp.role);
         const safeSpeakerCompany = sanitize(sp.company);
-        const safeSpeakerImg = sanitizeUrl(sp.image);
+        const speakerSlot = resolveImageSlot('speakers', sp.slug ?? sp.name, sp.image, sp.name);
         const attrSpeakerName = sanitizeAttr(sp.name);
         const speakerRoleLine = [safeSpeakerRole, safeSpeakerCompany].filter(Boolean).join(' @ ');
 
@@ -388,9 +408,17 @@ export class SessionDetail {
 
         // Share URLs — preserved from the original moat behaviour. Guarded so the
         // component can also render outside a browser (e.g. under test).
+        // The title/speaker travel as query parameters, so they are percent-encoded
+        // and the finished URL still goes through sanitizeUrl before it lands in an
+        // href — no data value reaches the attribute unfiltered (Req 2.4).
         const shareUrl = typeof window !== 'undefined' && window.location ? window.location.href : '';
-        const linkedInShare = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
-        const twitterShare = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`Check out this session on "${safeTitle}" by ${sp.name || 'CNSPK'} at Cloud Native Security Pakistan!`)}&url=${encodeURIComponent(shareUrl)}`;
+        const linkedInShare = sanitizeUrl(
+            `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`
+        );
+        const tweetText = `Check out this session on "${title ?? ''}" by ${sp.name || 'CNSPK'} at Cloud Native Security Pakistan!`;
+        const twitterShare = sanitizeUrl(
+            `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(shareUrl)}`
+        );
 
         const liIcon = `<svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>`;
         const xIcon = `<svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`;
@@ -418,7 +446,12 @@ export class SessionDetail {
                     ${isRecorded && embedId ? `
                         <iframe src="https://www.youtube.com/embed/${embedId}?autoplay=1&mute=1" title="${attrTitle}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     ` : `
-                        <img src="${safeThumb}" class="cnspk-sd__hero-img" alt="${attrTitle}">
+                        ${heroSlot.isPlaceholder ? mediaPlaceholderHTML(heroSlot, { className: 'cnspk-sd__hero-slot' }) : `
+                        <img src="${heroSlot.src}"
+                             class="cnspk-sd__hero-img"
+                             alt="${attrTitle}"
+                             width="1280" height="720"
+                             decoding="async">`}
                         <div class="cnspk-sd__hero-overlay">
                             <div class="cnspk-sd__upcoming-card">
                                 <div class="cnspk-sd__upcoming-eyebrow">// upcoming-session</div>
@@ -439,8 +472,14 @@ export class SessionDetail {
                     <h1 class="cnspk-sd__title">${safeTitle}</h1>
 
                     <div class="cnspk-sd__speaker">
-                        <img src="${safeSpeakerImg}" class="cnspk-sd__speaker-img" alt="${attrSpeakerName}" loading="lazy"
-                             onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(sp.name || 'CNSPK')}&background=C7FF3E&color=0F1115'">
+                        ${speakerSlot.isPlaceholder
+                            ? mediaPlaceholderHTML(speakerSlot, { variant: 'avatar', className: 'cnspk-sd__speaker-slot' })
+                            : `
+                        <img src="${speakerSlot.src}"
+                             class="cnspk-sd__speaker-img"
+                             alt="${attrSpeakerName}"
+                             width="48" height="48"
+                             loading="lazy" decoding="async">`}
                         <div>
                             <p class="cnspk-sd__speaker-name">${safeSpeakerName}</p>
                             ${speakerRoleLine ? `<p class="cnspk-sd__speaker-role">${speakerRoleLine}</p>` : ''}

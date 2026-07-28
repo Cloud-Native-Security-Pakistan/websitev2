@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
 
     <title>Speakers — CNSPK | The people behind the talks</title>
     <meta name="description"
@@ -309,7 +309,9 @@
             // sanitizeUrl so an executable link collapses to an inert one (Req 2.4).
             const attrName = sanitizeAttr(s.name);
             const avatar = s.image
-                ? `<span class="avatar">${ini}<img src="${sanitizeUrl(s.image)}" alt="${attrName} — speaker portrait" loading="lazy" decoding="async"></span>`
+                // width/height match the 48px .avatar box so the card reserves space
+                // before the portrait decodes; below the fold, so lazy. Requirement 5.3.
+                ? `<span class="avatar">${ini}<img src="${sanitizeUrl(s.image)}" alt="${attrName} — speaker portrait" width="48" height="48" loading="lazy" decoding="async"></span>`
                 : `<span class="avatar">${ini}</span>`;
             const socials = [
                 s.linkedin && `<a href="${sanitizeUrl(s.linkedin)}" target="_blank" rel="noopener noreferrer">// linkedin</a>`,

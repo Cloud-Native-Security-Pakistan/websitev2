@@ -13,7 +13,7 @@
       retained from the legacy CSP so no other v2 page routing breaks.
     -->
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://images.unsplash.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
+        content="default-src 'self' https://cdn.jsdelivr.net https://cdn.tailwindcss.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
 
     <!-- SEO Meta Tags — CNSPK is its own thing; CNCF affiliation is a credential, not the headline -->
     <title>CNSPK · Cloud Native Security Pakistan</title>
@@ -558,8 +558,10 @@
                     <span class="lime-line">Pakistani.</span>
                 </h1>
 
+                <!-- Member_Count renders from js/site-config.js — one source, never hardcoded (Req 7.2, 7.3) -->
                 <p class="lede">
-                    <strong>280+ engineers</strong> shipping cloud-native infrastructure across Pakistan, breaking it
+                    <strong data-member-count data-member-count-noun="engineers"><noscript>Engineers</noscript></strong>
+                    shipping cloud-native infrastructure across Pakistan, breaking it
                     on purpose, and writing it back better. Independent. Run by practitioners. Free to join.
                     <strong>No gatekeeping.</strong>
                 </p>
@@ -583,7 +585,7 @@
         <section class="stats" aria-label="Chapter by the numbers">
             <div class="wrap stats-grid">
                 <div class="stat">
-                    <div class="stat-num">280+</div>
+                    <div class="stat-num" data-member-count></div>
                     <div class="stat-label">Engineers</div>
                 </div>
                 <div class="stat">
@@ -713,9 +715,13 @@
     <script type="module">
         import { Navbar } from '/js/Navbar.js';
         import { Footer } from '/js/Footer.js';
+        import { mountMemberCount } from '/js/site-config.js';
 
         new Navbar().init();
         new Footer().init();
+
+        /* Member_Count from the single config source (Req 7.2, 7.3) */
+        mountMemberCount();
 
         /* ---- Scroll-reveal — respects prefers-reduced-motion ---- */
         (function () {

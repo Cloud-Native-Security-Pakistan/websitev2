@@ -16,12 +16,20 @@
  *     - upcoming sessions wrap in <div> with the Register CTA
  *     - keeps data-session-id="ID"
  *
+ * Media: both the thumbnail and the speaker photo resolve through
+ * the single image manifest in js/site-config.js. With no real
+ * asset the slot renders a visibly labelled placeholder rather
+ * than stock photography or a generated avatar of a named person
+ * (Req 7.4, 7.5, 7.6) — so the old Unsplash / ui-avatars
+ * `onerror` fallbacks are gone.
+ *
  * Styles consumed from /css/tokens.css (vars only). Component
  * styling is injected once, scoped under .cnspk-session-card.
  * ----------------------------------------------------------
  */
 
 import { sanitize, sanitizeAttr, sanitizeUrl } from './utils.js';
+import { resolveImageSlot, mediaPlaceholderHTML } from './site-config.js';
 
 export class SessionCard {
     constructor(session) {
@@ -267,8 +275,9 @@ export class SessionCard {
         const safeDesc = sanitize(description);
         const safeTopic = sanitize(topic);
         const safeDuration = sanitize(duration);
+        // One manifest decides the media: real asset, or labelled placeholder.
         // URL context: only linkable schemes survive (Req 2.4).
-        const safeThumb = sanitizeUrl(thumbnail);
+        const thumbSlot = resolveImageSlot('sessions', id, thumbnail, title);
         // Attribute context: alt / id / data-* built from the raw values so the
         // value cannot close its attribute and add an event handler (Req 2.4).
         const attrTitle = sanitizeAttr(title);
@@ -278,8 +287,8 @@ export class SessionCard {
         const safeSpeakerName = sanitize(sp.name);
         const safeSpeakerRole = sanitize(sp.role);
         const safeSpeakerCompany = sanitize(sp.company);
-        const safeSpeakerImg = sanitizeUrl(sp.image);
         const attrSpeakerName = sanitizeAttr(sp.name);
+        const speakerSlot = resolveImageSlot('speakers', sp.slug ?? sp.name, sp.image, sp.name);
 
         const isUpcoming = type === 'upcoming';
         const parsed = new Date(date);
@@ -291,7 +300,9 @@ export class SessionCard {
         // the detail view; upcoming sessions are a static div with a Register CTA.
         // The id travels as a query parameter, so encode it: benign slugs are
         // unchanged, and quotes/markup can never break out of the href.
-        const cardLink = isUpcoming ? null : `/sessions/view/?id=${encodeURIComponent(id ?? '')}`;
+        // The finished URL also goes through sanitizeUrl, so the href is produced
+        // by the shared sanitizer rather than by encoding alone (Req 2.4).
+        const cardLink = isUpcoming ? null : sanitizeUrl(`/sessions/view/?id=${encodeURIComponent(id ?? '')}`);
         const wrapperTag = cardLink ? 'a' : 'div';
         const wrapperAttrs = cardLink ? `href="${cardLink}"` : '';
 
@@ -303,12 +314,13 @@ export class SessionCard {
         return `
             <${wrapperTag} ${wrapperAttrs} class="cnspk-session-card" data-session-id="${attrId}">
                 <div class="cnspk-session-card__media">
-                    <img src="${safeThumb}"
+                    ${thumbSlot.isPlaceholder ? mediaPlaceholderHTML(thumbSlot) : `
+                    <img src="${thumbSlot.src}"
                          alt="${attrTitle}"
                          class="cnspk-session-card__img"
-                         loading="lazy"
-                         onerror="this.src='https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80'">
-                    <div class="cnspk-session-card__scrim"></div>
+                         width="800" height="360"
+                         loading="lazy" decoding="async">`}
+                    ${thumbSlot.isPlaceholder ? '' : '<div class="cnspk-session-card__scrim"></div>'}
                     ${!isUpcoming ? `
                     <div class="cnspk-session-card__play" aria-hidden="true">
                         <span class="cnspk-session-card__play-btn">${playIcon}</span>
@@ -319,11 +331,14 @@ export class SessionCard {
 
                 <div class="cnspk-session-card__body">
                     <div class="cnspk-session-card__speaker">
-                        <img src="${safeSpeakerImg}"
+                        ${speakerSlot.isPlaceholder
+                            ? mediaPlaceholderHTML(speakerSlot, { variant: 'avatar' })
+                            : `
+                        <img src="${speakerSlot.src}"
                              alt="${attrSpeakerName}"
                              class="cnspk-session-card__speaker-img"
-                             loading="lazy"
-                             onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(sp.name || 'CNSPK')}&background=C7FF3E&color=0F1115'">
+                             width="40" height="40"
+                             loading="lazy" decoding="async">`}
                         <div>
                             <p class="cnspk-session-card__speaker-name">${safeSpeakerName}</p>
                             ${speakerRoleLine ? `<p class="cnspk-session-card__speaker-role">${speakerRoleLine}</p>` : ''}

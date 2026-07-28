@@ -5,24 +5,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://community.cncf.io https://avatars.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' mailto: https://docs.google.com;">
 
-    <title>The CNSPK Dispatch — One CVE. One tool. One Pakistani war story. Every Monday.</title>
+    <title>The CNSPK Dispatch — One CVE. One tool. One Pakistani war story.</title>
     <meta name="description"
-        content="The CNSPK Dispatch is the chapter newsletter — one CVE, one tool, one Pakistani war story, every Monday. Written by practitioners, for practitioners. No vendor pitches.">
+        content="The CNSPK Dispatch is the chapter newsletter — one CVE, one tool, one Pakistani war story per issue. Written by practitioners. Opt-in only, one-click unsubscribe, open archive.">
 
     <meta name="theme-color" content="#0F1115">
 
     <meta property="og:type" content="website">
-    <meta property="og:title" content="The CNSPK Dispatch — One CVE. One tool. One Pakistani war story. Every Monday.">
-    <meta property="og:description" content="The CNSPK Dispatch is the chapter newsletter — one CVE, one tool, one Pakistani war story, every Monday. Written by practitioners, for practitioners. No vendor pitches.">
+    <meta property="og:title" content="The CNSPK Dispatch — One CVE. One tool. One Pakistani war story.">
+    <meta property="og:description" content="The chapter newsletter — one CVE, one tool, one Pakistani war story per issue. Written by practitioners. Opt-in only, one-click unsubscribe, open archive.">
     <meta property="og:url" content="https://cloudnativesecurity.pk/dispatch/">
     <meta property="og:site_name" content="Cloud Native Security Pakistan">
     <meta property="og:image" content="https://cloudnativesecurity.pk/logo.png">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="The CNSPK Dispatch — Every Monday">
-    <meta name="twitter:description" content="The chapter newsletter — one CVE, one tool, one Pakistani war story, every Monday. By practitioners, for practitioners. No vendor pitches.">
+    <meta name="twitter:title" content="The CNSPK Dispatch">
+    <meta name="twitter:description" content="The chapter newsletter — one CVE, one tool, one Pakistani war story per issue. Opt-in only, one-click unsubscribe, open archive.">
     <meta name="twitter:image" content="https://cloudnativesecurity.pk/logo.png">
 
     <link rel="icon" type="image/png" sizes="32x32" href="/logo.png">
@@ -98,54 +98,95 @@
             border-bottom: 1px solid var(--slate);
             padding: 64px 0;
         }
-        .signup__card { max-width: 640px; }
-        .signup__form {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 24px;
-        }
-        .signup__label {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            color: var(--steel);
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            display: block;
-            margin-bottom: 10px;
-        }
-        .signup__input {
-            flex: 1;
-            min-width: 240px;
-            background: var(--carbon);
-            border: 1px solid var(--slate);
-            border-radius: var(--r-sm);
-            padding: 16px 18px;
-            color: var(--bone);
-            font-family: var(--font-mono);
-            font-size: 14px;
-            transition: border-color var(--dur-hover) var(--ease);
-        }
-        .signup__input::placeholder { color: var(--steel); }
-        .signup__input:focus { border-color: var(--lime); }
+        .signup__card { max-width: 680px; }
         .signup__note {
             font-family: var(--font-mono);
-            font-size: 11px;
-            color: var(--steel);
-            margin-top: 16px;
+            font-size: 11.5px;
+            color: var(--bone-2);
+            margin-top: 18px;
             letter-spacing: 0.04em;
+            line-height: 1.7;
+            max-width: 620px;
         }
-        .signup__heads-up {
+        .signup__note li { padding-left: 16px; position: relative; }
+        .signup__note li::before { content: '·'; position: absolute; left: 2px; color: var(--lime); }
+
+        /* ---- NewsletterSignup form (markup from /js/NewsletterSignup.js) ----
+           Workshop register: lime lives on carbon/charcoal only. No light
+           surface on this page, so no lime-on-bone case can arise. */
+        .signup-form {
+            margin-top: 26px;
+            background: var(--carbon);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-lg);
+            padding: 32px;
+            max-width: 620px;
+        }
+        .signup-form__row { margin-bottom: 22px; }
+        .field-label {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--bone-2);
+            margin-bottom: 8px;
+        }
+        .field-input {
+            width: 100%;
+            background: var(--charcoal);
+            border: 1px solid var(--slate);
+            border-radius: var(--r-sm);
+            padding: 15px 17px;
+            color: var(--bone);
+            font-family: var(--font-body);
+            font-size: 15px;
+            transition: border-color var(--dur-hover) var(--ease);
+        }
+        .field-input:hover { border-color: var(--lime); }
+        .field-hint {
+            font-family: var(--font-mono);
+            font-size: 11.5px;
+            color: var(--bone-2);
+            margin-top: 6px;
+            line-height: 1.5;
+        }
+        .field-error {
             font-family: var(--font-mono);
             font-size: 12px;
-            color: var(--bone-2);
-            line-height: 1.55;
-            margin-top: 14px;
-            padding-left: 12px;
-            border-left: 2px solid var(--lime);
-            max-width: 560px;
+            color: var(--breach);
+            margin-top: 6px;
         }
-        .signup__heads-up em { color: var(--lime); font-style: normal; }
+        .field-success {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--lime);
+            margin-top: 10px;
+        }
+
+        /* Opt-in: ships unchecked, with the unsubscribe promise beside it. */
+        .signup-form__optin {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 8px 12px;
+            align-items: start;
+            padding: 18px;
+            border: 1px solid var(--slate);
+            border-left: 3px solid var(--lime);
+            border-radius: var(--r-sm);
+            background: rgba(26, 29, 36, 0.6);
+            margin-bottom: 22px;
+        }
+        .field-check { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--lime); }
+        .field-check-label { font-size: 15px; color: var(--bone); line-height: 1.5; }
+        .signup-form__optin .field-note {
+            grid-column: 2;
+            font-family: var(--font-mono);
+            font-size: 11.5px;
+            color: var(--bone-2);
+            line-height: 1.6;
+        }
+        .signup-form__optin .field-error { grid-column: 2; }
 
         /* ---- Sections ---- */
         .section { padding: 88px 0; }
@@ -237,7 +278,7 @@
     </style>
 </head>
 
-<body>
+<body data-register="workshop">
     <div id="navbar"></div>
 
     <main>
@@ -247,10 +288,10 @@
                 <div class="section-eyebrow">// the-cnspk-dispatch</div>
                 <h1>One&nbsp;CVE.<br>One&nbsp;tool.<br><span class="accent">One war story.</span></h1>
                 <p class="lede">
-                    The chapter newsletter. Written by practitioners, for practitioners.
-                    <strong>Every Monday</strong> — one CVE worth your attention, one tool worth your
-                    terminal, one Pakistani production war story worth learning from. No vendor pitches.
-                    No "thought leadership."
+                    The chapter newsletter. Written by practitioners, for practitioners. Each issue carries
+                    <strong>three things</strong> — one CVE worth your attention, one tool worth your terminal,
+                    one Pakistani production war story worth learning from. No vendor pitches, no "thought
+                    leadership", and no issue padded out to hit a date on a calendar.
                 </p>
                 <!-- Roman Urdu accent (one per page): takleef = the pain a tool removes -->
                 <p class="urdu-accent">$ every issue removes one <em>takleef</em> — the kind you only feel at 3am on-call.</p>
@@ -258,57 +299,66 @@
         </section>
 
         <!-- ===== Signup ===== -->
-        <section class="signup">
+        <section class="signup" aria-labelledby="dispatch-subscribe">
             <div class="wrap signup__card">
                 <div class="section-eyebrow">// subscribe</div>
-                <h2 style="font-family:var(--font-display);font-style:italic;font-weight:800;text-transform:uppercase;font-size:clamp(26px,3.6vw,40px);letter-spacing:-0.02em;color:var(--bone);line-height:1;margin-bottom:12px;">
+                <h2 id="dispatch-subscribe"
+                    style="font-family:var(--font-display);font-style:italic;font-weight:800;text-transform:uppercase;font-size:clamp(26px,3.6vw,40px);letter-spacing:-0.02em;color:var(--bone);line-height:1;margin-bottom:12px;">
                     Read the CVE. Drink the chai.
                 </h2>
-                <p class="muted" style="font-size:16px;color:var(--bone-2);max-width:560px;line-height:1.6;">
-                    Free. Open archive. No tracking, no drip funnel, one-click out whenever you want.
+                <p class="muted" style="font-size:16px;color:var(--bone-2);max-width:600px;line-height:1.6;">
+                    Free, opt-in, and one click out. The archive below stays open to everyone, subscriber or not.
+                </p>
+
+                <p class="muted" data-response-expectation
+                    style="font-size:15px;color:var(--bone-2);max-width:600px;line-height:1.6;margin-top:12px;">
+                    <strong style="color:var(--lime);font-weight:600;">What to expect:</strong> your address is
+                    confirmed on the page as soon as you submit, and a person answers any reply within
+                    <strong style="color:var(--bone);font-weight:600;">3 working days</strong>. Issues go out when
+                    there is something worth sending — we do not promise a cadence we cannot keep.
                 </p>
 
                 <!--
-                    TODO: wire a real newsletter provider (Buttondown or ConvertKit per the features audit).
-                    Until a backend exists, this form composes a mailto to hi@cloudnativesecurity.pk so
-                    nothing fake ships. Replace the inline handler + action with the provider's endpoint.
+                    The signup markup and wiring come from /js/NewsletterSignup.js over
+                    /js/intake-client.js: default-unselected opt-in, local@domain validation,
+                    field-level errors that preserve what was typed, and the visibly labelled
+                    mailto / coming-soon fallback while INTAKE_ENDPOINTS.dispatch is empty.
                 -->
-                <form class="signup__form" id="dispatch-form"
-                    action="mailto:hi@cloudnativesecurity.pk?subject=Dispatch%20subscribe" method="post"
-                    enctype="text/plain">
-                    <div style="flex:1;min-width:240px;">
-                        <label class="signup__label" for="dispatch-email">Your email</label>
-                        <input class="signup__input" type="email" id="dispatch-email" name="email"
-                            placeholder="you@yourdomain.dev" required autocomplete="email"
-                            aria-describedby="dispatch-note dispatch-status" style="width:100%;">
-                    </div>
-                    <button type="submit" class="btn-primary btn-primary--sm" style="align-self:flex-end;">
-                        Subscribe →
-                    </button>
-                </form>
-                <p class="signup__note" id="dispatch-note">free · open archive · no tracking · unsubscribe in one click</p>
-                <p class="signup__heads-up" id="dispatch-status">
-                    Heads up — no signup backend yet. <em>Subscribe</em> opens your mail client with a
-                    pre-filled note; we add you by hand until the newsletter provider is wired.
-                </p>
+                <div id="dispatch-signup"></div>
+
+                <noscript>
+                    <p class="signup__note">
+                        The signup needs JavaScript to run its validation and opt-in checks. Without it, email
+                        <a href="mailto:hi@cloudnativesecurity.pk?subject=Dispatch%20opt-in">hi@cloudnativesecurity.pk</a>
+                        with the words "opt me into the Dispatch" and an organizer adds you by hand.
+                    </p>
+                </noscript>
+
+                <ul class="signup__note" data-no-spam-terms>
+                    <li>Opt-in only — nobody is added to the Dispatch from another form on this site.</li>
+                    <li>One-click unsubscribe in every issue, no reason needed.</li>
+                    <li>No drip sequences, no automated follow-ups, no direct messages.</li>
+                    <li>Your address is never shared, sold, or handed to a sponsor.</li>
+                    <li>Announcements and community updates only. No vendor blasts.</li>
+                </ul>
             </div>
         </section>
 
         <!-- ===== What lands in your inbox ===== -->
         <section class="section">
             <div class="wrap">
-                <div class="section-eyebrow">// what-lands-monday</div>
+                <div class="section-eyebrow">// what-lands-in-your-inbox</div>
                 <h2>Three things. Nothing else.</h2>
                 <div class="promise-grid">
                     <article class="promise">
                         <div class="num">01 / CVE</div>
                         <h3>One CVE</h3>
-                        <p>The one that actually matters this week, with the 5-line fix and a policy to keep it dead. Not a feed dump.</p>
+                        <p>The one that actually matters, with the 5-line fix and a policy to keep it dead. Not a feed dump.</p>
                     </article>
                     <article class="promise">
                         <div class="num">02 / TOOL</div>
                         <h3>One tool</h3>
-                        <p>Something we ran in anger this week — Trivy, Kyverno, Falco, Cosign — and what it actually did for us.</p>
+                        <p>Something we actually ran — Trivy, Kyverno, Falco, Cosign — and what it did for us in practice.</p>
                     </article>
                     <article class="promise">
                         <div class="num">03 / WAR STORY</div>
@@ -334,10 +384,10 @@
                 -->
                 <div class="empty-state" role="status">
                     <span class="badge">archive · empty</span>
-                    <h3>First issue ships soon</h3>
+                    <h3>No issues published yet</h3>
                     <p>
-                        Issue 001 is being written. Subscribe above and it lands in your inbox the
-                        Monday it goes out — then shows up here for everyone.
+                        Issue 001 is being written. Opt in above and it reaches your inbox when it goes out —
+                        then it shows up here, readable by everyone.
                     </p>
                 </div>
             </div>
@@ -349,25 +399,15 @@
     <script type="module">
         import { Navbar } from '/js/Navbar.js';
         import { Footer } from '/js/Footer.js';
+        import { mountNewsletterSignup } from '/js/NewsletterSignup.js';
+
         new Navbar().init();
         new Footer().init();
-    </script>
 
-    <script>
-        // Compose a mailto fallback so the form never silently fails before a
-        // real provider is wired. TODO: remove when a newsletter backend exists.
-        (function () {
-            var form = document.getElementById('dispatch-form');
-            if (!form) return;
-            form.addEventListener('submit', function (e) {
-                e.preventDefault();
-                var email = document.getElementById('dispatch-email').value.trim();
-                if (!email) return;
-                var body = encodeURIComponent('Subscribe me to the CNSPK Dispatch.\n\nEmail: ' + email);
-                window.location.href =
-                    'mailto:hi@cloudnativesecurity.pk?subject=Dispatch%20subscribe&body=' + body;
-            });
-        })();
+        // Renders the signup and wires it to /api/dispatch through the shared
+        // intake client — or to the visibly labelled fallback while no dispatch
+        // backend is configured. No second validation or submit path exists.
+        mountNewsletterSignup('dispatch-signup');
     </script>
 </body>
 
